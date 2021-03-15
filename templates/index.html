@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <script src="./script.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <img class="logo_main" src="./images/logo_big.png" >
+    <section class="join_button">
+        <button class="join_btn" onclick="viewLoginWindow()">ENJOY</button>
+    </section>
+    <section class="signin" id="signin">
+        <div class="login_window">
+            <button class="close_window" onclick="hideLoginWindow()">X</button>
+            <div class="login_input">
+                <div class="name_input">
+                    <p class='login_pass_label'>login</p>
+                    <p class='login_pass_label'>password</p>
+                </div>
+                <div class='input_field'>
+                    <div>
+                        <input type="text" form="auth" required class='field' name='login' maxlength="12">
+                    </div>
+                    <div>
+                        <input type="password" form="auth" required class='field' name='password' maxlength="12">
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+</body>

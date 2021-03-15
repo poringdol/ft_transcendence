@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  postgresql:
+    image: postgres:12.1
+    volumes:
+      - "db:/var/lib/postgresql/data"
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: pingpong_development
+      POSTGRES_HOST_AUTH_METHOD: trust
+  rails:
+    build: ./rails/.
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgresql
+      - redis
+    environment:
+      FT_ID: 2e376979141eea6d9492afcff74cd7d261ed7cc1882e8003494cb9545630ab05
+      FT_SECRET: fe3cdf8b98f480569fc62775b197c9c8f4360e49eb375c5c6298a9c0fa8ab3ac
+      REDIS_DB: 0
+      REDIS_URL: redis://redis
+      REDIS_PORT: 6379
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+volumes:
+  db:

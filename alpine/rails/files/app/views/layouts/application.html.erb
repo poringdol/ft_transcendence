@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pingpong</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!--
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    -->
+    <%= stylesheet_pack_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
+  </head>
+
+  <body>
+
+    <div class="content">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light" id="HeaderMenu">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">FT_TRANSCENDENCE</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="http://localhost:3000/">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="http://localhost:3000/#tournament">Tournament</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="http://localhost:3000/#test">Test Page</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Profile
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><span class="dropdown-item">Profile</span></li>
+								<li><span class="dropdown-item">Chat</span></li>
+								<li><span class="dropdown-item">Statistics</span></li>
+							</ul>
+						</li>
+					</ul>
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link" id="logout_btn" href="#logout">Log Out</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div id='pageContent'>
+		</div>
+
+		<script type="text/template" id="FormTemplate">
+			<a class="nav-link" id="LogInForm" href="#login">Log in</a>
+		</script>
+
+		<script type="text/template" id="HomePageTemplate">
+			<h4>HOME PAGE</h4>
+		</script>
+
+		<script type="text/template" id="TournamentPageTemplate">
+			<h4>TOURNAMENT PAGE</h4>
+		</script>
+
+		<script type="text/template" id="UserPageTemplate">
+			<div id='userForm'>
+			</div>
+			<div class="row justify-content-start" style="margin: 20px;">
+				<div class="col-1">Intra</div>
+				<div class="col-1">Nickname</div>
+				<div class="col-2">Date</div>
+			</div>
+			<div id='userDiv'>
+			</div>
+		</script>
+
+		<script type="text/template" id="UserTemplate">
+			<div class="row justify-content-start">
+				<div class="col-1"><%%= intra %></div>
+				<div class="col-1"><%%= nick %></div>
+				<div class="col-2"><%%= guild_join_time %></div>
+				<button type="button" class="btn btn-danger col-1" id="delete_user">Delete</button>
+			</div>
+		</script>
+	</div>
+
+    <% if user_signed_in? %>
+      <div class="container">
+      <%= render 'layouts/navbar' %>
+      <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+      <% end %>
+      </div>
+    <% end %>
+    <div data-behavior="devise-error-messages">
+    <%= render "devise/shared/error_messages", resource: resource %>
+    </div>
+    <div data-behavior="flashes">
+      <%= render partial: "layouts/flashes", local: { flash: flash } %>
+    </div>
+    <%= yield %>
+    <%= debug(params) if Rails.env.development? %>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  <!--
+  <%= javascript_pack_tag 'index' %>
+  -->
+  <%= javascript_pack_tag 'user' %>
+  <%= javascript_pack_tag 'app' %>
+</html>

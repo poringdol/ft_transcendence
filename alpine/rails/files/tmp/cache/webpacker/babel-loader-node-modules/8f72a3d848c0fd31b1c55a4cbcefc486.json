@@ -1,0 +1,1 @@
+{"ast":null,"code":"import _ from './underscore.js';\nimport './toPath.js'; // Internal wrapper for `_.toPath` to enable minification.\n// Similar to `cb` for `_.iteratee`.\n\nexport default function toPath(path) {\n  return _.toPath(path);\n}","map":null,"metadata":{},"sourceType":"module"}

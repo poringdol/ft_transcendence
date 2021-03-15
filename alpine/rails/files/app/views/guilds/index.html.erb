@@ -1,0 +1,72 @@
+<%= link_to "New guild", new_guild_path%>
+<% @guilds.each do |g| %>
+<p>
+  <strong>Name:</strong>
+  <%= g.name %>
+</p>
+<p>
+  <strong>Id:</strong>
+  <%= g.id %>
+</p>
+<p>
+  <strong>Anagram:</strong>
+  <%= g.anagram %>
+</p>
+<p>
+  <strong>owner:</strong>
+  <%= g.owner_id %>
+</p>
+<p>
+  <strong>members:</strong>
+  <% g.members.each do |members| %>
+    <%= members.nickname %>
+    <% if g.owner_id == current_user.id || g.officers.find_by(id: current_user.id)%>
+      <%= link_to "(remove)", guilds_delete_member_path(id: g.id, member_id: members.id), method: :post, remote: :true %>
+    <% end %>
+  <% end %>
+</p>
+<p>
+  <strong>officers::</strong>
+  <% g.officers.each do |officer| %>
+    <%= officer.nickname %>
+    <% if g.owner_id == current_user.id %>
+      <%= link_to "(remove)", guilds_delete_officer_path(id: g.id, officer_id: officer.id), method: :post, remote: :true %>
+    <% end %>
+  <% end %>
+</p>
+  <% unless current_user.guild_id? %>
+    <%= button_to "join", guilds_join_path, params: { id: g.id } %>
+  <% else %>
+      <% if g.owner_id == current_user.id %>
+        <%= form_with(url: "/guilds/add_officer", method: "post") do %>
+          <%= hidden_field_tag(:id, g.id) %>
+          <%= text_field_tag(:nickname) %>
+          <%= submit_tag('add') %>
+        <% end %>
+      <% end %>
+    <%= button_to "exit", guilds_exit_path, params: { id: g.id } %>
+  <% end %>
+<% end %>
+
+<% User.all.each do |e|%>
+<p>
+    <strong>email:</strong>
+    <%= e.email %>
+</p>
+<p>
+    <strong>ID:</strong>
+    <%= e.id %>
+</p>
+<p>
+    <strong>Uid:</strong>
+    <%= e.uid %>
+</p>
+<p>
+    <strong>Guild_id:</strong>
+    <%= e.guild_id %>
+</p>
+<p>
+    <strong>Nickname:</strong>
+    <%= e.nickname %>
+</p>
+<% end %>
