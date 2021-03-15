@@ -34,8 +34,15 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
 
       t.string        :provider
       t.string        :uid
-      t.string        :nickname, unique: true
+      t.string        :intra, unique: true, null: false
+      t.string        :nickname, unique: true, null: false
       t.references    :guild, default: 0
+
+      t.boolean       :is_online, default: false
+      t.integer       :scores, default: 0
+      t.integer       :wins, default: 0
+      t.integer       :loses, default: 0
+
       t.timestamps null: false
     end
 
