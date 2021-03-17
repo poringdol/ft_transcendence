@@ -10,11 +10,11 @@
   font-weight: bold;
 }
 
-.navbar-brand img {
-  height: 35px;
-  float: none;
-  margin-right: 7px;
-}
+// .navbar-brand img {
+//   height: 35px;
+//   float: none;
+//   margin-right: 7px;
+// }
 
 body {
   overflow-y: hidden;
@@ -22,6 +22,9 @@ body {
     display: none;
   }
   -ms-overflow-style: none;
+  box-sizing: border-box;
+  position:relative;
+  height: 100%;
 }
 
 .chat-room {
@@ -34,11 +37,11 @@ body {
     padding-top: 20px;
   }
 
-  .navbar {
-    border-bottom: 1px solid #eeeeee;
-    margin-left: -15px;
-    width: calc(100% + 30px);
-  }
+//   .navbar {
+//     border-bottom: 1px solid #eeeeee;
+//     margin-left: -15px;
+//     width: calc(100% + 30px);
+//   }
 
   .message {
     min-height: 59px;
@@ -131,4 +134,23 @@ body {
 
 .rooms-sidebar {
   border-right: 1px solid #eeeeee;
+}
+
+.custom-footer {
+	color: rgba(0, 0, 0, .55) !important;
+	background-color: rgba(248, 249, 250, 0.6);
+	position: relative;
+	padding-top: 3rem !important;
+	padding-bottom: 3rem !important;
+	bottom: 0;
+	height: 145px;
+	width: 100%;
+}
+
+.all_page {
+	min-height: calc(100vh - 145px);
+}
+
+.content {
+	margin: 20px;
 }
