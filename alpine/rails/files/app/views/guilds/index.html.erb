@@ -1,4 +1,7 @@
 <%= link_to "New guild", new_guild_path%>
+<div id="something">
+	hello
+</div>
 <% @guilds.each do |g| %>
 <p>
   <strong>Name:</strong>
@@ -70,3 +73,4 @@
     <%= e.nickname %>
 </p>
 <% end %>
+<%= javascript_pack_tag 'index' %>

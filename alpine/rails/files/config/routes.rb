@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :messages
   resources :rooms
+  resources :guilds
 
 
   get 'guilds/index'
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
   get '/user' => "profile#index", :as => :user_root
+  get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
   resources :guilds
 
 

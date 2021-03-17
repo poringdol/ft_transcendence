@@ -6,6 +6,10 @@ class GuildsController < ApplicationController
     @guilds = Guild.all
   end
 
+  def get_guilds
+    @guilds = Guild.all
+  end
+
   def new
     @guild = Guild.new
   end
