@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get 'guilds/index'
   post 'guilds/join'
+  post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'
+#   delete 'get_guilds/:id' => 'guilds#destroy'
   post 'guilds/exit'
   post 'guilds/add_officer'
   post 'guilds/delete_officer'

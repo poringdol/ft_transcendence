@@ -17,42 +17,6 @@
 </head>
 
 <body>
-		<div id='pageContent'>
-		</div>
-
-		<script type="text/template" id="FormTemplate">
-			<a class="nav-link" id="LogInForm" href="#login">Log in</a>
-		</script>
-
-		<script type="text/template" id="HomePageTemplate">
-			<h4>HOME PAGE</h4>
-		</script>
-
-		<script type="text/template" id="TournamentPageTemplate">
-			<h4>TOURNAMENT PAGE</h4>
-		</script>
-
-		<script type="text/template" id="UserPageTemplate">
-			<div id='userForm'>
-			</div>
-			<div class="row justify-content-start" style="margin: 20px;">
-				<div class="col-1">Intra</div>
-				<div class="col-1">Nickname</div>
-				<div class="col-2">Date</div>
-			</div>
-			<div id='userDiv'>
-			</div>
-		</script>
-
-		<script type="text/template" id="UserTemplate">
-			<div class="row justify-content-start">
-				<div class="col-1"><%%= intra %></div>
-				<div class="col-1"><%%= nick %></div>
-				<div class="col-2"><%%= guild_join_time %></div>
-				<button type="button" class="btn btn-danger col-1" id="delete_user">Delete</button>
-			</div>
-		</script>
-
 	<% if user_signed_in? %>
 		<div class="all_page">
 			<%= render 'layouts/navbar' %>
@@ -75,7 +39,7 @@
 	<% if user_signed_in? %>
 		<%= render 'layouts/footer' %>
 	<% end %>
-	<%= debug(params) if Rails.env.development? %>
+	<!-- <%= debug(params) if Rails.env.development? %> -->
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"

@@ -1,28 +1,52 @@
 class GuildsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :check_nickname, only: [:add_officer]
+  before_action :set_guild, only: [:destroy]
   before_action :check_guild, only: [:join, :exit, :add_officer, :delete_officer, :delete_member]
 
-  def index
+def index
     @guilds = Guild.all
+    respond_to do |format|
+      format.html { @guilds }
+      format.json { render json: @guilds }
+    end
   end
 
   def get_guilds
     @guilds = Guild.all
+
+	render json: @guilds
+  end
+
+  def destroy
+	# render json: @guild
+    @guild.destroy
   end
 
   def new
     @guild = Guild.new
   end
 
+  def create_new_guild
+	@guild = Guild.new(name: params[:name], anagram: params[:anagram], score: 0, owner_id: current_user.id)
+	if @guild.save
+      render json: @guild, status: :created, location: @guild
+    else
+      render json: @guild.errors, status: :unprocessable_entity
+    end
+  end
+
   def create
     @guild = Guild.new(name: params[:guild][:name], anagram: params[:guild][:anagram], score: 0, owner_id: current_user.id)
     respond_to do |format|
       unless @guild.save
-        format.html { redirect_to '/guilds/new', notice: @guild.errors.full_messages.join("; ") }
+        # format.html { redirect_to '/guilds', notice: @guild.errors.full_messages.join("; ") }
+		format.html { redirect_to '/guilds'}
+		render json: @guild.errors, status: :unprocessable_entity
       else
-        format.html { redirect_to '/guilds', notice: 'Kaef\'' }
-        member = GuildMember.new(user_id: current_user.id, guild_id: @guild.id)
-        member.save
+        format.html { redirect_to '/guilds'}
+        # member = GuildMember.new(user_id: current_user.id, guild_id: @guild.id)
+        # member.save
         current_user.guild_id = @guild.id
         current_user.save
       end
@@ -122,6 +146,11 @@ class GuildsController < ApplicationController
   end
 
   private
+
+  	def set_guild
+      @guild = Guild.find(params[:id])
+    end
+
     def guilds_params
       params.require(:guild).permit(:name, :anagram)
     end

@@ -17,11 +17,11 @@
 // }
 
 body {
-  overflow-y: hidden;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
+//   overflow-y: hidden;
+//   ::-webkit-scrollbar {
+//     display: none;
+//   }
+//   -ms-overflow-style: none;
   box-sizing: border-box;
   position:relative;
   height: 100%;
@@ -153,4 +153,9 @@ body {
 
 .content {
 	margin: 20px;
+}
+
+.GuildCard {
+	display: inline-block;
+	margin: 10px;
 }
