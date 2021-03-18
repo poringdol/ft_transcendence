@@ -1,4 +1,4 @@
-<%= link_to "New guild", new_guild_path%>
+<!-- <%= link_to "New guild", new_guild_path%> -->
 
 <!-- <h2>Create new guild</h2>
 <%= @guild = Guild.new %>
@@ -37,6 +37,8 @@
     </p>
   <% end %>-->
 
+<div id="AlertGuild">
+</div>
 <div id="GuildForm">
 </div>
 <div id="GuildsTemplate">
@@ -46,6 +48,15 @@
 <!--<script type="text/template" id="GuildFormTemplate">
 
 </script>-->
+
+<script type="text/template" id="AlertTemplate">
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	<strong>Holy guacamole!</strong> You should check in on some of those fields below.
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+	</div>
+</script>
 
 <script type="text/template" id="GuildTemplate">
 	<div class="card" style="width: 18rem;">

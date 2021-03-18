@@ -71,6 +71,7 @@ $(function () {
 
 	App.Views.NewGuild = Backbone.View.extend({
 		template: _.template($("#GuildFormTemplate").html()),
+		alertTemplate: _.template($("#AlertTemplate").html()),
 		initialize: function () {
 			this.$el.html(this.template)
 		},
@@ -87,17 +88,48 @@ $(function () {
 				anagram: $(e.currentTarget).find('input[id=guildFormAnagram]').val()
 			}
 			new_guild = new App.Models.Guild(guild);
-			new_guild.save()
-			.then(res => res.ok ? alert('ok') : Promise.reject(res))
-			.then(resp => {
-				console.log('then')
-				console.log(resp)
+
+			var promise = new_guild.save([], {
+				dataType: "text"
 			})
-			.catch(response => {
-				console.log('catch')
-				console.log(response)
-				this.collection.fetch()
-			})
+
+			$.when(promise).done(
+				_.bind(function (data) {
+    				alert('success');
+					this.collection.fetch()
+				}, this)
+			);
+
+			$.when(promise).fail(function (resp) {
+				alert(resp.responseText);
+			});
+
+
+			// new_guild.save({}, {
+			// 	dataType:"text",
+			// 	success: function (model, response) {
+			// 		alert("success");
+			// 		this.collection.fetch()
+			// 	},
+			// 	error: function (model, response) {
+			// 		alert("error");
+			// 	}
+			// });
+
+
+			// .success(response => {
+			// 	alert('success')
+			// })
+			// .then(res => res.ok ? alert('ok') : Promise.reject(res))
+			// .then(resp => {
+			// 	console.log('then')
+			// 	console.log(resp)
+			// })
+			// .catch(response => {
+			// 	console.log('catch')
+			// 	// console.log(response)
+			// 	this.collection.fetch()
+			// })
 			// new_guild.changedAttributes()
 			// this.collection.fetch()
 			// alert(new_guild.name + new_guild.owner_id)
