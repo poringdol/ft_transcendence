@@ -19,8 +19,8 @@ services:
       - postgresql
       - redis
     environment:
-      FT_ID: 611065ccd70b922fb3881e25d60a01a54b5fffac97fdad54a8e7182d6b5aa0c5
-      FT_SECRET: 3d717f3d4b9d2f2b18d0c125e5ad1daef1fc864df7ef1d69e31de147c6557210
+      FT_ID: 2e376979141eea6d9492afcff74cd7d261ed7cc1882e8003494cb9545630ab05
+      FT_SECRET: fe3cdf8b98f480569fc62775b197c9c8f4360e49eb375c5c6298a9c0fa8ab3ac
       REDIS_DB: 0
       REDIS_URL: redis://redis
       REDIS_PORT: 6379
