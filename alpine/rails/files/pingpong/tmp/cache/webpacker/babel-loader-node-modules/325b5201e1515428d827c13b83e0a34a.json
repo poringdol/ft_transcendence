@@ -1,0 +1,1 @@
+{"ast":null,"code":"import tagTester from './_tagTester.js';\nimport { isIE11 } from './_stringTagBug.js';\nimport { ie11fingerprint, weakMapMethods } from './_methodFingerprint.js';\nexport default isIE11 ? ie11fingerprint(weakMapMethods) : tagTester('WeakMap');","map":null,"metadata":{},"sourceType":"module"}

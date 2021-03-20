@@ -1,0 +1,5 @@
+<h2>Hi!</h2>
+<% if !user_signed_in? %>
+	<%= link_to "Log in", new_session_path(User.new) %>
+	<%= link_to "Sign up", new_registration_path(User.new) %>
+<% end %>
