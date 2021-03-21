@@ -18,9 +18,8 @@ Rails.application.routes.draw do
   get '/user' => "profile#index", :as => :user_root
   get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
   get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
+  post 'get_owner_nickname' => "guilds#get_owner_nickname", as: 'get_owner_nickname'
   resources :guilds
-
-
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do

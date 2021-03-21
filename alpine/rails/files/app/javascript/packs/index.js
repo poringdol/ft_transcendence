@@ -17,6 +17,7 @@ $(function () {
 			this.created_at = curr_guild.created_at;
 			this.updated_at = curr_guild.updated_at;
 		}
+		
 	});
 
 	App.Collections.Guild = Backbone.Collection.extend({
@@ -56,6 +57,7 @@ $(function () {
 				model: this.model,
 				user_id: this.user_id
 			})
+			console.log(this.model.owner_nickname)
 		}
 	})
 
@@ -73,18 +75,29 @@ $(function () {
 			this.$el.remove();
 		},
 		showCard: function () {
-			var template = this.templateCard(this.model);
-			this.$el.html(template);
-			$('#GuildCard').html(this.el);
-			if (this.user_id == this.model.owner_id)
-			{
-				new App.Views.GuildDelBtn({
-					model: this.model
-				})
-			}
-			else
-				$('#GuildDeleteBtn').html("");
-			
+			var promise = fetch("http://localhost:3000/get_owner_nickname", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(this.model)
+			})
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(function (owner) {
+				this.model.owner_nickname = owner.nickname
+				console.log(this.owner_nickname)
+				var template = this.templateCard(this.model);
+				this.$el.html(template);
+				$('#GuildCard').html(this.el);
+				if (this.user_id == this.model.owner_id) {
+					new App.Views.GuildDelBtn({
+						model: this.model
+					})
+				}
+				else
+					$('#GuildDeleteBtn').html("");
+			}, this))
 			return this;
 		}
 	})

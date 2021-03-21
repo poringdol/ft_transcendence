@@ -12,6 +12,11 @@ def index
     end
   end
 
+def get_owner_nickname
+	owner = User.all.find(params[:owner_id])
+	render json: owner
+end
+
 def get_curr_user
   render json: current_user.id
 end
@@ -26,7 +31,6 @@ end
     @guild.destroy
 	current_user.guild_id = 0
 	current_user.save
-	puts(current_user.guild_id)
   end
 
   def new
