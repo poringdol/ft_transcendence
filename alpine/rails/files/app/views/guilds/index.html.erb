@@ -1,70 +1,29 @@
-<!-- <%= link_to "New guild", new_guild_path%> -->
-
-<!-- <h2>Create new guild</h2>
-<%= @guild = Guild.new %>
-<%= form_for @guild do |form| %>
-	<div class="class row" style="margin: 20px">
-		<div class="col-3">
-			<form class="row">
-				<label for="guildFormName" class="visually-hidden"><%= form.label :name %></label>
-				<input placeholder="Intra login" type="text" class="form-control col" id="guildFormName" value=""> <%= form.text_field :name %>
-			</form>
-			<form class="row">
-				<label for="guildFormAnagram" class="visually-hidden">Email</label>
-				<input placeholder="Nickname" type="text" class="form-control col" id="guildFormAnagram" value="">
-			</form>
-			<form class="row">
-				<input type="submit" class="btn btn-outline-dark mb-3 col" value="create">
-			</form>
+<div class="row">
+	<% if current_user.guild_id? %>
+		<div id="GuildForm", style="display: none">
 		</div>
-	</div>
-
-    <p>
-      <%= form.label :name %><br>
-      <%= form.text_field :name %>
-      <% @guild.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </p>
-
-    <p>
-      <%= form.label :anagram %><br>
-      <%= form.text_field :anagram %>
-    </p>
-
-    <p>
-        <%= form.submit %>
-    </p>
-  <% end %>-->
-
-<div id="AlertGuild">
-</div>
-<% if current_user.guild_id? %>
-	<div id="GuildForm", style="display: none">
-	</div>
-<% else %>
-	<div id="GuildForm">
-	</div>
-<% end %>
-<div id="GuildsTemplate">
+	<% else %>
+		<div id="GuildForm">
+		</div>
+	<% end %>
 </div>
 
-<!--<script type="text/template" id="GuildFormTemplate">
+<div class="row">
+	<div class="col-2" id="GuildList">
+		<h3>Список гильдий</h3>
+	</div>
+	<div class="col-5" id="GuildCard"></div>
+	<div class="col-5" id="GuildContent"></div>
+</div>
 
-</script>-->
-
-<script type="text/template" id="AlertTemplate">
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	<strong>Holy guacamole!</strong> You should check in on some of those fields below.
-	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+<script type="text/template" id="GuildListTemplate">
+	<div id="GuildNameList">
+		<%%= name %>
 	</div>
 </script>
 
-<script type="text/template" id="GuildTemplate">
-	<div class="card" style="width: 18rem;">
-		<%# <img src="..." class="card-img-top" alt="..."> %>
+<script type="text/template" id="GuildCardTemplate">
+	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title"><%%= name %></h5>
 			<h6 class="card-subtitle mb-2 text-muted"><%%= anagram %></h6>
@@ -75,11 +34,14 @@
 			<li class="list-group-item">Score:  <%%= score %></li>
 			<li class="list-group-item">A third item</li>
 		</ul>
-		<div class="card-body">
-			<a class="card-link" id="delete_guild">Delete</a>
-			<a href="#" class="card-link">Another link</a>
+		<div class="card-body" id="GuildDeleteBtn">
 		</div>
 	</div>
+</script>
+
+<script type="text/template" id="GuildDelBtnTemplate">
+	<a class="card-link" id="delete_guild">Delete</a>
+	<a class="card-link">Leave</a>
 </script>
 
 <script type="text/template" id="GuildFormTemplate">
@@ -100,84 +62,4 @@
 	</div>
 </script>
 
-<!-- <script type="text/template" id="GuildTemplate">
-	<div class="row justify-content-start">
-		<div class="col-1"><%%= id %></div>
-		<div class="col-1"><%%= name %></div>
-		<div class="col-1"><%%= anagram %></div>
-		<div class="col-1"><%%= score %></div>
-		<button type="button" class="btn btn-danger col-1" id="delete_guild">Delete</button>
-	</div>
-</script>
-<% @guilds.each do |g| %>
-<p>
-	<strong>Name:</strong>
-	<%= g.name %>
-</p>
-<p>
-	<strong>Id:</strong>
-	<%= g.id %>
-</p>
-<p>
-	<strong>Anagram:</strong>
-	<%= g.anagram %>
-</p>
-<p>
-	<strong>owner:</strong>
-	<%= g.owner_id %>
-</p>
-<p>
-	<strong>members:</strong>
-	<% g.members.each do |members| %>
-	<%= members.nickname %>
-	<% if g.owner_id == current_user.id || g.officers.find_by(id: current_user.id)%>
-	<%= link_to "(remove)", guilds_delete_member_path(id: g.id, member_id: members.id), method: :post, remote: :true %>
-	<% end %>
-	<% end %>
-</p>
-<p>
-	<strong>officers::</strong>
-	<% g.officers.each do |officer| %>
-	<%= officer.nickname %>
-	<% if g.owner_id == current_user.id %>
-	<%= link_to "(remove)", guilds_delete_officer_path(id: g.id, officer_id: officer.id), method: :post, remote: :true %>
-	<% end %>
-	<% end %>
-</p>
-<% unless current_user.guild_id? %>
-<%= button_to "join", guilds_join_path, params: { id: g.id } %>
-<% else %>
-<% if g.owner_id == current_user.id %>
-<%= form_with(url: "/guilds/add_officer", method: "post") do %>
-<%= hidden_field_tag(:id, g.id) %>
-<%= text_field_tag(:nickname) %>
-<%= submit_tag('add') %>
-<% end %>
-<% end %>
-<%= button_to "exit", guilds_exit_path, params: { id: g.id } %>
-<% end %>
-<% end %>
-
-<% User.all.each do |e|%>
-<p>
-	<strong>email:</strong>
-	<%= e.email %>
-</p>
-<p>
-	<strong>ID:</strong>
-	<%= e.id %>
-</p>
-<p>
-	<strong>Uid:</strong>
-	<%= e.uid %>
-</p>
-<p>
-	<strong>Guild_id:</strong>
-	<%= e.guild_id %>
-</p>
-<p>
-	<strong>Nickname:</strong>
-	<%= e.nickname %>
-</p>
-<% end %> -->
 <%= javascript_pack_tag 'index' %>

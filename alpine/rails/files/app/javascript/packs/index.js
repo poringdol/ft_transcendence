@@ -26,62 +26,119 @@ $(function () {
 			this.fetch();
 		}
 	});
+	
+	App.Views.GuildList = Backbone.View.extend({
+		tagName: 'a',
+		className: 'list-group-item list-group-item-action',
 
-	App.Views.Guild = Backbone.View.extend({
-		tagName: 'span',
-		className: 'GuildCard',
-		template: _.template($("#GuildTemplate").html()),
-		initialize: function () {
+		templateList: _.template($("#GuildListTemplate").html()),
+
+		initialize: function (data) {
+			this.model = data.model;
+			this.user_id = data.user_id;
+
 			this.model.on('destroy', this.remove, this);
 		},
 		events: {
-			'click #delete_guild': 'delete_guild'
+			'click #GuildNameList' : 'showCard'
 		},
 		render: function () {
-			var template = this.template(this.model);
-			// this.$el.css({ 'display': "inline-block", 'margin': '10px' });
+			this.$el.attr({'data-bs-toggle': "list"});
+			var template = this.templateList(this.model);
 			this.$el.append(template);
 			return this;
 		},
 		remove: function () {
 			this.$el.remove();
-			// form.render();
 		},
-		delete_guild: function () {
+		showCard: function () {
+			new App.Views.GuildCard({
+				model: this.model,
+				user_id: this.user_id
+			})
+		}
+	})
 
+	App.Views.GuildCard = Backbone.View.extend({
+		
+		templateCard: _.template($("#GuildCardTemplate").html()),
+		
+		initialize: function (data) {
+			this.model = data.model;
+			this.user_id = data.user_id;
+			this.model.on('destroy', this.remove, this);
+			this.showCard();
+		},
+		remove: function () {
+			this.$el.remove();
+		},
+		showCard: function () {
+			var template = this.templateCard(this.model);
+			this.$el.html(template);
+			$('#GuildCard').html(this.el);
+			if (this.user_id == this.model.owner_id)
+			{
+				new App.Views.GuildDelBtn({
+					model: this.model
+				})
+			}
+			else
+				$('#GuildDeleteBtn').html("");
+			
+			return this;
+		}
+	})
+
+	App.Views.GuildDelBtn = Backbone.View.extend({
+
+		templateDeleteBtn: _.template($("#GuildDelBtnTemplate").html()),
+
+		events: {
+			'click #delete_guild': 'delete_guild',
+		},
+
+		initialize: function () {
+			this.$el.html(this.templateDeleteBtn);
+			$('#GuildDeleteBtn').html(this.el);
+		},
+
+		delete_guild: function () {
+			alert("DELETE");
 			var promise = this.model.destroy([], {
 				dataType: "text"
 			})
-
+			
 			$.when(promise).done(
 				_.bind(function (data) {
 					$('#GuildForm').css({ "display": "block" });
 				}, this)
 			);
-		}
+		},
 	})
 
 	App.Views.Guilds = Backbone.View.extend({
-		initialize: function () {
+		className: 'list-group',
+		initialize: function (data) {
+			this.collection = data.collection;
+			this.user_id = data.user_id;
+
 			this.collection.on('add', this.addOne, this);
 			this.collection.on('change', this.addOne, this);
 			this.render();
 		},
 		render: function () {
 			this.collection.each(this.addOne, this);
-			$('#GuildsTemplate').append(this.el);
+			$('#GuildList').append(this.el);
 			return this;
 		},
 		addOne: function (guild) {
-			console.log(guild.name);
-			var guildView = new App.Views.Guild({ model: guild });
+			var guildView = new App.Views.GuildList({ model: guild, user_id: this.user_id });
 			this.$el.append(guildView.render().el);
 		}
 	});
 
 	App.Views.NewGuild = Backbone.View.extend({
 		template: _.template($("#GuildFormTemplate").html()),
-		alertTemplate: _.template($("#AlertTemplate").html()),
 		// initialize: function () {
 		// 	this.$el.html(this.template)
 		// },
@@ -115,61 +172,15 @@ $(function () {
 			$.when(promise).fail(function (resp) {
 				alert(resp.responseText);
 			});
-
-
-			// new_guild.save({}, {
-			// 	dataType:"text",
-			// 	success: function (model, response) {
-			// 		alert("success");
-			// 		this.collection.fetch()
-			// 	},
-			// 	error: function (model, response) {
-			// 		alert("error");
-			// 	}
-			// });
-
-
-			// .success(response => {
-			// 	alert('success')
-			// })
-			// .then(res => res.ok ? alert('ok') : Promise.reject(res))
-			// .then(resp => {
-			// 	console.log('then')
-			// 	console.log(resp)
-			// })
-			// .catch(response => {
-			// 	console.log('catch')
-			// 	// console.log(response)
-			// 	this.collection.fetch()
-			// })
-			// new_guild.changedAttributes()
-			// this.collection.fetch()
-			// alert(new_guild.name + new_guild.owner_id)
-			// new_guild.sync()
-			// alert(new_guild.name + new_guild.owner_id)
-			// fetch("http://localhost:3000/create_new_guild", {
-			// 	method: "POST",
-			// 	headers: {
-			// 		'Accept': 'application/json',
-			// 		'Content-Type': 'application/json'
-			// 	},
-			// 	body: JSON.stringify(guild)
-			// })
-			// .then(res => res.ok ? res.json() : Promise.reject(res))
-			// .then(user => {
-			// 	new_guild = new App.Models.Guild(guild);
-			// 	this.collection.add(new_user);
-			// })
-			// .catch(() => {
-			// 	alert('Error! Unable to create guild!')
-			// })
 		},
 
 	})
-
-	col = new App.Collections.Guild();
-	form = new App.Views.NewGuild({ collection: col });
-	form.render();
-	guilds_view = new App.Views.Guilds({ collection: col});
-	
+	fetch("http://localhost:3000/get_curr_user")
+	.then(res => res.ok ? res.json() : Promise.reject(res))
+	.then(function(curr_user_id) {
+		col = new App.Collections.Guild();
+		form = new App.Views.NewGuild({ collection: col });
+		form.render();
+		guilds_view = new App.Views.Guilds( {collection: col, user_id: curr_user_id} );
+	})	
 }());
