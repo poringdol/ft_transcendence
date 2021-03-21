@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get '/user' => "profile#index", :as => :user_root
   get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
-  get 'show_all_users' => "guilds#show_all_users", as: 'show_all_users'
+  get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
   resources :guilds
 
 
