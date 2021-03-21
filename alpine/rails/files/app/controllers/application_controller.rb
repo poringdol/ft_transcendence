@@ -6,6 +6,11 @@ class ApplicationController < ActionController::Base
 
     def all_users
         all_users = User.all
+
+		# respond_to do |format|
+      	# 	format.html { @all_users }
+      	# 	format.json { render json: @all_users }
+    	# end
     end
 
     

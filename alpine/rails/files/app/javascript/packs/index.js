@@ -45,9 +45,19 @@ $(function () {
 		},
 		remove: function () {
 			this.$el.remove();
+			// form.render();
 		},
 		delete_guild: function () {
-			this.model.destroy();
+
+			var promise = this.model.destroy([], {
+				dataType: "text"
+			})
+
+			$.when(promise).done(
+				_.bind(function (data) {
+					$('#GuildForm').css({ "display": "block" });
+				}, this)
+			);
 		}
 	})
 
@@ -72,13 +82,14 @@ $(function () {
 	App.Views.NewGuild = Backbone.View.extend({
 		template: _.template($("#GuildFormTemplate").html()),
 		alertTemplate: _.template($("#AlertTemplate").html()),
-		initialize: function () {
-			this.$el.html(this.template)
-		},
+		// initialize: function () {
+		// 	this.$el.html(this.template)
+		// },
 		events: {
 			'submit': 'submit'
 		},
 		render: function () {
+			this.$el.html(this.template) 
 			$('#GuildForm').html(this.el);
 		},
 		submit: function (e) {
@@ -97,6 +108,7 @@ $(function () {
 				_.bind(function (data) {
     				alert('success');
 					this.collection.fetch()
+					$('#GuildForm').css({ "display": "none" });
 				}, this)
 			);
 
@@ -156,7 +168,8 @@ $(function () {
 	})
 
 	col = new App.Collections.Guild();
-	new App.Views.Guilds({ collection: col });
 	form = new App.Views.NewGuild({ collection: col });
 	form.render();
+	guilds_view = new App.Views.Guilds({ collection: col});
+	
 }());

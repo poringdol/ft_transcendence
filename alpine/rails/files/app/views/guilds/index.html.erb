@@ -39,10 +39,14 @@
 
 <div id="AlertGuild">
 </div>
-<div id="GuildForm">
-</div>
+<% if current_user.guild_id? %>
+	<div id="GuildForm", style="display: none">
+	</div>
+<% else %>
+	<div id="GuildForm">
+	</div>
+<% end %>
 <div id="GuildsTemplate">
-
 </div>
 
 <!--<script type="text/template" id="GuildFormTemplate">

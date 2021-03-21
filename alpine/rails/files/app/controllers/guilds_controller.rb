@@ -12,6 +12,15 @@ def index
     end
   end
 
+def show_all_users
+    @all_users = current_user
+
+	respond_to do |format|
+    	format.html { @all_users }
+      	format.json { render json: @all_users }
+    end
+end
+
   def get_guilds
     @guilds = Guild.all
 
@@ -19,8 +28,11 @@ def index
   end
 
   def destroy
-	# render json: @guild
     @guild.destroy
+	puts('HELLOOOOOOOOOOOOOOOOOOOOOOOOOO')
+	current_user.guild_id = 0
+	current_user.save
+	puts(current_user.guild_id)
   end
 
   def new
