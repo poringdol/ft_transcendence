@@ -9,9 +9,10 @@
 </div>
 
 <div class="row">
-	<div class="col-3" id="GuildList">
-		<h3>Список гильдий</h3>
-	</div>
+<h3 class="col-3">Guilds list</h3>
+</div>
+<div class="row">
+	<div class="col-3" id="GuildList"></div>
 	<div class="col-5" id="GuildCard"></div>
 	<div class="col-4" id="GuildContent"></div>
 </div>
@@ -34,14 +35,21 @@
 			<li class="list-group-item">Score:  <%%= score %></li>
 			<li class="list-group-item" id="GuildCardMembers">Members</li>
 		</ul>
-		<div class="card-body" id="GuildDeleteBtn">
+		<div id="GuildCardBtn" class="card-body">
 		</div>
 	</div>
 </script>
 
 <script type="text/template" id="GuildDelBtnTemplate">
-	<a class="card-link" id="delete_guild">Delete</a>
-	<a class="card-link">Leave</a>
+	<a class="card-link" id="DelGuildBtn">Delete</a>
+</script>
+
+<script type="text/template" id="GuildLeaveBtnTemplate">
+	<a class="card-link" id="LeaveGuildBtn">Leave</a>
+</script>
+
+<script type="text/template" id="GuildJoinBtnTemplate">
+	<a class="card-link" id="JoinGuildBtn">Join</a>
 </script>
 
 <script type="text/template" id="GuildFormTemplate">

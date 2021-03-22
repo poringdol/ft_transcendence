@@ -12,13 +12,32 @@ def index
     end
   end
 
+def otladka
+	@guild_ms = GuildMember.all
+	for guild_m in @guild_ms
+		guild_m.destroy
+	end
+	@guilds = Guild.all
+	for guild in @guilds
+		guild.destroy
+	end
+	@users = User.all
+	for user in @users
+		user.guild_id = 0
+		user.save
+	end
+	respond_to do |format|
+		format.json { render json: @users }
+    end
+end
+
 def get_owner_nickname
 	owner = User.all.find(params[:owner_id])
 	render json: owner
 end
 
 def get_curr_user
-  render json: current_user.id
+  render json: current_user
 end
 
   def get_guilds
@@ -56,8 +75,9 @@ end
 		# render json: @guild.errors, status: :unprocessable_entity
       else
         format.html { render json: @guild, status: :created, location: @guild}
-        # member = GuildMember.new(user_id: current_user.id, guild_id: @guild.id)
-        # member.save
+        member = GuildMember.new(user_id: current_user.id, guild_id: @guild.id)
+        member.save
+
         current_user.guild_id = @guild.id
         current_user.save
 		# render json: @guild
@@ -77,7 +97,7 @@ end
       member.save
       current_user.guild_id = guild.id
       current_user.save
-      redirect_and_responce("Success")
+	  render json: 0
     end
   end
 
@@ -87,15 +107,21 @@ end
     else
       member = GuildMember.all.find_by(user_id: current_user.id)
       if member
-        member.delete
+        member.destroy
       end
       guild = Guild.all.find(current_user.guild_id)
-      unless GuildMember.all.find_by(guild_id: guild.id)
+	  guild_members = GuildMember.all.find_by(guild_id: guild.id)
+      unless guild_members
         guild.destroy
+	  else
+		if current_user.id == guild.owner_id
+			guild.owner_id = guild_members.user_id
+			guild.save
+		end
       end 
       current_user.guild_id = 0
       current_user.save
-      redirect_and_responce("Success")
+      render json: 0
     end
   end
 
@@ -174,6 +200,7 @@ end
     def redirect_and_responce(responce)
       respond_to do |f|
         f.html { redirect_to '/guilds', notice: responce }
+		f.json { render json: responce }
       end
     end
 

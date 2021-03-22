@@ -32,10 +32,10 @@
     },
     "index": {
       "js": [
-        "/packs/js/index-1960d24687d488485891.js"
+        "/packs/js/index-e8a73dcd8141e1992911.js"
       ],
       "js.map": [
-        "/packs/js/index-1960d24687d488485891.js.map"
+        "/packs/js/index-e8a73dcd8141e1992911.js.map"
       ]
     },
     "test": {
@@ -55,8 +55,8 @@
       ]
     }
   },
-  "index.js": "/packs/js/index-1960d24687d488485891.js",
-  "index.js.map": "/packs/js/index-1960d24687d488485891.js.map",
+  "index.js": "/packs/js/index-e8a73dcd8141e1992911.js",
+  "index.js.map": "/packs/js/index-e8a73dcd8141e1992911.js.map",
   "test.js": "/packs/js/test-024510c200f07fceb172.js",
   "test.js.map": "/packs/js/test-024510c200f07fceb172.js.map",
   "user.js": "/packs/js/user-0c46ad64a5c1946ee463.js",

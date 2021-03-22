@@ -31,7 +31,6 @@ $(function () {
 	App.Views.GuildList = Backbone.View.extend({
 		tagName: 'a',
 		className: 'list-group-item list-group-item-action',
-
 		templateList: _.template($("#GuildListTemplate").html()),
 
 		initialize: function (data) {
@@ -53,28 +52,25 @@ $(function () {
 			this.$el.remove();
 		},
 		showCard: function () {
-			new App.Views.GuildCard({
-				model: this.model,
-				user_id: this.user_id
-			})
-			console.log(this.model.owner_nickname)
+			new App.Views.GuildCard({ model: this.model, user_id: this.user_id })
 		}
 	})
 
 	App.Views.GuildCard = Backbone.View.extend({
-		
 		templateCard: _.template($("#GuildCardTemplate").html()),
-		
+
 		initialize: function (data) {
-			this.model = data.model;
+			this.model	 = data.model;
 			this.user_id = data.user_id;
+
 			this.model.on('destroy', this.remove, this);
-			this.showCard();
+
+			this.render();
 		},
 		remove: function () {
 			this.$el.remove();
 		},
-		showCard: function () {
+		render: function () {
 			var promise = fetch("http://localhost:3000/get_owner_nickname", {
 				method: "POST",
 				headers: {
@@ -84,49 +80,95 @@ $(function () {
 				body: JSON.stringify(this.model)
 			})
 			.then(res => res.ok ? res.json() : Promise.reject(res))
-			.then(_.bind(function (owner) {
-				this.model.owner_nickname = owner.nickname
-				console.log(this.owner_nickname)
-				var template = this.templateCard(this.model);
-				this.$el.html(template);
-				$('#GuildCard').html(this.el);
-				if (this.user_id == this.model.owner_id) {
-					new App.Views.GuildDelBtn({
-						model: this.model
-					})
-				}
-				else
-					$('#GuildDeleteBtn').html("");
-			}, this))
+			.then(_.bind(owner => this.renderCard(owner), this))
 			return this;
+		},
+		renderCard: function (owner) {
+			this.model.owner_nickname = owner.nickname;
+			var template = this.templateCard(this.model);
+			this.$el.html(template);
+			$('#GuildCard').html(this.el);
+			this.renderButtons();
+		},
+		renderButtons: function () {
+			new App.Views.GuildCardBtn({ model: this.model })
 		}
 	})
 
-	App.Views.GuildDelBtn = Backbone.View.extend({
-
+	App.Views.GuildCardBtn = Backbone.View.extend({
 		templateDeleteBtn: _.template($("#GuildDelBtnTemplate").html()),
-
-		events: {
-			'click #delete_guild': 'delete_guild',
-		},
-
+		templateJoinBtn:   _.template($("#GuildJoinBtnTemplate").html()),
+		templateLeaveBtn:  _.template($("#GuildLeaveBtnTemplate").html()),
 		initialize: function () {
-			this.$el.html(this.templateDeleteBtn);
-			$('#GuildDeleteBtn').html(this.el);
+			this.render()
+			console.log('here' + curr_user.guild_id)
 		},
-
-		delete_guild: function () {
+		render: function () {
+			if (curr_user.id == this.model.owner_id) {
+				this.$el.html(this.templateDeleteBtn)
+				this.$el.append(this.templateLeaveBtn)
+			}
+			else if (curr_user.guild_id == 0)
+				this.$el.html(this.templateJoinBtn)
+			else if (curr_user.guild_id == this.model.id)
+				this.$el.html(this.templateLeaveBtn)
+			else
+				this.$el.html("")
+			$('#GuildCardBtn').html(this.el);
+		},
+		events: {
+			'click #DelGuildBtn':  'deleteGuild',
+			'click #JoinGuildBtn': 'joinGuild',
+			'click #LeaveGuildBtn': 'leaveGuild',
+		},
+		deleteGuild: function () {
 			alert("DELETE");
 			var promise = this.model.destroy([], {
 				dataType: "text"
 			})
-			
 			$.when(promise).done(
-				_.bind(function (data) {
-					$('#GuildForm').css({ "display": "block" });
+				_.bind(function () {
+					$('#GuildForm').css({ "display": "block" })
 				}, this)
 			);
+			curr_user.guild_id = 0
 		},
+		joinGuild: function () {
+			var promise = fetch("http://localhost:3000/guilds/join", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(this.model)
+			})
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(() => {
+				alert('You joined guild ' + this.model.name + '!');
+				curr_user.guild_id = this.model.id;
+				this.render();
+				$('#GuildForm').css({ "display": "none" });
+			}, this))
+			return this;
+		},
+		leaveGuild: function () {
+			var promise = fetch("http://localhost:3000/guilds/exit", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(this.model)
+			})
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(() => {
+				alert('You left guild ' + this.model.name + '!');
+				curr_user.guild_id = 0;
+				this.render();
+				$('#GuildForm').css({ "display": "block" });
+			}, this))
+			return this;
+		}
 	})
 
 	App.Views.Guilds = Backbone.View.extend({
@@ -152,9 +194,6 @@ $(function () {
 
 	App.Views.NewGuild = Backbone.View.extend({
 		template: _.template($("#GuildFormTemplate").html()),
-		// initialize: function () {
-		// 	this.$el.html(this.template)
-		// },
 		events: {
 			'submit': 'submit'
 		},
@@ -179,6 +218,9 @@ $(function () {
     				alert('success');
 					this.collection.fetch()
 					$('#GuildForm').css({ "display": "none" });
+					$('#GuildCard').html("");
+					$('#GuildContent').html("");
+					curr_user.guild_id = new_guild.id
 				}, this)
 			);
 
@@ -190,10 +232,11 @@ $(function () {
 	})
 	fetch("http://localhost:3000/get_curr_user")
 	.then(res => res.ok ? res.json() : Promise.reject(res))
-	.then(function(curr_user_id) {
+	.then(function(curr_user) {
+		window.curr_user = curr_user;
 		col = new App.Collections.Guild();
 		form = new App.Views.NewGuild({ collection: col });
 		form.render();
-		guilds_view = new App.Views.Guilds( {collection: col, user_id: curr_user_id} );
+		guilds_view = new App.Views.Guilds( {collection: col, user_id: curr_user.id} );
 	})	
 }());
