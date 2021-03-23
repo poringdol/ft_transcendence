@@ -1,23 +1,32 @@
 FROM ruby:2.7.2-alpine3.13
 
 #install requariments
-RUN apk update && apk upgrade
-RUN apk add build-base libpq postgresql-dev tzdata npm git
-
-#install yarn
-RUN apk add yarn
+RUN apk update && \
+	apk upgrade && \
+	apk add build-base \
+			git \
+			libpq \
+			npm \
+			postgresql-dev \
+			tzdata \
+			yarn \
+	&& rm -rf /var/lib/apt/lists/*
 
 #install rails
-RUN gem install rails
-RUN gem install bundler
-RUN gem update bundler
+RUN gem install rails && \
+	gem install bundler && \
+	gem update bundler
 
 #setup
 WORKDIR /pingpong
 COPY ./files /pingpong
-RUN bundle install
-RUN yarn install --check-files
-RUN yarn add jquery backbone underscore bootstrap
+RUN bundle install && \
+	yarn install --check-files && \
+	yarn add jquery \ 
+			 backbone \ 
+			 underscore \
+			 bootstrap
+
 RUN chmod +x start.sh
 
 ENTRYPOINT ["/pingpong/start.sh"]
