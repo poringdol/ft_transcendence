@@ -91,10 +91,7 @@ class GuildsController < ApplicationController
         # render json: @guild.errors, status: :unprocessable_entity
       else
         format.html { render json: @guild, status: :created, location: @guild}
-        member = GuildMember.new(user_id: current_user.id, guild_id: @guild.id)
-        member.save
-
-        current_user.guild_id = @guild.id
+        # current_user.guild_id = @guild.id
         current_user.save
 		    # render json: @guild
       end

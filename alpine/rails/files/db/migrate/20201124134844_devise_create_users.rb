@@ -5,6 +5,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
     create_table :users do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
+      t.string :nickname, unique: true
+      t.references :guild, default: 0
       t.string :encrypted_password, null: false, default: ""
 
       ## Recoverable
@@ -34,14 +36,11 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
 
       t.string        :provider
       t.string        :uid
-      t.string        :nickname, unique: true
-      t.references    :guild, default: 0
 
-      t.string       :intra, default: ""
       t.boolean       :is_online, default: false
-      t.integer      :loses, default: 0
-      t.integer      :wins, default: 0
-      t.integer      :score, default: 0
+      t.integer       :loses, default: 0
+      t.integer       :wins, default: 0
+      t.integer       :score, default: 0
 
       t.timestamps null: false
     end
