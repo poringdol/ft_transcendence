@@ -1,1 +1,0 @@
-{"ast":null,"code":"import _ from './underscore.js';\nimport isArray from './isArray.js'; // Normalize a (deep) property `path` to array.\n// Like `_.iteratee`, this function can be customized.\n\nexport default function toPath(path) {\n  return isArray(path) ? path : [path];\n}\n_.toPath = toPath;","map":null,"metadata":{},"sourceType":"module"}

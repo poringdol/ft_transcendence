@@ -1,1 +1,0 @@
-{"ast":null,"code":"import noop from './noop.js';\nimport get from './get.js'; // Generates a function for a given object that returns a given property.\n\nexport default function propertyOf(obj) {\n  if (obj == null) return noop;\n  return function (path) {\n    return get(obj, path);\n  };\n}","map":null,"metadata":{},"sourceType":"module"}
