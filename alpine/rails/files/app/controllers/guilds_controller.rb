@@ -1,13 +1,13 @@
 class GuildsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_nickname, only: [:add_officer]
-  before_action :set_guild, only: [:destroy]
+  before_action :set_guild, only: [:destroy, :update]
   before_action :check_guild, only: [:join, :exit, :add_officer, :delete_officer, :delete_member]
 
 
   def index
 
-    @guilds = Guild.all
+    @guilds = Guild.order(:score).reverse
 
     respond_to do |format|
       format.html { @guilds }
@@ -39,6 +39,13 @@ class GuildsController < ApplicationController
     end
   end
 
+  def otladka_guilds
+	@guilds = Guild.all
+	respond_to do |format|
+		format.json { render json: @guilds }
+    end
+end
+
 
   def get_owner_nickname
     owner = User.all.find(params[:owner_id])
@@ -50,6 +57,12 @@ class GuildsController < ApplicationController
     render json: current_user
   end
 
+
+  def get_guild_users
+	guild_users = User.select(:nickname).where(guild_id: params[:id])
+	# guild_users = User.all.where(guild_id: params[:id])
+	render json: guild_users
+  end
 
   def get_guilds
     @guilds = Guild.all
@@ -102,6 +115,9 @@ class GuildsController < ApplicationController
   def show
   end
 
+  def update
+	@guild.save
+  end
 
   def join
 
@@ -119,30 +135,28 @@ class GuildsController < ApplicationController
 
 
   def exit
-
     unless current_user.guild_id?
       redirect_and_responce("You not in guild")
     else
-      member = GuildMember.all.find_by(user_id: current_user.id)
-      if member
-        member.destroy
-      end
-
-      guild = Guild.all.find(current_user.guild_id)
-	    guild_members = GuildMember.all.find_by(guild_id: guild.id)
-
+	  guild_id = current_user.guild_id
+	  current_user.guild_id = 0
+	  current_user.save
+      guild = Guild.all.find(guild_id)
+	  guild_members = User.all.find_by(guild_id: guild_id)
       unless guild_members
         guild.destroy
-	    else
-        if current_user.id == guild.owner_id
-          guild.owner_id = guild_members.user_id
-          guild.save
-        end
-      end 
-
-      current_user.guild_id = 0
-      current_user.save
-      render json: 0
+	  else
+		if current_user.id == guild.owner_id
+			guild.owner_id = guild_members.id
+			guild.save
+		end
+      end
+	  if guild_members
+		new_owner = User.all.find(guild.owner_id)
+		render json: new_owner
+	  else
+		render json: 0
+	  end
     end
   end
 

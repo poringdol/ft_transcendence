@@ -18,8 +18,13 @@
 </div>
 
 <script type="text/template" id="GuildListTemplate">
-	<div id="GuildNameList">
+	<div id="GuildNameList" style="padding: 10px">
 		<%%= name %>
+</script>
+
+<script type="text/template" id="GuildUserListTemplate">
+	<div id="GuildUserList">
+		<%%= nickname %>
 	</div>
 </script>
 
@@ -31,9 +36,9 @@
 			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 		</div>
 		<ul class="list-group list-group-flush">
-			<li class="list-group-item">Owner: <%%= owner_nickname %></li>
+			<li class="list-group-item" id ="GuildCardOwner">Owner: <%%= owner_nickname %></li>
 			<li class="list-group-item">Score:  <%%= score %></li>
-			<li class="list-group-item" id="GuildCardMembers">Members</li>
+			<li class="list-group-item list-group-item-action" id="GuildCardMembers" data-bs-toggle="list">Members</li>
 		</ul>
 		<div id="GuildCardBtn" class="card-body">
 		</div>

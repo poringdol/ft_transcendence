@@ -162,3 +162,10 @@ body {
 .GuildButton {
   margin: 5px;
 }
+
+.list-group-item.active {
+	z-index: 2;
+	color: #fff;
+	background-color: #82a4d7;
+	border-color: #82a4d7;
+}

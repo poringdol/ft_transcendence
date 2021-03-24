@@ -6,8 +6,11 @@ Rails.application.routes.draw do
 
   get 'guilds/index'
   get 'otladka' => "guilds#otladka", as: 'otladka'
+  get '/get_guild_users/:id', to: 'guilds#get_guild_users'
   post 'guilds/join'
   post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'
+  get 'otladka_guilds' => "guilds#otladka_guilds", as: 'otladka_guilds'
+#   post 'get_guild_users' => 'guilds#get_guild_users', as: 'get_guild_users'
 #   delete 'get_guilds/:id' => 'guilds#destroy'
   post 'guilds/exit'
   post 'guilds/add_officer'
