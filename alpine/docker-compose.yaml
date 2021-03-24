@@ -1,18 +1,10 @@
 version: "3.8"
 services:
-  postgresql:
-    image: postgres:12.1
-    volumes:
-      - "db:/var/lib/postgresql/data"
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: pingpong_development
-      POSTGRES_HOST_AUTH_METHOD: trust
   rails:
     build: ./rails/.
     restart: always
+    # volumes: # волюм для работы сразу в директории
+    #   - ./rails/files:/pingpong/
     ports:
       - "3000:3000"
     depends_on:
@@ -24,12 +16,27 @@ services:
       REDIS_DB: 0
       REDIS_URL: redis://redis
       REDIS_PORT: 6379
+
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+
+  postgresql:
+    image: postgres:12.1
+    volumes:
+      - "db:/var/lib/postgresql/data"
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: pingpong_development
+      POSTGRES_HOST_AUTH_METHOD: trust
+
   pgadmin:
     image: dpage/pgadmin4
+    volumes:
+      - ./pgadminserver.json:/pgadmin4/servers.json
     environment:
       PGADMIN_DEFAULT_EMAIL: sashe@bk.ru
       PGADMIN_DEFAULT_PASSWORD: password
@@ -39,5 +46,6 @@ services:
     depends_on:
       - postgresql
     restart: always
+
 volumes:
   db:
