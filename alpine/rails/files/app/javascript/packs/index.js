@@ -124,7 +124,7 @@ $(function () {
 			var template = this.templateList(this.model);
 			this.$el.css({ "padding": "0px" })
 			if (curr_user.guild_id == this.model.id)
-				this.$el.css({ "color": "#99bd37" })
+				this.$el.attr({'id': "usersguild"});
 			this.$el.append(template);
 			return this;
 		},
@@ -153,7 +153,9 @@ $(function () {
 			this.render();
 		},
 		events: {
-			'click #GuildCardMembers':  'renderUserList',
+			'click #GuildCardMembers': 	'renderMemberList',
+			'click #GuildCardOfficers': 'renderOfficerList',
+			'click #GuildCardWars':		'renderWarList'
 		},
 		remove: function () {
 			this.$el.remove();
@@ -181,9 +183,15 @@ $(function () {
 		renderButtons: function () {
 			new App.Views.GuildCardBtn({ model: this.model, view: this})
 		},
-		renderUserList: function () {
+		renderMemberList: function () {
 			col = new App.Collections.GuildUsers({ guild: this.model.id })
 			new App.Views.GuildUsers({ collection: col })
+		},
+		renderOfficerList: function () {
+			$('#GuildContent').html("");
+		},
+		renderWarList: function () {
+			$('#GuildContent').html("");
 		}
 	})
 

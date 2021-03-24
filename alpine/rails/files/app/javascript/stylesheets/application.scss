@@ -169,3 +169,32 @@ body {
 	background-color: #82a4d7;
 	border-color: #82a4d7;
 }
+
+#usersguild.list-group-item {
+	background-color: #d9d9d954;
+}
+
+#usersguild.list-group-item.active {
+	z-index: 2;
+	color: #fff;
+	background-color: #82a4d7;
+	border-color: #82a4d7;
+}
+
+.btn-guild {
+	background-color: #82a4d750;
+}
+
+.btn-guild.active {
+	background-color: #82a4d786;
+}
+
+#GuildCard.badge {
+	color: #00000063;
+	font-weight: 100;
+	font-size: 0.95em;
+}
+
+#GuildCard.bg-primary {
+	background-color: #0d6dfd00 !important;
+}
