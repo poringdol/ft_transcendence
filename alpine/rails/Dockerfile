@@ -25,7 +25,8 @@ RUN bundle install && \
 	yarn add jquery \ 
 			 backbone \ 
 			 underscore \
-			 bootstrap
+			 bootstrap@next \
+			 @popperjs/core
 
 RUN chmod +x start.sh
 

@@ -2,12 +2,16 @@ class User < ApplicationRecord
   
   validates :nickname, presence: true, uniqueness: true
 
-  # callback-функции. Будут исполняться после наступления определенного события 
+  belongs_to :guild, optional: true
+  # has_many :
+
   after_create {
     if guild_id > 0
       GuildMember.create(user_id: id, guild_id: guild_id)
     end
   } # User.create()
+
+  # callback-функции. Будут исполняться после наступления определенного события 
   # after_initialize { код } # User.new()
   # after_save {} # User.save(), User.create()
   # after_update {} # User.update(), User.save()
