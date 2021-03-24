@@ -20,7 +20,8 @@ RUN gem install rails && \
 #setup
 WORKDIR /pingpong
 COPY ./files /pingpong
-RUN bundle install && \
+RUN bundle update && \
+	bundle install && \
 	yarn install --check-files && \
 	yarn add jquery \ 
 			 backbone \ 
