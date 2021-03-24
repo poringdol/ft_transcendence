@@ -2,20 +2,24 @@ class User < ApplicationRecord
   
   validates :nickname, presence: true, uniqueness: true
 
-  belongs_to :guild, optional: true
-  # has_many :
+  # belongs_to :guild_id, class_name: 'Guild', foreign_key: 'id', optional: true
 
   after_create {
-    if guild_id > 0
+    unless guild_id.nil? || guild_id == 0
       GuildMember.create(user_id: id, guild_id: guild_id)
     end
   } # User.create()
 
+  # after_update {} # User.update(), User.save()
+
+  # after_destroy {
+  #   if guild_id > 0 && guild_id.owner_id == id
+
+  # } # User.destroy()
+
   # callback-функции. Будут исполняться после наступления определенного события 
   # after_initialize { код } # User.new()
   # after_save {} # User.save(), User.create()
-  # after_update {} # User.update(), User.save()
-  # after_destroy {} # User.destroy()
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

@@ -4,7 +4,7 @@ class Guild < ApplicationRecord
   validates :owner_id, presence: true, uniqueness: true
 
   has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
-  # belongs_to :user, as: 
+  # belongs_to :owner_id, class_name: 'User', foreign_key: 'owner_id'
 
   has_many :guild_members
   has_many :guild_officers
