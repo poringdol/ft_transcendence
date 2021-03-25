@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Pingpong</title>
+	<%= csrf_meta_tags %>
+	<%= csp_meta_tag %>
+
+	<!--
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    -->
+	<%= stylesheet_pack_tag 'application', media: 'all' %>
+	<%= javascript_pack_tag 'application' %>
+</head>
+
+<body>
+	<% if user_signed_in? %>
+		<div class="all_page">
+			<%= render 'layouts/navbar' %>
+			<div class="content">
+				<% flash.each do |message_type, message| %>
+				<div class="alert alert-<%= message_type %>"><%= message %></div>
+				<% end %>
+	<% end %>
+
+			<div data-behavior="devise-error-messages">
+				<%= render "devise/shared/error_messages", resource: resource %>
+			</div>
+			<div data-behavior="flashes">
+				<%= render partial: "layouts/flashes", local: { flash: flash } %>
+			</div>
+
+			<%= yield %>
+			</div>
+		</div>
+	<% if user_signed_in? %>
+		<%= render 'layouts/footer' %>
+	<% end %>
+	<!-- <%= debug(params) if Rails.env.development? %> -->
+</body>
+
+<!--
+  <%= javascript_pack_tag 'index' %>
+  <%= javascript_pack_tag 'user' %>
+  <%= javascript_pack_tag 'app' %>
+  -->
+
+</html>
