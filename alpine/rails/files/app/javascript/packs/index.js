@@ -1,3 +1,18 @@
+/*
+** -------------------------------------------------------
+** VIEWS of all guilds: (App.Views.)
+**   - Guilds
+**
+** VIEWS of a single guild: (App.Views.)
+**   - AllGuildViews:
+**        - GuildListEl
+**        - GuildCard
+**        - GuildCardBtn
+**        - GuildMemberList
+** -------------------------------------------------------
+*/
+
+
 $(function () {
 	window.App = {
 		Models: {},
@@ -5,6 +20,22 @@ $(function () {
 		Collections: {},
 		Router: {}
 	};
+
+	App.Views.AllGuildViews = Backbone.View.extend({
+		newGuildListEl: function (data) {
+			this.GuildListEl = new App.Views.GuildListEl({ model: data.model, view: this });
+		},
+		newGuildCard: function (data) {
+			this.GuildCard = new App.Views.GuildCard({ model: data.model, view: this });
+		},
+		newGuildCardBtn: function (data) {
+			this.GuildCardBtn = new App.Views.GuildCardBtn({ model: data.model, view: this });
+		},
+		newGuildMemberList: function (data) {
+			col = new App.Collections.GuildMember({ guild: data.model.id })
+			this.GuildMemberList = new App.Views.GuildMembers({ collection: col, view: this })
+		}
+	})
 
 	// ------------------------------------
 	// GUILD      MODEL and COLLECTION
@@ -32,17 +63,17 @@ $(function () {
 
 
 	// -----------------------------------------
-	// GUILD_USERS     MODEL and COLLECTION
+	// GUILD_MEMBERS     MODEL and COLLECTION
 	// -----------------------------------------
-	App.Models.GuildUser = Backbone.Model.extend({
+	App.Models.GuildMember = Backbone.Model.extend({
 		urlRoot: 'http://localhost:3000/get_guild_users',
 		initialize: function (user) {
 			this.nickname = user.nickname;
 		}
 	})
 
-	App.Collections.GuildUsers = Backbone.Collection.extend({
-		model: App.Models.GuildUser,
+	App.Collections.GuildMember = Backbone.Collection.extend({
+		model: App.Models.GuildMember,
 		url: 'http://localhost:3000/get_guild_users',
 		initialize: function (data) {
 			this.url += ('/' + data.guild)
@@ -52,14 +83,16 @@ $(function () {
 
 
 	// -----------------------------------------
-	// GUILD_USERS          COLLECTION VIEW
+	// GUILD_MEMBERS          COLLECTION VIEW
 	// -----------------------------------------
-	App.Views.GuildUsers = Backbone.View.extend({
+	App.Views.GuildMembers = Backbone.View.extend({
 		className: 'list-group',
-		initialize: function () {
+		initialize: function (data) {
+			this.collection = data.collection;
+			this.view = data.view;
+
 			this.collection.on('add', this.addOne, this);
 			this.collection.on('change', this.addOne, this);
-			this.render();
 		},
 		render: function () {
 			this.collection.each(this.addOne, this);
@@ -68,7 +101,7 @@ $(function () {
 		},
 		addOne: function (user) {
 			if (user.nickname) {
-				var userView = new App.Views.GuildUser({ model: user});
+				var userView = new App.Views.GuildMember({ model: user});
 				this.$el.append(userView.render().el);
 			}
 			
@@ -77,12 +110,12 @@ $(function () {
 
 
 	// -----------------------------------------
-	// GUILD_USERS          MODEL VIEW
+	// GUILD_MEMBERS          MODEL VIEW
 	// -----------------------------------------
-	App.Views.GuildUser = Backbone.View.extend({
+	App.Views.GuildMember = Backbone.View.extend({
 		tagName: 'a',
 		className: 'list-group-item list-group-item-action',
-		templateList: _.template($("#GuildUserListTemplate").html()),
+		templateList: _.template($("#GuildMemberListTemplate").html()),
 
 		initialize: function () {
 			this.model.on('destroy', this.remove, this);
@@ -105,15 +138,14 @@ $(function () {
 	// -----------------------------------------
 	// GUILD          MODEL LIST VIEW
 	// -----------------------------------------
-	App.Views.GuildList = Backbone.View.extend({
+	App.Views.GuildListEl = Backbone.View.extend({
 		tagName: 'a',
 		className: 'list-group-item list-group-item-action',
-		templateList: _.template($("#GuildListTemplate").html()),
+		templateList: _.template($("#GuildListElTemplate").html()),
 
 		initialize: function (data) {
 			this.model = data.model;
-			this.user_id = data.user_id;
-
+			this.view = data.view;
 			this.model.on('destroy', this.remove, this);
 		},
 		events: {
@@ -121,11 +153,13 @@ $(function () {
 		},
 		render: function () {
 			this.$el.attr({'data-bs-toggle': "list"});
-			var template = this.templateList(this.model);
 			this.$el.css({ "padding": "0px" })
 			if (curr_user.guild_id == this.model.id)
-				this.$el.attr({'id': "usersguild"});
+				this.$el.attr({ 'id': "usersguild" });
+			
+			var template = this.templateList(this.model);
 			this.$el.append(template);
+
 			return this;
 		},
 		remove: function () {
@@ -133,7 +167,8 @@ $(function () {
 		},
 		showCard: function () {
 			$('#GuildContent').html("");
-			new App.Views.GuildCard({ model: this.model, user_id: this.user_id })
+			this.view.newGuildCard({ model: this.model });
+			this.view.GuildCard.render();
 		}
 	})
 
@@ -145,12 +180,11 @@ $(function () {
 		templateCard: _.template($("#GuildCardTemplate").html()),
 
 		initialize: function (data) {
-			this.model	 = data.model;
-			this.user_id = data.user_id;
+			this.model = data.model;
+			this.view = data.view;
 
 			this.model.on('destroy', this.remove, this);
 			this.model.on('change', this.render, this);
-			this.render();
 		},
 		events: {
 			'click #GuildCardMembers': 	'renderMemberList',
@@ -161,14 +195,7 @@ $(function () {
 			this.$el.remove();
 		},
 		render: function () {
-			var promise = fetch("http://localhost:3000/get_owner_nickname", {
-				method: "POST",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(this.model)
-			})
+			fetch("http://localhost:3000/get_owner_nick/" + this.model.id)
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(owner => this.renderCard(owner), this))
 			return this;
@@ -181,11 +208,14 @@ $(function () {
 			this.renderButtons();
 		},
 		renderButtons: function () {
-			new App.Views.GuildCardBtn({ model: this.model, view: this})
+			this.view.newGuildCardBtn({ model: this.model });
+			this.view.GuildCardBtn.render();
 		},
 		renderMemberList: function () {
-			col = new App.Collections.GuildUsers({ guild: this.model.id })
-			new App.Views.GuildUsers({ collection: col })
+			this.view.newGuildMemberList({ model: this.model })
+			this.view.GuildMemberList.render();
+			// col = new App.Collections.GuildMember({ guild: this.model.id })
+			// new App.Views.GuildMembers({ collection: col })
 		},
 		renderOfficerList: function () {
 			$('#GuildContent').html("");
@@ -204,9 +234,8 @@ $(function () {
 		templateJoinBtn:   _.template($("#GuildJoinBtnTemplate").html()),
 		templateLeaveBtn:  _.template($("#GuildLeaveBtnTemplate").html()),
 		initialize: function (data) {
-			this.model = data.model
-			this.view = data.view
-			this.render()
+			this.model = data.model;
+			this.view = data.view;
 		},
 		render: function () {
 			if (curr_user.id == this.model.owner_id) {
@@ -255,6 +284,7 @@ $(function () {
 				this.render();
 				$('#GuildForm').css({ "display": "none" });
 				$('#GuildContent').html("");
+				this.view.GuildListEl.$el.attr({'id': "usersguild"});
 			}, this))
 			return this;
 		},
@@ -276,11 +306,10 @@ $(function () {
 				else
 					this.model.owner_id = response.id;
 				this.render();
-				// this.model.save();
-				// debugger
 				$('#GuildForm').css({ "display": "block" });
 				$('#GuildContent').html("");
-				$('#GuildCardOwner').html("Owner: " + response.nickname);
+				this.view.GuildCard.render();
+				this.view.GuildListEl.$el.attr({'id': ""});
 			}, this))
 			return this;
 		}
@@ -292,10 +321,7 @@ $(function () {
 	// -----------------------------------------
 	App.Views.Guilds = Backbone.View.extend({
 		className: 'list-group',
-		initialize: function (data) {
-			this.collection = data.collection;
-			this.user_id = data.user_id;
-
+		initialize: function () {
 			this.collection.on('add', this.addOne, this);
 			this.collection.on('change', this.addOne, this);
 			this.render();
@@ -306,8 +332,9 @@ $(function () {
 			return this;
 		},
 		addOne: function (guild) {
-			var guildView = new App.Views.GuildList({ model: guild, user_id: this.user_id });
-			this.$el.append(guildView.render().el);
+			var guildView = new App.Views.AllGuildViews();
+			guildView.newGuildListEl({ model: guild });
+			this.$el.append(guildView.GuildListEl.render().el);
 		}
 	});
 
@@ -365,6 +392,6 @@ $(function () {
 		col = new App.Collections.Guild();
 		form = new App.Views.NewGuild({ collection: col });
 		form.render();
-		guilds_view = new App.Views.Guilds( {collection: col, user_id: curr_user.id} );
+		guilds_view = new App.Views.Guilds({ collection: col });
 	})	
 }());

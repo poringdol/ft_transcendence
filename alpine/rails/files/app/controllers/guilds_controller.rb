@@ -52,6 +52,12 @@ end
     render json: owner
   end
 
+  def get_owner_nick
+	guild = Guild.find(params[:id])
+    owner = User.find(guild.owner_id)
+    render json: owner
+  end
+
 
   def get_curr_user
     render json: current_user

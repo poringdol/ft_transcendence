@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'guilds/index'
   get 'otladka' => "guilds#otladka", as: 'otladka'
   get '/get_guild_users/:id', to: 'guilds#get_guild_users'
+  get '/get_owner_nick/:id', to: 'guilds#get_owner_nick'
   post 'guilds/join'
   post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'
   get 'otladka_guilds' => "guilds#otladka_guilds", as: 'otladka_guilds'
