@@ -10,6 +10,12 @@
   font-weight: bold;
 }
 
+.img-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
 // .navbar-brand img {
 //   height: 35px;
 //   float: none;
@@ -29,7 +35,7 @@ body {
 
 .chat-room {
   height:90vh;
-  
+
   #messages {
     height: 70%;
     overflow-y: scroll;

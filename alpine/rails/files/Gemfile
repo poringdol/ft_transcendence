@@ -9,6 +9,10 @@ gem 'devise_uid'
 gem 'omniauth-marvin', '~> 1.0.2'
 gem 'activerecord-session_store'
 
+# avatars
+gem 'carrierwave', '~> 2.0'
+gem 'mini_magick'
+
 # gem 'bootstrap', '~> 4.6'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

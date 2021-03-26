@@ -4,7 +4,7 @@ services:
     build: ./rails/.
     restart: always
     # volumes: # волюм для работы сразу в директории
-    #   - ./rails/files:/pingpong/
+    #   - ./rails/files:/pingpong
     ports:
       - "3000:3000"
     depends_on:

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  
+
   validates :nickname, presence: true, uniqueness: true
 
   # belongs_to :guild_id, class_name: 'Guild', foreign_key: 'id', optional: true
@@ -17,7 +17,7 @@ class User < ApplicationRecord
 
   # } # User.destroy()
 
-  # callback-функции. Будут исполняться после наступления определенного события 
+  # callback-функции. Будут исполняться после наступления определенного события
   # after_initialize { код } # User.new()
   # after_save {} # User.save(), User.create()
 
@@ -27,6 +27,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable,
          :omniauthable, :uid, omniauth_providers: [:marvin]
+
+  mount_uploader :avatar, AvatarUploader
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
