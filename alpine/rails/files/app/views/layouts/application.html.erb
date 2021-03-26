@@ -23,8 +23,6 @@
 				<div class="alert alert-<%= message_type %>"><%= message %></div>
 				<% end %>
 	<% end %>
-			<!-- <img class="img-avatar" src=<%= current_user.avatar.thumb.url %>>
-			<%= image_tag(current_user.avatar.thumb.url, alt: 'Avatar') if current_user.avatar %> -->
 			<div data-behavior="devise-error-messages">
 				<%= render "devise/shared/error_messages", resource: resource %>
 			</div>
@@ -46,5 +44,6 @@
   <%= javascript_pack_tag 'user' %>
   <%= javascript_pack_tag 'app' %>
   -->
-
+<!-- <img class="img-avatar" src=<%#= current_user.avatar.thumb.url %>>
+<%#= image_tag(current_user.avatar.thumb.url, alt: 'Avatar') if current_user.avatar %> -->
 </html>

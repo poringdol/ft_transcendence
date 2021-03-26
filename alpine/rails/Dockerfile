@@ -1,6 +1,6 @@
 FROM ruby:2.7.2-alpine3.12
 
-#install requariments
+# install requirements
 RUN apk update && \
 	apk upgrade && \
 	apk add build-base \
@@ -14,13 +14,13 @@ RUN apk update && \
 			shared-mime-info \
 	&& rm -rf /var/lib/apt/lists/*
 
-#install rails
+# install rails
 RUN gem update --system && \
 	gem install rails && \
 	gem install bundler && \
 	gem update bundler
 
-#setup
+# setup
 WORKDIR /pingpong
 COPY ./files /pingpong
 RUN bundle update mimemagic && \
