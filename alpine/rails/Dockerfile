@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-alpine3.13
+FROM ruby:2.7.2-alpine3.12
 
 #install requariments
 RUN apk update && \
@@ -10,21 +10,25 @@ RUN apk update && \
 			postgresql-dev \
 			tzdata \
 			yarn \
+			ruby-dev \
+			shared-mime-info \
 	&& rm -rf /var/lib/apt/lists/*
 
 #install rails
-RUN gem install rails && \
+RUN gem update --system && \
+	gem install rails && \
 	gem install bundler && \
 	gem update bundler
 
 #setup
 WORKDIR /pingpong
 COPY ./files /pingpong
-RUN bundle update && \
+RUN bundle update mimemagic && \
+	bundle update && \
 	bundle install && \
 	yarn install --check-files && \
-	yarn add jquery \ 
-			 backbone \ 
+	yarn add jquery \
+			 backbone \
 			 underscore \
 			 bootstrap@next \
 			 @popperjs/core
