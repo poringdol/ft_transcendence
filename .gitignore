@@ -54,4 +54,6 @@ alpine/rails/files/.yarn-integrity
 # Ignore uploaded files in development
 alpine/rails/files/storage/*
 !alpine/rails/files/storage/.keep
-alpine/rails/files/public/uploads
+
+# Ignore avatar
+# alpine/rails/files/public/uploads

@@ -73,6 +73,7 @@ $(function () {
 		urlRoot: 'http://localhost:3000/get_guild_users',
 		initialize: function (user) {
 			this.nickname = user.nickname;
+			this.avatar = user.avatar;
 		}
 	})
 

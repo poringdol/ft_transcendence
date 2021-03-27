@@ -16,6 +16,7 @@ AppUser.Models.User = Backbone.Model.extend({
 		this.nick = curr_user.nick;
 		this.guild_id = curr_user.guild_id;
 		this.guild_join_time = curr_user.guild_join_time;
+		this.avatar = curr_user.avatar;
 	},
 });
 

@@ -65,7 +65,7 @@ end
 
 
   def get_guild_users
-	guild_users = User.select(:nickname).where(guild_id: params[:id])
+	guild_users = User.select(:id, :nickname, :avatar).where(guild_id: params[:id])
 	# guild_users = User.all.where(guild_id: params[:id])
 	render json: guild_users
   end
