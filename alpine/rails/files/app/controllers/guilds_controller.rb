@@ -65,7 +65,8 @@ end
 
 
   def get_guild_users
-	guild_users = User.select(:id, :nickname, :avatar).where(guild_id: params[:id])
+  # Костыль(?) из-за 2ф авторизации без :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt ничего не работает
+	guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])
 	# guild_users = User.all.where(guild_id: params[:id])
 	render json: guild_users
   end
@@ -91,7 +92,7 @@ end
   def create_new_guild
     @guild = Guild.new(name: params[:name], anagram: params[:anagram], score: 0, owner_id: current_user.id)
     if @guild.save
-        render json: @guild, status: :created, location: @guild
+      render json: @guild, status: :created, location: @guild
     else
       render json: @guild.errors, status: :unprocessable_entity
     end
@@ -122,7 +123,7 @@ end
   end
 
   def update
-	@guild.save
+	  @guild.save
   end
 
   def join
@@ -234,6 +235,15 @@ end
     end
   end
 
+  # def update_avatar
+  #   guild = Guild.all.find(params[:id])
+  #   guild.name = params[:name]
+  #   File.open(params[:guild_avatar]) do |f|
+  #     guild.guild_avatar = f
+  #   end
+  #   guild.save!
+  # end
+
   private
 
   	def set_guild
@@ -242,7 +252,7 @@ end
 
 
     def guilds_params
-      params.require(:guild).permit(:name, :anagram)
+      params.require(:guild).permit(:name, :anagram, :guild_avatar)
     end
 
 

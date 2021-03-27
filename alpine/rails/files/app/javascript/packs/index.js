@@ -49,6 +49,7 @@ $(function () {
 		initialize: function (curr_guild) {
 			this.id = curr_guild.id;
 			this.name = curr_guild.name;
+			this.guild_avatar = curr_guild.guild_avatar;
 			this.anagram = curr_guild.anagram;
 			this.score = curr_guild.score;
 			this.owner_id = curr_guild.owner_id;
@@ -64,7 +65,7 @@ $(function () {
 			this.fetch();
 		}
 	});
-
+	
 
 	// -----------------------------------------
 	// GUILD_MEMBERS     MODEL and COLLECTION
@@ -162,7 +163,9 @@ $(function () {
 			this.$el.css({ "padding": "0px" })
 			if (curr_user.guild_id == this.model.id)
 				this.$el.attr({ 'id': "usersguild" });
-			
+			console.log("________________________________");
+			console.log(this.model);
+			console.log("________________________________");
 			var template = this.templateList(this.model);
 			this.$el.append(template);
 

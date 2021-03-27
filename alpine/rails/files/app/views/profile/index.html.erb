@@ -1,3 +1,9 @@
 <h2>Profile!</h2>
-<%# <%= link_to 'Sign out', destroy_user_session_path, :method => :delete %>
+
+<%= form_with model: @current_user, url: "users/update_avatar" do |form| %>
+  <h5>Изменить аватар</h5>
+  <%= form.file_field :avatar %>
+  <%= form.submit %>
+<% end %>
+
 <%= link_to 'guilds', guilds_path %>

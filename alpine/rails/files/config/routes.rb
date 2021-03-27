@@ -33,4 +33,8 @@ Rails.application.routes.draw do
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
   end
+
+  post 'users/update_avatar' => "users#update_nickname"
+  # post 'guilds/update_avatar' => "guilds#update_avatar"
+
 end

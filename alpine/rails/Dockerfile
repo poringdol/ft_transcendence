@@ -12,6 +12,8 @@ RUN apk update && \
 			yarn \
 			ruby-dev \
 			shared-mime-info \
+			pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs &&\
+	apk --update add imagemagick &&\
 	&& rm -rf /var/lib/apt/lists/*
 
 # install rails

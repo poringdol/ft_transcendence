@@ -56,4 +56,7 @@ alpine/rails/files/storage/*
 !alpine/rails/files/storage/.keep
 
 # Ignore avatar
-# alpine/rails/files/public/uploads
+alpine/rails/files/public/uploads
+!alpine/rails/files/public/uploads/user/1/
+!alpine/rails/files/public/uploads/user/2/
+!alpine/rails/files/public/uploads/user/3/

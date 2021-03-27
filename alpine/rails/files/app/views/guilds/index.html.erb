@@ -19,6 +19,7 @@
 
 <script type="text/template" id="GuildListElTemplate">
 	<div id="GuildNameList" style="padding: 10px">
+		<img width="30" height="30" class="rounded-circle" src=<%%= guild_avatar.url %>> 
 		<%%= name %>
 </script>
 
@@ -36,6 +37,26 @@
 			<h6 class="card-subtitle mb-2 text-muted"><%%= anagram %></h6>
 			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 		</div>
+		
+
+		<%= form_with model: @guild, url: "guilds/update_avatar" do |f| %>
+		<div>
+			<%= f.label :name %>
+			<%= f.text_field :name %>
+		</div>
+		
+		<div>
+			<%= f.label :guild_avatar %>
+			<%= f.file_field :guild_avatar %>
+		</div>
+		<div>
+			<%= f.hidden_field :id, value: 1 %>
+		</div>
+		
+		<%= f.submit %>
+		<% end %>
+
+
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 		<!-- <ul class="list-group list-group-flush"> -->
 			<li class="list-group-item" id ="GuildCardOwner">Owner: <%%= owner_nickname %></li>
