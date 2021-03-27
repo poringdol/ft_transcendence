@@ -33,7 +33,7 @@ class RoomsController < ApplicationController
         format.html { redirect_to @room, notice: 'Room was successfully created.' }
         format.json { render :show, status: :created, location: @room }
       else
-        format.html { render :new }
+        format.html { redirect_to @room, notice: @room.errors.full_messages.join("") }
         format.json { render json: @room.errors, status: :unprocessable_entity }
       end
     end

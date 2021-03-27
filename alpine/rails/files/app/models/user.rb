@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  devise :two_factor_authenticatable,
+         :otp_secret_encryption_key => ENV['OTP_KEY']
+
 
   validates :nickname, presence: true, uniqueness: true
 
@@ -24,11 +27,18 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
 
-  devise :database_authenticatable, :registerable,
+  devise :registerable,
          :recoverable, :rememberable, :validatable, :trackable,
          :omniauthable, :uid, omniauth_providers: [:marvin]
 
   mount_uploader :avatar, AvatarUploader
+
+  def otp_qr_code
+    issuer = 'PingPongApp'
+    label = "#{issuer}:#{email}"
+    qrcode = RQRCode::QRCode.new(otp_provisioning_uri(label, issuer: issuer))
+    qrcode.as_svg(module_size: 4)
+  end
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
