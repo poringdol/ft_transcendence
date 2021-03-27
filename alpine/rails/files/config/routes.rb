@@ -19,7 +19,6 @@ Rails.application.routes.draw do
   get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
   resources :guilds
 
-<<<<<<< HEAD
 # ------------------
 #    PROFILE PAGE
 # ------------------
@@ -37,11 +36,9 @@ Rails.application.routes.draw do
   get 'welcome/index'
   root 'welcome#index'
   
-=======
 
   post 'users/enable_otp'
   post 'users/disable_otp'
->>>>>>> 7655712c073796a8da2a9fbce5273e03374c80d9
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
