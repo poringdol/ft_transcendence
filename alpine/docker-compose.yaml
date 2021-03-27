@@ -16,6 +16,7 @@ services:
       REDIS_DB: 0
       REDIS_URL: redis://redis
       REDIS_PORT: 6379
+      OTP_KEY: dcf57e52ad8ca0c05f2fd7313ad96c42
 
   redis:
     image: redis:alpine

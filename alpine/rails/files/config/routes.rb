@@ -26,6 +26,9 @@ Rails.application.routes.draw do
   post 'get_owner_nickname' => "guilds#get_owner_nickname", as: 'get_owner_nickname'
   resources :guilds
 
+
+  post 'users/enable_otp'
+  post 'users/disable_otp'
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
