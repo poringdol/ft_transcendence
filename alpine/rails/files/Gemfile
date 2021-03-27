@@ -9,9 +9,6 @@ gem 'omniauth'
 gem 'devise_uid'
 gem 'omniauth-marvin', '~> 1.0.2'
 gem 'activerecord-session_store'
-# avatars
-gem 'carrierwave', '~> 2.0'
-gem 'mini_magick'
 
 # gem 'bootstrap', '~> 4.6'
 
@@ -68,3 +65,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "bower-rails", "~> 0.7.3"
+
+# avatars
+gem 'carrierwave', '~> 2.0'
+gem 'mini_magick'

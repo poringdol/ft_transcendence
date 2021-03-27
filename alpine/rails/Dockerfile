@@ -33,6 +33,8 @@ RUN bundle update mimemagic && \
 			 bootstrap@next \
 			 @popperjs/core
 
+COPY ./sanitized_file.rb ../usr/local/bundle/gems/carrierwave-2.2.0/lib/carrierwave/sanitized_file.rb
+
 RUN chmod +x start.sh
 
 ENTRYPOINT ["/pingpong/start.sh"]
