@@ -7,11 +7,14 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 user =  User.create!(email: 'polinaria@a.a', nickname: 'polinaria', password: 'polinaria', password_confirmation: 'polinaria')
+user.update_column :avatar, 'girl.jpg'
 guild = Guild.create(name: 'Creators', anagram: 'CRT', owner_id: user.id)
 # Пользователю (владельцу гильдии) записывается id гильдии в функции-коллбеке в файле models/guild.rb 
 
-User.create!(email: 'cddoma@a.a', nickname: 'cddoma', guild_id: guild.id, password: 'cddoma', password_confirmation: 'cddoma')
-User.create!(email: 'alldeady@a.a', nickname: 'alldeady', guild_id: guild.id, password: 'alldeady', password_confirmation: 'alldeady')
+user = User.create!(email: 'cddoma@a.a', nickname: 'cddoma', avatar: 'dog.jpg', guild_id: guild.id, password: 'cddoma', password_confirmation: 'cddoma')
+user.update_column :avatar, 'dog.jpg'
+user = User.create!(email: 'alldeady@a.a', nickname: 'alldeady', avatar: 'cat.jpg', guild_id: guild.id, password: 'alldeady', password_confirmation: 'alldeady')
+user.update_column :avatar, 'cat.jpg'
 User.create!(email: 'markvel@a.a', nickname: 'markvel', guild_id: guild.id, password: 'markvel', password_confirmation: 'markvel')
 
 user =  User.create!(email: 'splinter@a.a', nickname: 'splinter', password: 'splinter', password_confirmation: 'splinter')
