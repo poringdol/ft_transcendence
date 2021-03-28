@@ -56,6 +56,7 @@ alpine/rails/files/storage/*
 !alpine/rails/files/storage/.keep
 
 # Ignore avatar
+alpine/rails/files/public/uploads/tmp/*
 alpine/rails/files/public/uploads/user/avatar/*
 alpine/rails/files/public/uploads/guild/logo/*
 !alpine/rails/files/public/uploads/user/avatar/1/girl.jpg
