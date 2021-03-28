@@ -48,7 +48,13 @@ App.Views.UserFriends = Backbone.View.extend({
 		while (i < 6) {
 			icon = new App.Views.UserFriendsIcon({ model: this.model })
 			icon.render()
+			$("#UserFriendsIcons").append(icon.el);
 			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			$("#UserFriendsIconsAll").append(icon.el);
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			$("#UserFriendsIconsAll").append(icon.el);
 			i++
 		}
 	}
@@ -60,7 +66,28 @@ App.Views.UserFriendsIcon = Backbone.View.extend({
 	render: function () {
 		var template = this.template(this.model);
 		this.$el.html(template);
-		$("#UserFriendsIcons").append(this.el);
+	}
+})
+
+App.Views.UserGuild = Backbone.View.extend({
+	template: _.template($("#UserGuildTemplate").html()),
+	render: function () {
+		fetch("http://localhost:3000/profile/get_guild", {
+			method: "POST",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				guild_id: this.model.guild_id
+			})
+		})
+		.then(res => res.ok ? res.json() : Promise.reject(res))
+		.then(_.bind(res => {
+			var template = this.template(res);
+			this.$el.html(template);
+			$("#UserGuild").html(this.el)
+		}, this))
 	}
 })
 
@@ -72,6 +99,8 @@ fetch("http://localhost:3000/profile/get_curr_user")
 	userInfoView.render()
 	UserFriendsView = new App.Views.UserFriends({ model: user })
 	UserFriendsView.render()
+	UserGuildView = new App.Views.UserGuild({ model: user })
+	UserGuildView.render()
 })
 
 // col = new App.Collections.User

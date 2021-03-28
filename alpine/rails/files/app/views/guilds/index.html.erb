@@ -1,19 +1,23 @@
-<div class="row">
+<div class="row justify-content-center">
 	<% if current_user.guild_id? %>
-		<div id="GuildForm", style="display: none">
+		<div id="GuildForm", style="display: none" class="col-3">
 		</div>
 	<% else %>
-		<div id="GuildForm">
+		<div id="GuildForm" class="col-3">
 		</div>
 	<% end %>
+	<div class="col-4"></div>
+	<div class="col-4"></div>
 </div>
 
-<div class="row">
-<h3 class="col-3">Guilds list</h3>
+<div class="row justify-content-center">
+	<h3 class="col-3">Guilds list</h3>
+	<div class="col-4"></div>
+	<div class="col-4"></div>
 </div>
-<div class="row">
+<div class="row justify-content-center">
 	<div class="col-3" id="GuildList"></div>
-	<div class="col-5" id="GuildCard"></div>
+	<div class="col-4" id="GuildCard"></div>
 	<div class="col-4" id="GuildContent"></div>
 </div>
 
@@ -36,10 +40,8 @@
 			<h5 class="card-title"><%%= name %></h5>
 			<h6 class="card-subtitle mb-2 text-muted"><%%= anagram %></h6>
 			<img width="200" height="200" class="rounded-circle" src=<%%= logo.url %>>
-
-			<%# <div class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</div> %>
+		</div>
 			<div class="list-group list-group-flush" id="list-tab" role="tablist">
-		<!-- <ul class="list-group list-group-flush"> -->
 			<li class="list-group-item" id ="GuildCardOwner">Owner: <%%= owner_nickname %></li>
 			<li class="list-group-item">Score:  <%%= score %></li>
 			<li class="list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardMembers" data-bs-toggle="list">
@@ -54,8 +56,6 @@
 				Wars
 				<span class="badge bg-primary rounded-pill" id="GuildCard">ᐳ</span>
 			</li>
-		<!-- </ul> -->
-		</div>
 	</div>
 	<div id="GuildCardBtn" class="card-body">
 	</div>
@@ -78,20 +78,18 @@
 </script>
 
 <script type="text/template" id="GuildFormTemplate">
-	<div class="class row" style="margin: 20px">
-		<div class="col-3">
-			<form class="row">
-				<%# <label for="userFromIntra" class="visually-hidden">Guild name</label> %>
-				<input placeholder="Guild name" type="text" class="form-control col" id="guildFormName" value="">
-			</form>
-			<form class="row">
-				<%# <label for="userFromNick" class="visually-hidden">Anagram</label> %>
-				<input placeholder="Anagram (5 symbols)" type="text" class="form-control col" id="guildFormAnagram" value="">
-			</form>
-			<form class="row">
-				<input type="submit" class="btn btn-outline-dark mb-3 col" value="create">
-			</form>
-		</div>
+	<div class='row' style='margin: auto'>
+		<form class="row">
+			<%# <label for="userFromIntra" class="visually-hidden">Guild name</label> %>
+			<input placeholder="Guild name" type="text" class="form-control col" id="guildFormName" value="">
+		</form>
+		<form class="row">
+			<%# <label for="userFromNick" class="visually-hidden">Anagram</label> %>
+			<input placeholder="Anagram (5 symbols)" type="text" class="form-control col" id="guildFormAnagram" value="">
+		</form>
+		<form class="row">
+			<input type="submit" class="btn btn-outline-dark mb-3 col" value="create">
+		</form>
 	</div>
 </script>
 

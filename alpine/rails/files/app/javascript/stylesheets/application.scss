@@ -226,16 +226,13 @@ body {
 	background-color: #82a4d714;
 }
 
-.UserInfoField {
-	min-width: 105px;
-}
-
-#UserFriends {
-	min-width: 470px;
-}
-
 #UserInfo {
 	min-width: 300px;
+	margin-bottom: 25px;
+}
+
+#UserGuild {
+	margin-bottom: 25px;
 }
 
 .UserFriendIcon {
@@ -243,7 +240,9 @@ body {
 	font-size: 13px;
 }
 
-
+#UserRightCol {
+	min-width: 570px;
+}
 
 .image-cropper {
 	width: 100px;
@@ -259,4 +258,13 @@ body {
 	margin-left: -25%; //centers the image
 	height: 100%;
 	width: auto;
+}
+
+#UserGuildCardBody {
+	padding-bottom: 0.3rem;
+}
+
+.InfoFieldText {
+	min-width: 105px;
+	color: #212529b8;
 }

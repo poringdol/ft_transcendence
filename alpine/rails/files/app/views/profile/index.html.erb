@@ -1,16 +1,45 @@
 <div class='row justify-content-center' id="UserProfilePage">
 	<div class='col-3' id='UserInfo'></div>
-	<div class='col-6' >
+	<div class='col-6' id ='UserRightCol'>
+		<div class='row' id='UserGuild'></div>
 		<div class='row' id='UserFriends'></div>
 		<div class='row' id='UserTournaments'></div>
 	</div>
-	<%# <div class='col-3' id='UserInfo'></div>
-	<div class='col-5' style="min-width: 500px">
-		<div class='row' id='UserFriends'></div>
-		<div class='row' id='UserTournaments'></div>
-	</div> %>
 </div>
 
+<script type="text/template" id="UserGuildTemplate">
+	<div class="card">
+		<div class="card-body" id="UserGuildCardBody">
+			<h5 class="card-title">GUILD</h5>
+		</div>
+		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+			<li class="list-group-item">
+			<div class='row'>
+				<div class='col-2' style='min-width: 100px'>
+					<a href="/guilds">
+						<img width="90" height="90" class="rounded-circle" src=<%%= logo.url %>>
+					</a>
+				</div>
+				<div class='col-4'>
+					<div class='row'>
+						<a href="/guilds" style="text-decoration-line: none; color: black">
+							<h5><%%= name %></h5>
+						</a>
+					</div>
+					<div class='row'>
+						<div class='col-4 InfoFieldText'>Score:</div>
+						<div class='col'><%%= score %></div>
+					</div>
+					<div class='row'>
+						<div class='col-4 InfoFieldText'>War:</div>
+						<div class='col'>no</div>
+					</div>
+				</div>
+			</div>
+			</li>
+		</div>
+	</div>
+</script>
 
 <script type="text/template" id="UserInfoTemplate">
 	<div class="card">
@@ -19,7 +48,7 @@
 				<img width="90%" class="rounded" src=<%%= avatar.url %>>
 			</div>
 			<div class="d-grid gap-2 mx-auto">
-				<a href="/users/edit/">
+				<a href="/users/edit/" style="text-align: center;">
 					<button type="button" class="btn card-link btn-guild mx-auto" id="UserInfoEditButton">Edit Profile</button>
 				</a>
 			</div>
@@ -27,31 +56,31 @@
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField'>Nickname:</div>
+					<div class='col-4 UserInfoField InfoFieldText'>Nickname:</div>
 					<div class='col'><%%= nickname %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField'>Email:</div>
+					<div class='col-4 UserInfoField InfoFieldText'>Email:</div>
 					<div class='col'><%%= email %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField'>Score:</div>
+					<div class='col-4 UserInfoField InfoFieldText'>Score:</div>
 					<div class='col'><%%= score %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField'>Loses:</div>
+					<div class='col-4 UserInfoField InfoFieldText'>Loses:</div>
 					<div class='col'><%%= loses %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField'>Wins:</div>
+					<div class='col-4 UserInfoField InfoFieldText'>Wins:</div>
 					<div class='col'><%%= wins %></div>
 				</div>
 			</li>
@@ -61,7 +90,7 @@
 
 <script type="text/template" id="UserFriendsTemplate">
 	<div class="card">
-		<div class="card-body">
+		<div class="card-body" id="UserGuildCardBody">
 			<h5 class="card-title">FRIENDS</h5>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
@@ -78,10 +107,10 @@
     				</h2>
     				<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
       					<div class="accordion-body">Here will be friends avatars with nicks
-							<div class='d-flex justify-content-center' id='UserFriendsIconsAll'>
-				
+							<div class='row d-flex justify-content-center' id='UserFriendsIconsAll'>
+
 							</div>
-							</div>
+						</div>
     				</div>
   				</div>
   			</div>

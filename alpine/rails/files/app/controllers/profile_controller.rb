@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  skip_before_action :verify_authenticity_token
 
   def index
 	@user = current_user
@@ -21,6 +22,11 @@ class ProfileController < ApplicationController
 # Returns current user in JSON
   def get_curr_user
     render json: current_user
+  end
+
+  def get_guild
+	guild = Guild.find(params[:guild_id])
+	render json: guild
   end
 
 end

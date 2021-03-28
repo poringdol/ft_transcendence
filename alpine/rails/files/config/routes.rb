@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get '/user/:id' => "profile#index"
   get 'ind' => "profile#index_id", as: 'ind'
   get 'profile/get_curr_user' => "profile#get_curr_user"
+  post 'profile/get_guild' => "profile#get_guild"
 
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_avatar
   post 'users/update_avatar' => "users#update_avatar"
