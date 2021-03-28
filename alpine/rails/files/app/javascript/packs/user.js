@@ -91,6 +91,15 @@ App.Views.UserGuild = Backbone.View.extend({
 	}
 })
 
+App.Views.UserTournaments = Backbone.View.extend({
+	template: _.template($("#UserTournamentsTemplate").html()),
+	render: function () {
+		var template = this.template();
+		this.$el.html(template);
+		$("#UserTournaments").html(this.el)
+	}
+})
+
 fetch("http://localhost:3000/profile/get_curr_user")
 .then(res => res.ok ? res.json() : Promise.reject(res))
 .then(function (res) {
@@ -101,6 +110,8 @@ fetch("http://localhost:3000/profile/get_curr_user")
 	UserFriendsView.render()
 	UserGuildView = new App.Views.UserGuild({ model: user })
 	UserGuildView.render()
+	UserTournamentsView = new App.Views.UserTournaments({ model: user })
+	UserTournamentsView.render()
 })
 
 // col = new App.Collections.User
