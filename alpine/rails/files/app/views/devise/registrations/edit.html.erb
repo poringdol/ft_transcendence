@@ -1,4 +1,4 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<h2>Edit profile - <%= current_user.nickname %></h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
@@ -36,7 +36,51 @@
   </div>
 <% end %>
 
-<h3>Cancel my account</h3>
+<br>
+<br>
+
+<h4>Enable two factor authorization</h4>
+<% if !current_user.otp_required_for_login %>
+  <%= button_to "Enable 2FA", users_enable_otp_path, :method => :post %>
+<% end %>
+<% if current_user.otp_required_for_login %>
+  <%= button_to "Disable 2FA", users_disable_otp_path, :method => :post %>
+  <div class="col-4 text-center">
+    <%= current_user.otp_qr_code.html_safe %>
+  </div>
+  <br>
+<% end %>
+
+<br>
+<br>
+
+<h4>Change nickname</h4>
+<%= form_with model: @user, url: "update_nickname", method: :post do |f| %>
+<div class="row">
+  <div class="col-9">
+    <%= f.text_field :nickname %>
+  <div class="col-3">
+    <%= f.submit "Update nickname" %>
+</div>
+<% end %>
+
+<br>
+<br>
+
+<h4>Change avatar</h4>
+<%= form_with model: @user, url: "update_avatar", method: :post do |f| %>
+<div class="row">
+  <div class="col-9">
+    <%= f.file_field :avatar %>
+  <div class="col-3">
+    <%= f.submit "Update avatar" %>
+</div>
+<% end %>
+
+<br>
+<br>
+
+<h4>Cancel my account</h4>
 
 <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
 

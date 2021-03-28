@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2020_12_07_185220) do
   create_table "guilds", force: :cascade do |t|
     t.string "name"
     t.string "anagram"
+    t.string "logo"
     t.integer "score", default: 0
     t.bigint "owner_id"
     t.boolean "is_in_war", default: false

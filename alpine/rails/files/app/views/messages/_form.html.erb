@@ -16,30 +16,28 @@
     <%= form.text_field :content, placeholder: "Type your message here...", class: 'form-control' %>
     <div class="input-group-append">
       <%= form.submit "Add Message", id: "AddMessage", class: "btn btn-primary", data: { disable_with: false }%>
-        
-        <script type="text/javascript">
-          // AddMessage.onclick = function() {
-          //   console.log("1111");
-          //   var block = document.getElementById("messages");
-          //   block.scrollTop = block.scrollHeight;
-          //   console.log("222");
-          //   // document.getElementById("message_content").value = "";
-          // }
-          $("#NewMessageForm").submit(function(event) {
-            event.preventDefault();
-            fetch(event.target.action, {
-              method: 'POST',
-              body: new URLSearchParams(new FormData(event.target)) // event.target - ajhvf
-            }).then((resp) => {
-              this.reset();
-              var block = document.getElementById("messages");
-              block.scrollTop = block.scrollHeight;
-            }).catch((error) => {
-              alert("Ошибка отправки сообщения!");
-            });
+      <script type="text/javascript">
+        $("#NewMessageForm").submit(function(event) {
+          event.preventDefault();
+          if (this.message_content.value === "") {
+            return
+          }
+          if (!this.message_content.value.replace(/\s/g, '').length) {
+            this.reset();
+            return
+          }
+          fetch(event.target.action, {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(event.target)) // event.target - форма
+          }).then((resp) => {
+            this.reset();
+            var block = document.getElementById("messages");
+            block.scrollTop = block.scrollHeight;
+          }).catch((error) => {
+            alert("Ошибка отправки сообщения!");
           });
-        </script>
-
+        });
+      </script>
     </div>
   </div>
 <% end %>

@@ -16,10 +16,12 @@
 	<div class="card">
 		<div class="card-body">
 			<div id="UserInfoPhoto">
-				<img width="90%" class="rounded" src=<%%= avatar.url %>> 
+				<img width="90%" class="rounded" src=<%%= avatar.url %>>
 			</div>
 			<div class="d-grid gap-2 mx-auto">
-				<button type="button" class="btn card-link btn-guild mx-auto" id="UserInfoEditButton">Edit Profile</button>
+				<a href="/users/edit/">
+					<button type="button" class="btn card-link btn-guild mx-auto" id="UserInfoEditButton">Edit Profile</button>
+				</a>
 			</div>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
