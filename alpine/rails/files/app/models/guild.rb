@@ -3,7 +3,7 @@ class Guild < ApplicationRecord
   validates :anagram, presence: true, length: { maximum: 5 }, uniqueness: true
   validates :owner_id, presence: true, uniqueness: true
 
-  mount_uploader :guild_avatar, GuildAvatarUploader
+  mount_uploader :logo, GuildAvatarUploader
 
   has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
   # belongs_to :owner_id, class_name: 'User', foreign_key: 'owner_id'

@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     redirect_to edit_user_registration_path
   end
 
-  def update_nickname
+  def update_avatar
     File.open(params[:avatar]) do |f|
       current_user.avatar = f
     end

@@ -49,7 +49,7 @@ $(function () {
 		initialize: function (curr_guild) {
 			this.id = curr_guild.id;
 			this.name = curr_guild.name;
-			this.guild_avatar = curr_guild.guild_avatar;
+			this.logo = curr_guild.logo;
 			this.anagram = curr_guild.anagram;
 			this.score = curr_guild.score;
 			this.owner_id = curr_guild.owner_id;
@@ -163,9 +163,6 @@ $(function () {
 			this.$el.css({ "padding": "0px" })
 			if (curr_user.guild_id == this.model.id)
 				this.$el.attr({ 'id': "usersguild" });
-			console.log("________________________________");
-			console.log(this.model);
-			console.log("________________________________");
 			var template = this.templateList(this.model);
 			this.$el.append(template);
 
@@ -197,7 +194,8 @@ $(function () {
 		events: {
 			'click #GuildCardMembers': 	'renderMemberList',
 			'click #GuildCardOfficers': 'renderOfficerList',
-			'click #GuildCardWars':		'renderWarList'
+			'click #GuildCardWars':		'renderWarList',
+			// 'submit'
 		},
 		remove: function () {
 			this.$el.remove();
@@ -209,6 +207,7 @@ $(function () {
 			return this;
 		},
 		renderCard: function (owner) {
+			window.current_guild = this.model;
 			this.model.owner_nickname = owner.nickname;
 			var template = this.templateCard(this.model);
 			this.$el.html(template);
@@ -245,14 +244,17 @@ $(function () {
 		templateDeleteBtn: _.template($("#GuildDelBtnTemplate").html()),
 		templateJoinBtn:   _.template($("#GuildJoinBtnTemplate").html()),
 		templateLeaveBtn:  _.template($("#GuildLeaveBtnTemplate").html()),
+		templateEditeBtn:  _.template($("#GuildEditBtnTemplate").html()),
+		templateEdite:     _.template($("#GuildEditTemplate").html()),
 		initialize: function (data) {
 			this.model = data.model;
 			this.view = data.view;
 		},
 		render: function () {
 			if (curr_user.id == this.model.owner_id) {
-				this.$el.html(this.templateDeleteBtn)
+				this.$el.html(this.templateEditeBtn)
 				this.$el.append(this.templateLeaveBtn)
+				this.$el.append(this.templateDeleteBtn)
 			}
 			else if (curr_user.guild_id == 0)
 				this.$el.html(this.templateJoinBtn)
@@ -266,6 +268,7 @@ $(function () {
 			'click #DelGuildBtn':   'deleteGuild',
 			'click #JoinGuildBtn':  'joinGuild',
 			'click #LeaveGuildBtn': 'leaveGuild',
+			'click #EditGuildBtn':   'editGuild',
 		},
 		deleteGuild: function () {
 			alert("DELETE");
@@ -281,7 +284,7 @@ $(function () {
 			curr_user.guild_id = 0
 		},
 		joinGuild: function () {
-			var promise = fetch("http://localhost:3000/guilds/join", {
+			fetch("http://localhost:3000/guilds/join", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -301,7 +304,7 @@ $(function () {
 			return this;
 		},
 		leaveGuild: function () {
-			var promise = fetch("http://localhost:3000/guilds/exit", {
+			fetch("http://localhost:3000/guilds/exit", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -325,6 +328,11 @@ $(function () {
 				$('#GuildContent').html("");
 			}, this))
 			return this;
+		},
+		editGuild: function () {
+			this.$el.html(this.templateEdite);
+			$('#GuildContent').html(this.el);
+			
 		}
 	})
 

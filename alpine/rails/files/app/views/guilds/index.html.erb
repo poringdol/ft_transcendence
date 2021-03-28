@@ -19,7 +19,7 @@
 
 <script type="text/template" id="GuildListElTemplate">
 	<div id="GuildNameList" style="padding: 10px">
-		<img width="30" height="30" class="rounded-circle" src=<%%= guild_avatar.url %>> 
+		<img width="30" height="30" class="rounded-circle" src=<%%= logo.url %>> 
 		<%%= name %>
 </script>
 
@@ -35,29 +35,10 @@
 		<div class="card-body">
 			<h5 class="card-title"><%%= name %></h5>
 			<h6 class="card-subtitle mb-2 text-muted"><%%= anagram %></h6>
-			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-		</div>
-		
+			<img width="200" height="200" class="rounded-circle" src=<%%= logo.url %>>
 
-		<%= form_with model: @guild, url: "guilds/update_avatar" do |f| %>
-		<div>
-			<%= f.label :name %>
-			<%= f.text_field :name %>
-		</div>
-		
-		<div>
-			<%= f.label :guild_avatar %>
-			<%= f.file_field :guild_avatar %>
-		</div>
-		<div>
-			<%= f.hidden_field :id, value: 1 %>
-		</div>
-		
-		<%= f.submit %>
-		<% end %>
-
-
-		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+			<%# <div class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</div> %>
+			<div class="list-group list-group-flush" id="list-tab" role="tablist">
 		<!-- <ul class="list-group list-group-flush"> -->
 			<li class="list-group-item" id ="GuildCardOwner">Owner: <%%= owner_nickname %></li>
 			<li class="list-group-item">Score:  <%%= score %></li>
@@ -80,12 +61,16 @@
 	</div>
 </script>
 
-<script type="text/template" id="GuildDelBtnTemplate">
-	<button type="button" class="btn card-link btn-guild" id="DelGuildBtn">Delete</a>
+<script type="text/template" id="GuildEditBtnTemplate">
+	<button type="button" class="btn btn-guild card-link" id="EditGuildBtn">Edit</a>
 </script>
 
 <script type="text/template" id="GuildLeaveBtnTemplate">
 	<button type="button" class="btn btn-guild card-link" id="LeaveGuildBtn">Leave</a>
+</script>
+
+<script type="text/template" id="GuildDelBtnTemplate">
+	<button type="button" class="btn card-link btn-guild" id="DelGuildBtn">Delete</a>
 </script>
 
 <script type="text/template" id="GuildJoinBtnTemplate">
@@ -109,5 +94,87 @@
 		</div>
 	</div>
 </script>
+
+<script type="text/template" id="GuildEditTemplate">
+	<div class="card">
+		<div class="card-body">
+		<h5 class="card-title">Guild edit page </h5>
+			<div class="list-group">
+
+				<div class="list-group-item">
+					<h6 class="card-title">Change name</h6>
+					<%= form_with model: @guild, id: "GuildNameChange", url: "guilds/update_name" do |f| %>
+					<div class="row">
+						<div class="col-9">
+							<%= f.text_field :name %>
+							<%= f.hidden_field :id, value: 0 %>
+						</div>
+						<div class="col-3">
+							<%= f.submit %>
+						</div>
+					</div>
+				<% end %>
+				</div>
+			
+				<div class="list-group-item">
+					<h6 class="card-title">Change anagram</h6>
+					<%= form_with model: @guild, id: "GuildAnagramChange", url: "guilds/update_anagram" do |f| %>
+					<div class="row">
+						<div class="col-9">
+							<%= f.text_field :anagram %>
+							<%= f.hidden_field :id, value: 0 %>
+						</div>
+						<div class="col-3">
+							<%= f.submit %>
+						</div>
+					</div>
+				<% end %>
+				</div>
+			
+			<div class="list-group-item">
+				<%= form_with model: @guild, id: "GuildLogoChange", url: "guilds/update_logo" do |f| %>
+					<h6 class="card-title">Change logo</h6>
+					<div class="row">
+						<div class="col-9">
+							<%= f.file_field :logo %>
+							<%= f.hidden_field :id, value: 0 %>
+						</div>
+						<div  class="col-3">
+							<%= f.submit %>
+						</div>
+					</div>
+				<% end %>
+				</div>
+			</div>
+
+			<script type="text/javascript">														// перехватываем все отправки форм для подстановки id гильдии
+				let form1 = document.getElementById('GuildNameChange');
+				let form2 = document.getElementById('GuildAnagramChange');
+				let form3 = document.getElementById('GuildLogoChange');
+			
+				form1.addEventListener("submit", function (e) {					// перехватываем отправку формы f.submit
+					e.preventDefault();
+					event.target.id.value = current_guild.id;							// заменяем значение id в поле f.hidden_field
+					return true;																					// отправляем форму f
+				})
+			
+				form2.addEventListener("submit", function (e) {
+					e.preventDefault();
+					event.target.id.value = current_guild.id;
+					return true;
+				})
+
+				form3.addEventListener("submit", function (e) {
+					e.preventDefault();
+					event.target.id.value = current_guild.id;
+					return true;
+				})
+
+			</script>
+		
+		</div>
+	</div>
+</script>
+
 
 <%= javascript_pack_tag 'index' %>

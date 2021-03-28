@@ -235,14 +235,25 @@ end
     end
   end
 
-  # def update_avatar
-  #   guild = Guild.all.find(params[:id])
-  #   guild.name = params[:name]
-  #   File.open(params[:guild_avatar]) do |f|
-  #     guild.guild_avatar = f
-  #   end
-  #   guild.save!
-  # end
+  def update_name
+    guild = Guild.all.find(params[:id])
+    guild.name = params[:name]
+    guild.save!
+  end
+
+  def update_anagram
+    guild = Guild.all.find(params[:id])
+    guild.anagram = params[:anagram]
+    guild.save!
+  end
+
+  def update_logo
+    guild = Guild.all.find(params[:id])
+    File.open(params[:logo]) do |f|
+      guild.logo = f
+    end
+    guild.save!
+  end
 
   private
 
@@ -252,7 +263,7 @@ end
 
 
     def guilds_params
-      params.require(:guild).permit(:name, :anagram, :guild_avatar)
+      params.require(:guild).permit(:name, :anagram, :logo)
     end
 
 
