@@ -52,6 +52,11 @@ body {
     min-height: 59px;
     .content-container {
       display: inline-block;
+      .msg-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+      }
       .messageContent {
         background-color: #eeeeee;
         padding: 8px 16px;

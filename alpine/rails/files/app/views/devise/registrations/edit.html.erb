@@ -68,8 +68,9 @@
 <br>
 
 <h4>Change avatar</h4>
-<%= form_with model: @user, url: "update_avatar", method: :post do |f| %>
+<%= form_with model: @user, url: "update_avatar", method: :post, html: { multipart: true } do |f| %>
 <div class="row">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <div class="col-9">
     <%= f.file_field :avatar %>
   <div class="col-3">

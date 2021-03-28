@@ -5,8 +5,6 @@ class User < ApplicationRecord
 
   validates :nickname, presence: true, uniqueness: true
 
-  # belongs_to :guild_id, class_name: 'Guild', foreign_key: 'id', optional: true
-
   after_create {
     unless guild_id.nil? || guild_id == 0
       GuildMember.create(user_id: id, guild_id: guild_id)
