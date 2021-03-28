@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   end
 
   def update_avatar
-    File.open(params[:avatar]) do |f|
+    File.open(params[:user][:avatar]) do |f|
       current_user.avatar = f
     end
     current_user.save!

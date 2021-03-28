@@ -65,7 +65,7 @@ class GuildsController < ApplicationController
   def create
 
     @guild = Guild.new(name: params[:guild][:name], anagram: params[:guild][:anagram], score: 0, owner_id: current_user.id)
-    
+
     respond_to do |format|
       unless @guild.save
         # format.html { redirect_to '/guilds', notice: @guild.errors.full_messages.join("; ") }
@@ -243,7 +243,7 @@ class GuildsController < ApplicationController
       end
     end
 
-    
+
     def check_guild
       redirect_to guilds_path, notice: "Guild not found" and return if !Guild.all.find(params[:id])
     end

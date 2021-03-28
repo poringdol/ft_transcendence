@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
+  get 'welcome/index'
+  root 'welcome#index'
+
+
 # ------------------
 #    GUILDS PAGE
 # ------------------
@@ -18,6 +22,10 @@ Rails.application.routes.draw do
   get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
   get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
   resources :guilds
+  post 'guilds/update_name' => "guilds#update_name"
+  post 'guilds/update_anagram' => "guilds#update_anagram"
+  post 'guilds/update_logo' => "guilds#update_logo"
+
 
 # ------------------
 #    PROFILE PAGE
@@ -28,25 +36,16 @@ Rails.application.routes.draw do
   get 'ind' => "profile#index_id", as: 'ind'
   get 'profile/get_curr_user' => "profile#get_curr_user"
 
+  # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_avatar
+  post 'users/update_avatar' => "users#update_avatar"
+  post 'users/edit/update_avatar' => "users#update_avatar"
 
-
-
-
-
-  get 'welcome/index'
-  root 'welcome#index'
-  
-
+  # 2 factor
   post 'users/enable_otp'
   post 'users/disable_otp'
+  # auth
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
   end
-
-  post 'users/update_avatar' => "users#update_avatar"
-  post 'guilds/update_name' => "guilds#update_name"
-  post 'guilds/update_anagram' => "guilds#update_anagram"
-  post 'guilds/update_logo' => "guilds#update_logo"
-
 end
