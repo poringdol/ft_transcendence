@@ -39,6 +39,9 @@ Rails.application.routes.draw do
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_avatar
   post 'users/update_avatar' => "users#update_avatar"
   post 'users/edit/update_avatar' => "users#update_avatar"
+  post 'users/update_nickname' => "users#update_nickname"
+  post 'users/edit/update_nickname' => "users#update_nickname"
+
 
   # 2 factor
   post 'users/enable_otp'
