@@ -4,7 +4,7 @@
       <%= message.content %>
     </div>
     <div class = "author">
-      (<%= message.user.guild_id %>) <%= message.user.nickname %>
+      <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).name %>)
     </div>
   </div>
 </div>

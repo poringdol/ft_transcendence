@@ -5,6 +5,11 @@ class UsersController < ApplicationController
     redirect_to '/users/edit'
   end
 
+  def show
+    @user = User.all.find(params[:id])
+    return render json: @user
+  end
+
   def enable_otp
     current_user.otp_secret = User.generate_otp_secret
     current_user.otp_required_for_login = true

@@ -29,24 +29,21 @@ Rails.application.routes.draw do
 # ------------------
 #   get '/user' => "profile#index", :as => :user_root
   get '/user' => "profile#index"
-  get '/user/:id' => "profile#index"
+  #get '/user/:id' => "profile#show"
+  get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
   get 'ind' => "profile#index_id", as: 'ind'
   get 'profile/get_curr_user' => "profile#get_curr_user"
   post 'profile/get_guild' => "profile#get_guild"
 
-  # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_avatar
+  # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_
   post 'users/update_avatar' => "users#update_avatar"
   post 'users/edit/update_avatar' => "users#update_avatar"
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
 
-
-
-
-
   get 'welcome/index'
   root 'welcome#index'
-  
+
   # 2 factor
   post 'users/enable_otp'
   post 'users/disable_otp'
