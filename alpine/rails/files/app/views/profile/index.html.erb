@@ -1,11 +1,14 @@
-<div class='row' id="UserProfilePage">
-	<div class='col-2'></div>
+<div class='row justify-content-center' id="UserProfilePage">
 	<div class='col-3' id='UserInfo'></div>
-	<div class='col-5' style="min-width: 500px">
+	<div class='col-6' >
 		<div class='row' id='UserFriends'></div>
 		<div class='row' id='UserTournaments'></div>
 	</div>
-	<div class='col-2'></div>
+	<%# <div class='col-3' id='UserInfo'></div>
+	<div class='col-5' style="min-width: 500px">
+		<div class='row' id='UserFriends'></div>
+		<div class='row' id='UserTournaments'></div>
+	</div> %>
 </div>
 
 
@@ -61,43 +64,8 @@
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
-				<div class='d-flex justify-content-center'>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-sm-6 col-md-2 UserFriendIcon'>
-						<img width="60px" height="60px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-			<!--		<div class='col-2 UserFriendIcon'>
-						<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-2 UserFriendIcon'>
-						<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div>
-					<div class='col-2 UserFriendIcon'>
-						<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>> 
-						<%%= nickname %>
-					</div> -->
+				<div class='d-flex justify-content-center' id='UserFriendsIcons'>
+				
 				</div>
 			</li>
 			<div class="accordion accordion-flush" id="accordionFlushExample">
@@ -107,7 +75,11 @@
       					</button>
     				</h2>
     				<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-      					<div class="accordion-body">Here will be friends avatars with nicks</div>
+      					<div class="accordion-body">Here will be friends avatars with nicks
+							<div class='d-flex justify-content-center' id='UserFriendsIconsAll'>
+				
+							</div>
+							</div>
     				</div>
   				</div>
   			</div>
@@ -115,6 +87,17 @@
 	</div>
 	<div id="UserInfoButtons" class="card-body">
 	</div>
+</script>
+
+<script type="text/template" id="UserFriendsIconTemplate">
+	<%# <div class='col-2 UserFriendIcon'> %>
+		<div class='col-12'>
+			<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>> 
+		</div>
+		<div class='col-12'>
+			<%%= nickname %>
+		</div>
+	<%# </div> %>
 </script>
 
 <%= javascript_pack_tag 'user' %>

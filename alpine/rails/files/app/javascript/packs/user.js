@@ -29,18 +29,38 @@ App.Models.User = Backbone.Model.extend({
 App.Views.UserInfo = Backbone.View.extend({
 	template: _.template($("#UserInfoTemplate").html()),
 	render: function () {
-		var template = this.template(this.model);
-		this.$el.html(template);
-		$("#UserInfo").html(this.el);
+		var template = this.template(this.model)
+		this.$el.html(template)
+		$("#UserInfo").html(this.el)
 	}
 })
 
 App.Views.UserFriends = Backbone.View.extend({
 	template: _.template($("#UserFriendsTemplate").html()),
 	render: function () {
+		var template = this.template(this.model)
+		this.$el.html(template)
+		$("#UserFriends").html(this.el)
+		this.renderFriendIcons()
+	},
+	renderFriendIcons: function () {
+		i = 0
+		while (i < 6) {
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			i++
+		}
+	}
+})
+
+App.Views.UserFriendsIcon = Backbone.View.extend({
+	template: _.template($("#UserFriendsIconTemplate").html()),
+	className: 'col-2 UserFriendIcon', 
+	render: function () {
 		var template = this.template(this.model);
 		this.$el.html(template);
-		$("#UserFriends").html(this.el);
+		$("#UserFriendsIcons").append(this.el);
 	}
 })
 

@@ -230,15 +230,33 @@ body {
 	min-width: 105px;
 }
 
-#UserInfo {
-	min-width: 250px;
+#UserFriends {
+	min-width: 470px;
 }
 
-#UserProfilePage {
-	min-width: 1000px;
+#UserInfo {
+	min-width: 300px;
 }
 
 .UserFriendIcon {
 	text-align: center;
 	font-size: 13px;
+}
+
+
+
+.image-cropper {
+	width: 100px;
+	height: 100px;
+	position: relative;
+	overflow: hidden;
+	border-radius: 50%;
+}
+
+.profile-pic {
+	display: inline;
+	margin: 0 auto;
+	margin-left: -25%; //centers the image
+	height: 100%;
+	width: auto;
 }

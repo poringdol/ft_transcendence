@@ -9,8 +9,7 @@ gem 'omniauth'
 gem 'devise_uid'
 gem 'omniauth-marvin', '~> 1.0.2'
 gem 'activerecord-session_store'
-gem 'devise-two-factor'
-gem 'rqrcode'
+
 # gem 'bootstrap', '~> 4.6'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
