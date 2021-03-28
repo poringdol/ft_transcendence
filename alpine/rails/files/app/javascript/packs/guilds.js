@@ -195,7 +195,6 @@ $(function () {
 			'click #GuildCardMembers': 	'renderMemberList',
 			'click #GuildCardOfficers': 'renderOfficerList',
 			'click #GuildCardWars':		'renderWarList',
-			// 'submit'
 		},
 		remove: function () {
 			this.$el.remove();

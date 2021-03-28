@@ -68,10 +68,10 @@
 						<%= current_user.nickname %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<li><span class="dropdown-item" href="/user">Profile</span></li>
-						<li><span class="dropdown-item" href="/">Friends</span></li>
-						<li><span class="dropdown-item" href="/">Chat</span></li>
-						<li><span class="dropdown-item" href="/">Statistics</span></li>
+						<li><a class="dropdown-item" aria-current="page" href="/user">Profile</a></li>
+						<li><a class="dropdown-item" aria-current="page" href="http://localhost:3000/user#user/6">Friends</a></li>
+						<li><a class="dropdown-item" aria-current="page" href="/user">Chat</a></li>
+						<li><a class="dropdown-item" aria-current="page" href="/user">Statistics</a></li>
 					</ul>
 				</li>
 			</ul>

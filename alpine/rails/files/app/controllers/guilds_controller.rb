@@ -15,43 +15,6 @@ class GuildsController < ApplicationController
     end
   end
 
-
-  def otladka
-    @guild_ms = GuildMember.all
-
-    for guild_m in @guild_ms
-      guild_m.destroy
-    end
-    
-    @guilds = Guild.all
-    for guild in @guilds
-      guild.destroy
-    end
-    
-    @users = User.all
-    for user in @users
-      user.guild_id = 0
-      user.save
-    end
-
-    respond_to do |format|
-      format.json { render json: @users }
-    end
-  end
-
-  def otladka_guilds
-	@guilds = Guild.all
-	respond_to do |format|
-		format.json { render json: @guilds }
-    end
-end
-
-
-  def get_owner_nickname
-    owner = User.all.find(params[:owner_id])
-    render json: owner
-  end
-
   def get_owner_nick
 	guild = Guild.find(params[:id])
     owner = User.find(guild.owner_id)

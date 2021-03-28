@@ -3,29 +3,39 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
-
+# ------------------
+#    GUILDS PAGE
+# ------------------
   get 'guilds/index'
-  get 'otladka' => "guilds#otladka", as: 'otladka'
   get '/get_guild_users/:id', to: 'guilds#get_guild_users'
   get '/get_owner_nick/:id', to: 'guilds#get_owner_nick'
   post 'guilds/join'
   post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'
-  get 'otladka_guilds' => "guilds#otladka_guilds", as: 'otladka_guilds'
-#   post 'get_guild_users' => 'guilds#get_guild_users', as: 'get_guild_users'
-#   delete 'get_guilds/:id' => 'guilds#destroy'
   post 'guilds/exit'
   post 'guilds/add_officer'
   post 'guilds/delete_officer'
   post 'guilds/delete_member'
-  get 'welcome/index'
-
-  root 'welcome#index'
-  get '/user' => "profile#index", :as => :user_root
   get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
   get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
-  post 'get_owner_nickname' => "guilds#get_owner_nickname", as: 'get_owner_nickname'
   resources :guilds
 
+# ------------------
+#    PROFILE PAGE
+# ------------------
+#   get '/user' => "profile#index", :as => :user_root
+  get '/user' => "profile#index"
+  get '/user/:id' => "profile#index"
+  get 'ind' => "profile#index_id", as: 'ind'
+  get 'profile/get_curr_user' => "profile#get_curr_user"
+
+
+
+
+
+
+  get 'welcome/index'
+  root 'welcome#index'
+  
 
   post 'users/enable_otp'
   post 'users/disable_otp'
