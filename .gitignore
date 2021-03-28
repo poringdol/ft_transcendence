@@ -56,16 +56,16 @@ alpine/rails/files/storage/*
 !alpine/rails/files/storage/.keep
 
 # Ignore avatar
-# !alpine/rails/files/public/uploads/user/avatar/1/girl.jpg
-# !alpine/rails/files/public/uploads/user/avatar/2/dog.jpg
-# !alpine/rails/files/public/uploads/user/avatar/3/cat.jpg
-# !alpine/rails/files/public/uploads/user/avatar/5/splinter.jpg
-# !alpine/rails/files/public/uploads/user/avatar/6/leo.jpg
-# !alpine/rails/files/public/uploads/user/avatar/7/don.jpg
-# !alpine/rails/files/public/uploads/user/avatar/8/raph.jpg
-# !alpine/rails/files/public/uploads/user/avatar/9/mike.jpg
-# !alpine/rails/files/public/uploads/user/avatar/10/rick.jpg
-# !alpine/rails/files/public/uploads/guild/logo/1/cat_mem.jpg
-# !alpine/rails/files/public/uploads/guild/logo/2/tmnt.jpg
-# !alpine/rails/files/public/uploads/guild/logo/3/rick_morty.jpg
-# alpine/rails/files/public/uploads
+alpine/rails/files/public/uploads
+!alpine/rails/files/public/uploads/user/avatar/1/girl.jpg
+!alpine/rails/files/public/uploads/user/avatar/2/dog.jpg
+!alpine/rails/files/public/uploads/user/avatar/3/cat.jpg
+!alpine/rails/files/public/uploads/user/avatar/5/splinter.jpg
+!alpine/rails/files/public/uploads/user/avatar/6/leo.jpg
+!alpine/rails/files/public/uploads/user/avatar/7/don.jpg
+!alpine/rails/files/public/uploads/user/avatar/8/raph.jpg
+!alpine/rails/files/public/uploads/user/avatar/9/mike.jpg
+!alpine/rails/files/public/uploads/user/avatar/10/rick.jpg
+!alpine/rails/files/public/uploads/guild/logo/1/cat_mem.jpg
+!alpine/rails/files/public/uploads/guild/logo/2/tmnt.jpg
+!alpine/rails/files/public/uploads/guild/logo/3/rick_morty.jpg
