@@ -215,7 +215,11 @@ body {
 	margin: 20px 0px 15px;
 }
 
-#UserInfoEditButton {
+#UserInfoEditBtn {
+	width: 90%;
+}
+
+.UserInfoBtns {
 	width: 90%;
 }
 
@@ -272,4 +276,13 @@ body {
 .InfoFieldText {
 	min-width: 105px;
 	color: #212529b8;
+}
+
+#UserButtons {
+	text-align: center;
+}
+
+.UserGuildHref {
+	color: black;
+	text-decoration: none;
 }

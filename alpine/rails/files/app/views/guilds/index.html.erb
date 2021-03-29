@@ -1,3 +1,6 @@
+<!-- 
+	PAGE STRUCTURE (GUILD CREATION FORM)
+-->
 <div class="row justify-content-center">
 	<% if current_user.guild_id? %>
 		<div id="GuildForm", style="display: none" class="col-3">
@@ -10,6 +13,10 @@
 	<div class="col-4"></div>
 </div>
 
+
+<!-- 
+	PAGE STRUCTURE
+-->
 <div class="row justify-content-center">
 	<h3 class="col-3">Guilds list</h3>
 	<div class="col-4"></div>
@@ -21,12 +28,23 @@
 	<div class="col-4" id="GuildContent"></div>
 </div>
 
+
+<!-- 
+	GUILD LIST ELEMENT TEMPLATE
+-->
 <script type="text/template" id="GuildListElTemplate">
 	<div id="GuildNameList" style="padding: 10px">
-		<%%= rating %>. <img width="30" height="30" class="rounded-circle" src=<%%= logo.url %>> 
+		<a style="margin-right: 5px">
+		<%%= rating %>. 
+		</a>
+		<img width="30" height="30" class="rounded-circle" src=<%%= logo.url %>> 
 		<%%= name %>
 </script>
 
+
+<!-- 
+	MEMBER LIST ELEMENT TEMPLATE
+-->
 <script type="text/template" id="GuildMemberListTemplate">
 	<div id="GuildMemberList">
 		<img width="30" height="30" class="rounded-circle" src=<%%= avatar.url %>> 
@@ -34,6 +52,10 @@
 	</div>
 </script>
 
+
+<!-- 
+	GUILD CARD TEMPLATE
+-->
 <script type="text/template" id="GuildCardTemplate">
 	<div class="card">
 		<div class="card-body">
@@ -61,22 +83,39 @@
 	</div>
 </script>
 
+
+<!-- 
+	EDIT BUTTON TEMPLATE
+-->
 <script type="text/template" id="GuildEditBtnTemplate">
 	<button type="button" class="btn btn-guild card-link" id="EditGuildBtn">Edit</a>
 </script>
 
+<!-- 
+	LEAVE BUTTON TEMPLATE
+-->
 <script type="text/template" id="GuildLeaveBtnTemplate">
 	<button type="button" class="btn btn-guild card-link" id="LeaveGuildBtn">Leave</a>
 </script>
 
+<!-- 
+	DELETE BUTTON TEMPLATE
+-->
 <script type="text/template" id="GuildDelBtnTemplate">
 	<button type="button" class="btn card-link btn-guild" id="DelGuildBtn">Delete</a>
 </script>
 
+<!-- 
+	JOIN BUTTON TEMPLATE
+-->
 <script type="text/template" id="GuildJoinBtnTemplate">
 	<button type="button" class="btn btn-guild card-link" id="JoinGuildBtn">Join</a>
 </script>
 
+
+<!-- 
+	GUILD CREATION FORM TEMPLATE
+-->
 <script type="text/template" id="GuildFormTemplate">
 	<div class='row' style='margin: auto'>
 		<form class="row">
@@ -93,6 +132,9 @@
 	</div>
 </script>
 
+<!-- 
+	EDIT GUILD CARD TEMPLATE
+-->
 <script type="text/template" id="GuildEditTemplate">
 	<div class="card">
 		<div class="card-body">

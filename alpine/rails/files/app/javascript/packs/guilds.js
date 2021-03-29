@@ -122,7 +122,8 @@ $(function () {
 	// -----------------------------------------
 	App.Views.GuildMember = Backbone.View.extend({
 		tagName: 'a',
-		className: 'list-group-item list-group-item-action',
+		// className: 'list-group-item list-group-item-action',
+		className: 'list-group-item',
 		templateList: _.template($("#GuildMemberListTemplate").html()),
 
 		initialize: function () {
@@ -132,7 +133,8 @@ $(function () {
 			// 'click #GuildNameList' : 'showCard'
 		},
 		render: function () {
-			this.$el.attr({'data-bs-toggle': "list"});
+			// this.$el.attr({ 'data-bs-toggle': "list" });
+			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
 			return this;

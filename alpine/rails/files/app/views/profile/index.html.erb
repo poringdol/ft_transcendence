@@ -1,12 +1,19 @@
+<!-- 
+	PAGE STRUCTURE
+-->
 <div class='row justify-content-center' id="UserProfilePage">
 	<div class='col-3' id='UserInfo'></div>
 	<div class='col-6' id ='UserRightCol'>
 		<div class='row' id='UserGuild'></div>
 		<div class='row' id='UserFriends'></div>
-		<div class='row' id='UserTournaments'></div>
+		<div class='row' id='UserMatches'></div>
 	</div>
 </div>
 
+
+<!-- 
+	GUILD CARD TEMPLATE 
+-->
 <script type="text/template" id="UserGuildTemplate">
 	<div class="card">
 		<div class="card-body" id="UserGuildCardBody">
@@ -14,41 +21,73 @@
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
-			<div class='row'>
-				<div class='col-2' style='min-width: 100px'>
-					<a href="/guilds">
-						<img width="90" height="90" class="rounded-circle" src=<%%= logo.url %>>
-					</a>
-				</div>
-				<div class='col-4'>
-					<div class='row'>
-						<a href="/guilds" style="text-decoration-line: none; color: black">
-							<h5><%%= name %></h5>
+				<div class='row'>
+					<div class='col-2' style='min-width: 100px'>
+						<a href="/guilds">
+							<img width="90" height="90" class="rounded-circle" src=<%%= logo.url %>>
 						</a>
 					</div>
-					<div class='row'>
-						<div class='col-4 InfoFieldText'>Score:</div>
-						<div class='col'><%%= score %></div>
-					</div>
-					<div class='row'>
-						<div class='col-4 InfoFieldText'>War:</div>
-						<div class='col'>no</div>
+					<div class='col-10'>
+						<div class='row'>
+							<a href="/guilds" style="text-decoration-line: none; color: black">
+								<h5 class='col'><%%= name %></h5>
+							</a>
+						</div>
+						<div class='row'>
+							<div class='col-6'>
+								<div class='row'>
+									<div class='col-5 InfoFieldText'>Rating:</div>
+									<div class='col'><%%= rating %></div>
+								</div>
+								<div class='row'>
+									<div class='col-5 InfoFieldText'>Score:</div>
+									<div class='col'><%%= score %></div>
+								</div>
+							</div>
+							<div class='col-6'>
+								<div class='row'>
+									<div class='col-5 InfoFieldText'>War:</div>
+									<div class='col'>no</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
 			</li>
 		</div>
 	</div>
 </script>
 
-<script type="text/template" id="UserTournamentsTemplate">
+<!-- 
+	NO GUILD CARD TEMPLATE 
+-->
+<script type="text/template" id="UserNoGuildTemplate">
 	<div class="card">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title">TOURNAMENTS</h5>
+			<h5 class="card-title">GUILD</h5>
+		</div>
+		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+			<a href='/guilds' class='UserGuildHref'>
+				<li class="list-group-item" href='/guilds'>
+					Click here to join a guild
+				</li>
+			</a>
+		</div>
+	</div>
+</script>
+
+
+<!-- 
+	MATCHES CARD TEMPLATE 
+-->
+<script type="text/template" id="UserMatchesTemplate">
+	<div class="card">
+		<div class="card-body" id="UserGuildCardBody">
+			<h5 class="card-title">MATCHES</h5>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
-				Here will be tournament history
+				Here will be matches history
 			</li>
 			<div class="accordion accordion-flush" id="accordionFlushExample">
 				<div class="accordion-item">
@@ -57,7 +96,7 @@
       					</button>
     				</h2>
     				<div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-      					<div class="accordion-body">Here will be tournament history</div>
+      					<div class="accordion-body">Here will be matches history</div>
     				</div>
   				</div>
   			</div>
@@ -65,16 +104,20 @@
 	</div>
 </script>
 
+
+<!-- 
+	INFO CARD TEMPLATE 
+-->
 <script type="text/template" id="UserInfoTemplate">
 	<div class="card">
 		<div class="card-body">
 			<div id="UserInfoPhoto">
 				<img width="90%" class="rounded" src=<%%= avatar.url %>>
 			</div>
-			<div class="d-grid gap-2 mx-auto">
-				<a href="/users/edit/" style="text-align: center;">
+			<div class="d-grid gap-2 mx-auto" id="UserInfoBtn">
+				<!-- <a href="/users/edit/" style="text-align: center;">
 					<button type="button" class="btn card-link btn-guild mx-auto" id="UserInfoEditButton">Edit Profile</button>
-				</a>
+				</a> -->
 			</div>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
@@ -112,6 +155,35 @@
 	</div>
 </script>
 
+
+<!-- -------------------- BUTTONS --------------------------->
+<!-- INFO EDIT BUTTON TEMPLATE -->
+<script type="text/template" id="UserInfoEditBtnTemplate">
+	<a href="/users/edit/" style="text-align: center;">
+		<button type="button" class="btn card-link btn-guild mx-auto UserInfoBtns">
+			EDIT PROFILE
+		</button>
+	</a>
+</script>
+
+<!-- INFO ADD BUTTON TEMPLATE -->
+<script type="text/template" id="UserInfoAddBtnTemplate">
+	<button type="button" class="btn card-link btn-guild mx-auto UserInfoBtns">
+		ADD TO FRIENDS
+	</button>
+</script>
+
+<!-- INFO DELETE BUTTON TEMPLATE -->
+<script type="text/template" id="UserInfoDelBtnTemplate">
+	<button type="button" class="btn card-link btn-guild mx-auto UserInfoBtns">
+		DELETE FROM FRIENDS
+	</button>
+</script>
+<!-- --------------------------------------------------------->
+
+<!-- 
+	FRIENDS CARD TEMPLATE 
+-->
 <script type="text/template" id="UserFriendsTemplate">
 	<div class="card">
 		<div class="card-body" id="UserGuildCardBody">
@@ -144,6 +216,10 @@
 	</div>
 </script>
 
+
+<!-- 
+	FRIENDS ICON CARD TEMPLATE 
+-->
 <script type="text/template" id="UserFriendsIconTemplate">
 	<%# <div class='col-2 UserFriendIcon'> %>
 		<div class='col-12'>
