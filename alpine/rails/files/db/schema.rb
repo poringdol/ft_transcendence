@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(version: 2021_03_29_003553) do
   enable_extension "plpgsql"
 
   create_table "friends", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "friend_id", null: false
+    t.bigint "user_id"
+    t.bigint "friend_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["friend_id"], name: "index_friends_on_friend_id"
@@ -114,8 +114,8 @@ ActiveRecord::Schema.define(version: 2021_03_29_003553) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
-  add_foreign_key "friends", "friends"
   add_foreign_key "friends", "users"
+  add_foreign_key "friends", "users", column: "friend_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
 end
