@@ -55,6 +55,7 @@ $(function () {
 			this.owner_id = curr_guild.owner_id;
 			this.created_at = curr_guild.created_at;
 			this.updated_at = curr_guild.updated_at;
+			this.rating = curr_guild.rating;
 		}
 	});
 

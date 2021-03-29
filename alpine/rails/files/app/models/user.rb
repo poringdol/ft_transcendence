@@ -2,8 +2,10 @@ class User < ApplicationRecord
   devise :two_factor_authenticatable,
          :otp_secret_encryption_key => ENV['OTP_KEY']
 
-
   validates :nickname, presence: true, uniqueness: true
+
+  # has_many :friend, foreign_key: user_id, dependent: destroy
+  # has_many :friend, foreign_key: friend_id, dependent: destroy
 
   after_create {
     unless guild_id.nil? || guild_id == 0

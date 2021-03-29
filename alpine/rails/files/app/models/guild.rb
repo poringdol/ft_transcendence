@@ -18,4 +18,11 @@ class Guild < ApplicationRecord
     user.update(guild_id: id)
     GuildMember.create(user_id: owner_id, guild_id: id)
   }
+
+  after_save {
+    guilds = Guild.order(:score).reverse
+    guilds.each do |g|
+      g.update_columns(rating: (guilds.index(g) + 1))
+    end
+  }
 end

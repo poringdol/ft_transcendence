@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_27_123808) do
+ActiveRecord::Schema.define(version: 2021_03_29_003553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "friends", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "friend_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["friend_id"], name: "index_friends_on_friend_id"
+    t.index ["user_id"], name: "index_friends_on_user_id"
+  end
 
   create_table "guild_members", force: :cascade do |t|
     t.bigint "user_id"
@@ -38,6 +47,7 @@ ActiveRecord::Schema.define(version: 2021_03_27_123808) do
     t.string "anagram"
     t.string "logo"
     t.integer "score", default: 0
+    t.integer "rating", default: 0
     t.bigint "owner_id"
     t.boolean "is_in_war", default: false
     t.datetime "created_at", precision: 6, null: false
@@ -104,6 +114,8 @@ ActiveRecord::Schema.define(version: 2021_03_27_123808) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  add_foreign_key "friends", "friends"
+  add_foreign_key "friends", "users"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
 end
