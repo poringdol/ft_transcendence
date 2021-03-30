@@ -27,13 +27,14 @@ App.Models.User = Backbone.Model.extend({
 //  USER_FRIENDS       MODEL and COLLECTION
 // -----------------------------------------
 App.Models.UserFriend = Backbone.Model.extend({
-	urlRoot: "friends/get_friends",
+	urlRoot: "/friends/get_friends",
 	initialize: function (data) {
-		// this.id = data.id
-		// this.nickname = data.nickname
-		// this.avatar = data.avatar
-		console.log(data.friend.nickname)
-		debugger
+		if(typeof data.friend === "undefined")
+  			return;
+		this.id = data.friend.id
+		this.nickname = data.friend.nickname
+		this.avatar = data.friend.avatar
+		console.log(data.friend)
 	}
 })
 
@@ -226,16 +227,13 @@ fetch("/profile/get_curr_user")
 		UserFriends = new App.Collections.UserFriends({ id: user.id })
 		// UserFriendsView = new App.Views.UserFriends({ collection: UserFriends, user: user })
 		// UserFriendsView.render()
-
+		
 		// UserFriendsView = new App.Views.UserFriends({ model: user })
 		// UserFriendsView.render()
-
-		console.log("user")
-		console.log(user)
-		console.log("user")
+		
 		UserGuildView = new App.Views.UserGuild({ model: user })
 		UserGuildView.render()
-
+		
 		UserMatchesView = new App.Views.UserMatches({ model: user })
 		UserMatchesView.render()
 	}
