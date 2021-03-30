@@ -27,22 +27,21 @@ App.Models.User = Backbone.Model.extend({
 //  USER_FRIENDS       MODEL and COLLECTION
 // -----------------------------------------
 App.Models.UserFriend = Backbone.Model.extend({
-	// urlRoot: "/profile/get_user_friends",
 	urlRoot: "friends/get_friends",
-	initialize: function (user) {
-		fetch(("/friends/get_friends/" + user.id))
-		.then(result => result.ok ? result.json() : Promise.reject(result))
-		.then(function (result) {
-			console.log(result);							// !!!!!!!!!!!!!!!!!!!
-		})
+	initialize: function (data) {
+		// this.id = data.id
+		// this.nickname = data.nickname
+		// this.avatar = data.avatar
+		console.log(data.friend.nickname)
+		debugger
 	}
 })
 
 App.Collections.UserFriends = Backbone.Collection.extend({
 	model: App.Models.UserFriend,
-	url: "/profile/get_user_friends",
+	url: "/friends/get_friends/",
 	initialize: function (data) {
-		this.url += ('/' + data.user_id)
+		this.url += data.id
 		this.fetch()
 	}
 })
@@ -98,6 +97,38 @@ App.Views.UserFriends = Backbone.View.extend({
 		var template = this.template(this.model)
 		this.$el.html(template)
 		$("#UserFriends").html(this.el)
+		this.renderFriendIcons()
+	},
+	renderFriendIcons: function () {
+		i = 0
+		while (i < 6) {
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			$("#UserFriendsIcons").append(icon.el);
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			$("#UserFriendsIconsAll").append(icon.el);
+			icon = new App.Views.UserFriendsIcon({ model: this.model })
+			icon.render()
+			$("#UserFriendsIconsAll").append(icon.el);
+			i++
+		}
+	}
+})
+
+// -----------------------------------------
+//  USER       FRIEND REQUESTS CARD VIEW
+// -----------------------------------------
+App.Views.UserFriendRequests = Backbone.View.extend({
+	template: _.template($("#UserFriendRequestsTemplate").html()),
+	initialize: function (data) {
+		this.model = data.model
+		new App.Models.UserFriend(data.model);
+	},
+	render: function () {
+		var template = this.template(this.model)
+		this.$el.html(template)
+		$("#UserFriendRequests").html(this.el)
 		this.renderFriendIcons()
 	},
 	renderFriendIcons: function () {
@@ -192,14 +223,16 @@ fetch("/profile/get_curr_user")
 		userInfoView = new App.Views.UserInfo({ model: user })
 		userInfoView.render()
 
-		// UserFriends = new App.Collections.UserFriends({ user_id: user.id })
-		// console.log(UserFriends)
+		UserFriends = new App.Collections.UserFriends({ id: user.id })
 		// UserFriendsView = new App.Views.UserFriends({ collection: UserFriends, user: user })
 		// UserFriendsView.render()
 
-		UserFriendsView = new App.Views.UserFriends({ model: user })
-		UserFriendsView.render()
+		// UserFriendsView = new App.Views.UserFriends({ model: user })
+		// UserFriendsView.render()
 
+		console.log("user")
+		console.log(user)
+		console.log("user")
 		UserGuildView = new App.Views.UserGuild({ model: user })
 		UserGuildView.render()
 

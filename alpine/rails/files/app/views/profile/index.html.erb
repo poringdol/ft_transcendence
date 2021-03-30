@@ -6,6 +6,7 @@
 	<div class='col-6' id ='UserRightCol'>
 		<div class='row' id='UserGuild'></div>
 		<div class='row' id='UserFriends'></div>
+		<div class='row' id='UserFriendRequests'></div>
 		<div class='row' id='UserMatches'></div>
 	</div>
 </div>
@@ -27,14 +28,14 @@
 							<img width="90" height="90" class="rounded-circle" src=<%%= logo.url %>>
 						</a>
 					</div>
-					<div class='col-10'>
+					<div class='col-10 col-sm-7' >
 						<div class='row'>
 							<a href="/guilds" style="text-decoration-line: none; color: black">
 								<h5 class='col'><%%= name %></h5>
 							</a>
 						</div>
 						<div class='row'>
-							<div class='col-6'>
+							<div class='col'>
 								<div class='row'>
 									<div class='col-5 InfoFieldText'>Rating:</div>
 									<div class='col'><%%= rating %></div>
@@ -44,7 +45,7 @@
 									<div class='col'><%%= score %></div>
 								</div>
 							</div>
-							<div class='col-6'>
+							<div class='col'>
 								<div class='row'>
 									<div class='col-5 InfoFieldText'>War:</div>
 									<div class='col'>no</div>
@@ -187,7 +188,10 @@
 <script type="text/template" id="UserFriendsTemplate">
 	<div class="card">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title">FRIENDS</h5>
+			<h5 class="card-title ms-2 me-auto">
+				FRIENDS
+				<!--<span id="userFriendsNotification">4</span>-->
+			</h5>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
@@ -216,6 +220,44 @@
 	</div>
 </script>
 
+
+<!-- 
+	FRIEND REQUESTS CARD TEMPLATE 
+-->
+<script type="text/template" id="UserFriendRequestsTemplate">
+	<div class="card">
+		<div class="card-body" id="UserGuildCardBody">
+			<h5 class="card-title ms-2 me-auto">
+				FRIEND REQUESTS
+				<!--<span id="userFriendsNotification">4</span>-->
+			</h5>
+		</div>
+		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+			<li class="list-group-item">
+				<div class='d-flex justify-content-center' id='UserFriendsIcons'>
+				
+				</div>
+			</li>
+			<div class="accordion accordion-flush" id="accordionFlushExample">
+				<div class="accordion-item">
+    				<h2 class="accordion-header" id="flush-headingOne">
+    					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+      					</button>
+    				</h2>
+    				<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+      					<div class="accordion-body">Here will be friends avatars with nicks
+							<div class='row d-flex justify-content-center' id='UserFriendsIconsAll'>
+
+							</div>
+						</div>
+    				</div>
+  				</div>
+  			</div>
+		</div>
+	</div>
+	<div id="UserInfoButtons" class="card-body">
+	</div>
+</script>
 
 <!-- 
 	FRIENDS ICON CARD TEMPLATE 
