@@ -57,8 +57,8 @@ class FriendsController < ApplicationController
   end
 
   def get_friends
-    friends = Friend.where(user_id: params[:id])
-    render json: friends
+    @friends = Friend.select(:friend_id).where(user_id: params[:id])
+    render json: @friends
   end
 
   private

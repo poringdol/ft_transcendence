@@ -40,3 +40,27 @@ User.where(nickname: 'raphael').first.update_column :avatar, 'raph.jpg'
 User.where(nickname: 'michelangelo').first.update_column :avatar, 'mike.jpg'
 User.where(nickname: 'rick_sanchez').first.update_column :avatar, 'rick.jpg'
 User.where(nickname: 'morty_smith').first.update_column :avatar, 'morty.jpg'
+
+Friend.create(user_id: 1, friend_id: 2)
+Friend.create(user_id: 1, friend_id: 3)
+Friend.create(user_id: 1, friend_id: 4)
+Friend.create(user_id: 1, friend_id: 6)
+Friend.create(user_id: 1, friend_id: 7)
+Friend.create(user_id: 1, friend_id: 8)
+Friend.create(user_id: 1, friend_id: 9)
+
+Friend.create(user_id: 2, friend_id: 1)
+Friend.create(user_id: 3, friend_id: 1)
+Friend.create(user_id: 4, friend_id: 1)
+Friend.create(user_id: 5, friend_id: 1)
+Friend.create(user_id: 6, friend_id: 1)
+
+Friend.create(user_id: 2, friend_id: 3)
+Friend.create(user_id: 2, friend_id: 5)
+Friend.create(user_id: 2, friend_id: 6)
+Friend.create(user_id: 2, friend_id: 7)
+Friend.create(user_id: 2, friend_id: 8)
+Friend.create(user_id: 2, friend_id: 9)
+
+Friend.create(user_id: 3, friend_id: 10)
+Friend.create(user_id: 3, friend_id: 11)
