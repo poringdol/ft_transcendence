@@ -45,7 +45,7 @@ $(function () {
 	// GUILD      MODEL and COLLECTION
 	// ------------------------------------
 	App.Models.Guild = Backbone.Model.extend({
-		urlRoot: 'http://localhost:3000/guilds',
+		urlRoot: "/guilds",
 		initialize: function (curr_guild) {
 			this.id = curr_guild.id;
 			this.name = curr_guild.name;
@@ -61,7 +61,7 @@ $(function () {
 
 	App.Collections.Guild = Backbone.Collection.extend({
 		model: App.Models.Guild,
-		url: 'http://localhost:3000/guilds',
+		url: "/guilds",
 		initialize: function () {
 			this.fetch();
 		}
@@ -72,7 +72,7 @@ $(function () {
 	// GUILD_MEMBERS     MODEL and COLLECTION
 	// -----------------------------------------
 	App.Models.GuildMember = Backbone.Model.extend({
-		urlRoot: 'http://localhost:3000/get_guild_users',
+		urlRoot: "/get_guild_users",
 		initialize: function (user) {
 			this.nickname = user.nickname;
 			this.avatar = user.avatar;
@@ -81,7 +81,7 @@ $(function () {
 
 	App.Collections.GuildMember = Backbone.Collection.extend({
 		model: App.Models.GuildMember,
-		url: 'http://localhost:3000/get_guild_users',
+		url: "/get_guild_users",
 		initialize: function (data) {
 			this.url += ('/' + data.guild)
 			this.fetch();
@@ -203,7 +203,7 @@ $(function () {
 			this.$el.remove();
 		},
 		render: function () {
-			fetch("http://localhost:3000/get_owner_nick/" + this.model.id)
+			fetch("/get_owner_nick/" + this.model.id)
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(owner => this.renderCard(owner), this))
 			return this;
@@ -286,7 +286,7 @@ $(function () {
 			curr_user.guild_id = 0
 		},
 		joinGuild: function () {
-			fetch("http://localhost:3000/guilds/join", {
+			fetch("/guilds/join", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -306,7 +306,7 @@ $(function () {
 			return this;
 		},
 		leaveGuild: function () {
-			fetch("http://localhost:3000/guilds/exit", {
+			fetch("/guilds/exit", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -407,7 +407,7 @@ $(function () {
 	// -----------------------------------------
 	// MAIN
 	// -----------------------------------------
-	fetch("http://localhost:3000/get_curr_user")
+	fetch("/get_curr_user")
 	.then(res => res.ok ? res.json() : Promise.reject(res))
 	.then(function(curr_user) {
 		window.curr_user = curr_user;

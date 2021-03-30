@@ -27,7 +27,7 @@ App.Models.User = Backbone.Model.extend({
 //  USER_FRIENDS       MODEL and COLLECTION
 // -----------------------------------------
 App.Models.UserFriend = Backbone.Model.extend({
-	urlRoot: 'http://localhost:3000/profile/get_user_friends',
+	urlRoot: "/profile/get_user_friends",
 	initialize: function (user) {
 		this.nickname = user.nickname;
 		this.avatar = user.avatar;
@@ -38,7 +38,7 @@ App.Models.UserFriend = Backbone.Model.extend({
 
 App.Collections.UserFriends = Backbone.Collection.extend({
 	model: App.Models.UserFriend,
-	url: 'http://localhost:3000/profile/get_user_friends',
+	url: "/profile/get_user_friends",
 	initialize: function (data) {
 		this.url += ('/' + data.user_id)
 		this.fetch()
@@ -142,7 +142,7 @@ App.Views.UserGuild = Backbone.View.extend({
 	render: function () {
 		$("#UserGuild").css({ "display": "block" })
 		if (this.model.guild_id) {
-			fetch("http://localhost:3000/profile/get_guild", {
+			fetch("/profile/get_guild", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -182,10 +182,9 @@ App.Views.UserMatches = Backbone.View.extend({
 	}
 })
 
-
 const urlArray = window.jQuery.ajaxSettings.url.split('/')
 const user_id = urlArray[urlArray.length - 1]
-fetch("http://localhost:3000/profile/get_curr_user")
+fetch("/profile/get_curr_user")
 .then(res => res.ok ? res.json() : Promise.reject(res))
 .then(function (res) {
 	window.current_user = new App.Models.User({ user: res })
@@ -210,7 +209,7 @@ fetch("http://localhost:3000/profile/get_curr_user")
 		UserMatchesView.render()
 	}
 	else {
-		fetch(("http://localhost:3000/profile/get_user/" + user_id))
+		fetch(("/profile/get_user/" + user_id))
 		.then(result => result.ok ? result.json() : Promise.reject(result))
 		.then(function (result) {
 			user = new App.Models.User({ user: result })

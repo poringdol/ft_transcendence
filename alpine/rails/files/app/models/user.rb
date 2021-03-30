@@ -4,8 +4,7 @@ class User < ApplicationRecord
 
   validates :nickname, presence: true, uniqueness: true
 
-  # has_many :friend, foreign_key: user_id, dependent: destroy
-  # has_many :friend, foreign_key: friend_id, dependent: destroy
+  # callback-функции. Будут исполняться после наступления определенного события
 
   after_create {
     unless guild_id.nil? || guild_id == 0
@@ -14,13 +13,7 @@ class User < ApplicationRecord
   } # User.create()
 
   # after_update {} # User.update(), User.save()
-
-  # after_destroy {
-  #   if guild_id > 0 && guild_id.owner_id == id
-
-  # } # User.destroy()
-
-  # callback-функции. Будут исполняться после наступления определенного события
+  # after_destroy {} # User.destroy()
   # after_initialize { код } # User.new()
   # after_save {} # User.save(), User.create()
 

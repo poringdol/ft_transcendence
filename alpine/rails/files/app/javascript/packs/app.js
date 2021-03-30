@@ -12,7 +12,7 @@ $(function () {
 		},
 		get_access: function () {
 			console.log("GET ACCESS");
-			// fetch('http://localhost:3000/get_is_logged_in')
+			// fetch("/get_is_logged_in")
 			// .then(resp => resp.json())
 			// .then(auth => {
 			// 	this.access = auth;
@@ -26,7 +26,7 @@ $(function () {
 			'click #LogInForm': 'login'
 		},
 		login: function () {
-			fetch('http://localhost:3000/login')
+			fetch("/login")
 			// user_marvin_omniauth_authorize_path
 		}
 	})
@@ -37,7 +37,7 @@ $(function () {
 		auth: false,
 		initialize: function () {
 			console.log("VIEW TEST");
-			// fetch('http://localhost:3000/get_is_logged_in')
+			// fetch("/get_is_logged_in")
 			// .then(resp => resp.json())
 			// .then(auth => {
 			// 	if (auth == false) {
@@ -66,7 +66,7 @@ $(function () {
 		auth: false,
 		initialize: function () {
 			console.log("VIEW HOME");
-			// fetch('http://localhost:3000/get_is_logged_in')
+			// fetch("/get_is_logged_in")
 			// .then(resp => resp.json())
 			// .then(auth => {
 			// 	if (auth == false) {
@@ -93,7 +93,7 @@ $(function () {
 		form_template: _.template($("#FormTemplate").html()),
 		auth: false,
 		initialize: function () {
-			// fetch('http://localhost:3000/get_is_logged_in')
+			// fetch("/get_is_logged_in")
 			// .then(resp => resp.json())
 			// .then(auth => {
 			// 	if (auth == false) {
@@ -136,7 +136,7 @@ $(function () {
 			var testPage = new App.Views.TestPage();
 		},
 		logout_page: function () {
-			fetch('http://localhost:3000/logout')
+			fetch("/logout")
 				.then(resp => {
 					var homePage = new App.Views.HomePage();
 			})
