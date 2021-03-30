@@ -27,12 +27,22 @@ App.Models.User = Backbone.Model.extend({
 //  USER_FRIENDS       MODEL and COLLECTION
 // -----------------------------------------
 App.Models.UserFriend = Backbone.Model.extend({
-	urlRoot: "/profile/get_user_friends",
+	// urlRoot: "/profile/get_user_friends",
+	urlRoot: "friends/get_friends",
 	initialize: function (user) {
-		this.nickname = user.nickname;
-		this.avatar = user.avatar;
-		this.id = user.id;
-		console.log(this.nickname)
+		// this.nickname = user.nickname;
+		// this.avatar = user.avatar;
+		// this.id = user.id;
+		// console.log(this.nickname)
+		fetch(("/friends/get_friends/" + user.id))
+		.then(result => result.ok ? result.json() : Promise.reject(result))
+		.then(function (result) {
+			console.log("result__________________");
+			console.log("user_id " + result[0].user_id);
+			console.log("friend_id " + result[0].friend_id);
+			console.log("avatar "); 
+			console.log(result[0].friend_id.avatar);
+		})
 	}
 })
 
@@ -94,6 +104,7 @@ App.Views.UserFriends = Backbone.View.extend({
 		// this.user = data.user
 		// console.log(this.user.nickname)
 		// console.log(this.collection)
+		new App.Models.UserFriend(data.model);
 	},
 	render: function () {
 		var template = this.template(this.model)

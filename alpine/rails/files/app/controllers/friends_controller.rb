@@ -21,7 +21,7 @@ class FriendsController < ApplicationController
 
   # POST /friends or /friends.json
   def create
-    @friend = Friend.new(user_id: friend_params[:user_id], friend_id: friend_params[:friend_id:])
+    @friend = Friend.new(user_id: 4, friend_id: 8)
 
     respond_to do |format|
       if @friend.save
@@ -54,6 +54,11 @@ class FriendsController < ApplicationController
       format.html { redirect_to friends_url, notice: "Friend was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def get_friends
+    friends = Friend.where(user_id: params[:id])
+    render json: friends
   end
 
   private

@@ -47,6 +47,8 @@ Rails.application.routes.draw do
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
 
+  get 'friends/get_friends/:id' => 'friends#get_friends'
+
   get 'welcome/index'
   root 'welcome#index'
 
