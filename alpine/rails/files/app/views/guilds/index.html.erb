@@ -187,25 +187,26 @@
 				</div>
 			</div>
 
-			<script type="text/javascript">														// перехватываем все отправки форм для подстановки id гильдии
-				let form1 = document.getElementById('GuildNameChange');
-				let form2 = document.getElementById('GuildAnagramChange');
-				let form3 = document.getElementById('GuildLogoChange');
+			<script type="text/javascript">										// перехватываем все отправки форм для подстановки id гильдии
+				var form_name = document.getElementById('GuildNameChange');
+				var form_anag = document.getElementById('GuildAnagramChange');
+				var form_avat = document.getElementById('GuildLogoChange');
 			
-				form1.addEventListener("submit", function (e) {					// перехватываем отправку формы f.submit
+				form_name.addEventListener("submit", function (e) {				// перехватываем отправку формы f.submit
 					e.preventDefault();
-					event.target.id.value = current_guild.id;							// заменяем значение id в поле f.hidden_field
-					return true;																					// отправляем форму f
+					event.target.id.value = current_guild.id;					// заменяем значение id в поле f.hidden_field
+					return true;												// отправляем форму f
 				})
 			
-				form2.addEventListener("submit", function (e) {
+				form_anag.addEventListener("submit", function (e) {
 					e.preventDefault();
 					event.target.id.value = current_guild.id;
 					return true;
 				})
 
-				form3.addEventListener("submit", function (e) {
+				form_avat.addEventListener("submit", function (e) {
 					e.preventDefault();
+					console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 					event.target.id.value = current_guild.id;
 					return true;
 				})

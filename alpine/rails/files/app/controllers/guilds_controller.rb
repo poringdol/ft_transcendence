@@ -108,25 +108,27 @@ class GuildsController < ApplicationController
     unless current_user.guild_id?
       redirect_and_responce("You not in guild")
     else
-	  guild_id = current_user.guild_id
-	  current_user.guild_id = 0
-	  current_user.save
+      guild_id = current_user.guild_id
+      current_user.guild_id = 0
+      current_user.save
       guild = Guild.all.find(guild_id)
-	  guild_members = User.all.find_by(guild_id: guild_id)
+      guild_members = User.all.find_by(guild_id: guild_id)
+      
       unless guild_members
         guild.destroy
-	  else
-		if current_user.id == guild.owner_id
-			guild.owner_id = guild_members.id
-			guild.save
-		end
+      else
+        if current_user.id == guild.owner_id
+          guild.owner_id = guild_members.id
+          guild.save
+        end
       end
-	  if guild_members
-		new_owner = User.all.find(guild.owner_id)
-		render json: new_owner
-	  else
-		render json: 0
-	  end
+      
+      if guild_members
+        new_owner = User.all.find(guild.owner_id)
+        render json: new_owner
+      else
+        render json: 0
+      end
     end
   end
 
@@ -202,11 +204,13 @@ class GuildsController < ApplicationController
     guild = Guild.all.find(params[:id])
     guild.name = params[:name]
     guild.save!
+    redirect_to '/guilds'
   end
 
   def update_anagram
     guild = Guild.all.find(params[:id])
     guild.anagram = params[:anagram]
+    redirect_to '/guilds'
     guild.save!
   end
 
@@ -216,6 +220,7 @@ class GuildsController < ApplicationController
       guild.logo = f
     end
     guild.save!
+    redirect_to '/guilds'
   end
 
   private

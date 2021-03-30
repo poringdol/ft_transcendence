@@ -415,5 +415,5 @@ $(function () {
 		form = new App.Views.NewGuild({ collection: col });
 		form.render();
 		guilds_view = new App.Views.Guilds({ collection: col });
-	})	
+	})
 }());
