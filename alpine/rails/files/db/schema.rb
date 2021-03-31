@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_29_003553) do
+ActiveRecord::Schema.define(version: 2021_03_31_170322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addons", force: :cascade do |t|
+    t.boolean "addon1"
+    t.boolean "addon2"
+    t.boolean "addon3"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "friends", force: :cascade do |t|
     t.bigint "user_id"
@@ -53,6 +61,24 @@ ActiveRecord::Schema.define(version: 2021_03_29_003553) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["owner_id"], name: "index_guilds_on_owner_id"
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.bigint "player_1_id", null: false
+    t.bigint "player_2_id", null: false
+    t.integer "player_1_score", default: 0
+    t.integer "player_2_score", default: 0
+    t.bigint "guild_1_id"
+    t.bigint "guild_2_id"
+    t.bigint "addons_id"
+    t.boolean "is_end", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["addons_id"], name: "index_matches_on_addons_id"
+    t.index ["guild_1_id"], name: "index_matches_on_guild_1_id"
+    t.index ["guild_2_id"], name: "index_matches_on_guild_2_id"
+    t.index ["player_1_id"], name: "index_matches_on_player_1_id"
+    t.index ["player_2_id"], name: "index_matches_on_player_2_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -114,8 +140,45 @@ ActiveRecord::Schema.define(version: 2021_03_29_003553) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  create_table "war_matches", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "war_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["match_id"], name: "index_war_matches_on_match_id"
+    t.index ["war_id"], name: "index_war_matches_on_war_id"
+  end
+
+  create_table "wars", force: :cascade do |t|
+    t.bigint "guild_1_id", null: false
+    t.bigint "guild_2_id", null: false
+    t.datetime "start"
+    t.datetime "end"
+    t.integer "prize", default: 0
+    t.integer "max_unanswered", default: 10
+    t.bigint "addons_id"
+    t.integer "guild_1_wins", default: 0
+    t.integer "guild_2_wins", default: 0
+    t.boolean "is_end", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["addons_id"], name: "index_wars_on_addons_id"
+    t.index ["guild_1_id"], name: "index_wars_on_guild_1_id"
+    t.index ["guild_2_id"], name: "index_wars_on_guild_2_id"
+  end
+
   add_foreign_key "friends", "users"
   add_foreign_key "friends", "users", column: "friend_id"
+  add_foreign_key "matches", "addons", column: "addons_id"
+  add_foreign_key "matches", "guilds", column: "guild_1_id"
+  add_foreign_key "matches", "guilds", column: "guild_2_id"
+  add_foreign_key "matches", "users", column: "player_1_id"
+  add_foreign_key "matches", "users", column: "player_2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
+  add_foreign_key "war_matches", "matches"
+  add_foreign_key "war_matches", "wars"
+  add_foreign_key "wars", "addons", column: "addons_id"
+  add_foreign_key "wars", "guilds", column: "guild_1_id"
+  add_foreign_key "wars", "guilds", column: "guild_2_id"
 end

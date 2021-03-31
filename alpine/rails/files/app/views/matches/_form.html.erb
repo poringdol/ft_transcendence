@@ -1,0 +1,57 @@
+<%= form_with(model: match, local: true) do |form| %>
+  <% if match.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(match.errors.count, "error") %> prohibited this match from being saved:</h2>
+
+      <ul>
+        <% match.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :player_1_id %>
+    <%= form.text_field :player_1_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :player_2_id %>
+    <%= form.text_field :player_2_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :player_1_score %>
+    <%= form.number_field :player_1_score %>
+  </div>
+
+  <div class="field">
+    <%= form.label :player_2_score %>
+    <%= form.number_field :player_2_score %>
+  </div>
+
+  <div class="field">
+    <%= form.label :guild_1_id %>
+    <%= form.text_field :guild_1_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :guild_2_id %>
+    <%= form.text_field :guild_2_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :addons_id %>
+    <%= form.text_field :addons_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :is_end %>
+    <%= form.check_box :is_end %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

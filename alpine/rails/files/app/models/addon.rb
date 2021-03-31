@@ -1,0 +1,2 @@
+class Addon < ApplicationRecord
+end

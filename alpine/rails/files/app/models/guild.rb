@@ -14,8 +14,11 @@ class Guild < ApplicationRecord
   has_many :officers, :through => :guild_officers, :source => :user
 
   after_create {
-    user = User.where(id: owner_id)
-    user.update(guild_id: id)
+    # назначаем владельца гильдии
+    user = User.where(id: self.owner_id)
+    user.update(guild_id: self.id)
+
+    # добавляем владельца в список мемберов
     GuildMember.create(user_id: owner_id, guild_id: id)
   }
 
@@ -25,4 +28,5 @@ class Guild < ApplicationRecord
       g.update_columns(rating: (guilds.index(g) + 1))
     end
   }
+
 end

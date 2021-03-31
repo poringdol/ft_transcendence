@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Guild 1:</strong>
+  <%= @war.guild_1_id %>
+</p>
+
+<p>
+  <strong>Guild 2:</strong>
+  <%= @war.guild_2_id %>
+</p>
+
+<p>
+  <strong>Start:</strong>
+  <%= @war.start %>
+</p>
+
+<p>
+  <strong>End:</strong>
+  <%= @war.end %>
+</p>
+
+<p>
+  <strong>Prize:</strong>
+  <%= @war.prize %>
+</p>
+
+<p>
+  <strong>Max unanswered:</strong>
+  <%= @war.max_unanswered %>
+</p>
+
+<p>
+  <strong>Addons:</strong>
+  <%= @war.addons_id %>
+</p>
+
+<p>
+  <strong>Guild 1 wins:</strong>
+  <%= @war.guild_1_wins %>
+</p>
+
+<p>
+  <strong>Guild 2 wins:</strong>
+  <%= @war.guild_2_wins %>
+</p>
+
+<%= link_to 'Edit', edit_war_path(@war) %> |
+<%= link_to 'Back', wars_path %>

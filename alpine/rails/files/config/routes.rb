@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :war_matches
+  resources :matches
+  resources :wars
+  resources :addons
   resources :friends
   resources :messages
   resources :rooms

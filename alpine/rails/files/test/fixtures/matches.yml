@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player_1: one
+  player_2: one
+  player_1_score: 1
+  player_2_score: 1
+  guild_1: one
+  guild_2: one
+  addons: one
+  is_end: false
+
+two:
+  player_1: two
+  player_2: two
+  player_1_score: 1
+  player_2_score: 1
+  guild_1: two
+  guild_2: two
+  addons: two
+  is_end: false

@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 User.create!(email: 'polinaria@a.a', nickname: 'polinaria', password: 'polinaria', password_confirmation: 'polinaria')
-guild = Guild.create(name: 'Creators', anagram: 'CRT', score: 100, rating: 1, owner_id: User.where(nickname: 'polinaria').first.id)
+guild = Guild.create!(name: 'Creators', anagram: 'CRT', score: 100, rating: 1, owner_id: User.where(nickname: 'polinaria').first.id)
 guild.update_column :logo, 'cat_mem.jpg'
 # Пользователю (владельцу гильдии) записывается id гильдии в функции-коллбеке в файле models/guild.rb 
 
