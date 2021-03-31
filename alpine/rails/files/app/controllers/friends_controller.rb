@@ -19,9 +19,103 @@ class FriendsController < ApplicationController
   def edit
   end
 
+  def send_request
+	user_is_following_you = Friend.find_by(user_id: params[:id], friend_id: current_user.id)
+	you_are_following_user = Friend.find_by(user_id: current_user.id, friend_id: params[:id])
+	
+	if (user_is_following_you == nil && 
+		you_are_following_user == nil)
+			@friend = Friend.new(user_id: current_user.id, friend_id: params[:id])
+			respond_to do |format|
+				if @friend.save
+					format.any { render json: 1, status: :created}
+				else
+					format.any { render json: ['unprocessable_entity'], notice: "unprocessable_entity" ,status: :unprocessable_entity }
+				end
+			end
+	elsif (user_is_following_you != nil && you_are_following_user != nil)
+		respond_to do |format|
+			format.any { render json: ['You are already friends'], notice: "You are already friends" ,status: :unprocessable_entity }
+		end
+	elsif (user_is_following_you != nil)
+		respond_to do |format|
+			format.any { render json: ['This user is following you'], notice: "This user is following you" ,status: :unprocessable_entity }
+		end
+	else (you_are_following_user != nil)
+		respond_to do |format|
+			format.any { render json: ['You are already following this user'], notice: "You are already following this user" ,status: :unprocessable_entity }
+		end
+	end
+  end
+
+  def follow_back
+	user_is_following_you = Friend.find_by(user_id: params[:id], friend_id: current_user.id)
+	you_are_following_user = Friend.find_by(user_id: current_user.id, friend_id: params[:id])
+	if (user_is_following_you && 
+		you_are_following_user == nil && 
+		user_is_following_you.is_friend == false)
+			@friend = Friend.new(user_id: current_user.id, friend_id: params[:id], is_friend: true)
+			user_is_following_you.is_friend = true
+			user_is_following_you.save
+			respond_to do |format|
+				if @friend.save
+					format.any { render json: 1, status: :created}
+				else
+					format.any { render json: ['unprocessable_entity'], notice: "unprocessable_entity" ,status: :unprocessable_entity }
+				end
+			end
+	else
+		respond_to do |format|
+			format.any { render json: ['This user is not your follower'], notice: "This user is not your follower" ,status: :unprocessable_entity }
+		end
+	end
+  end
+
+  def delete_from_friends
+	user_is_following_you = Friend.find_by(user_id: params[:id], friend_id: current_user.id)
+	you_are_following_user = Friend.find_by(user_id: current_user.id, friend_id: params[:id])
+
+	if (user_is_following_you && you_are_following_user)
+		you_are_following_user.destroy
+		user_is_following_you.is_friend = false
+		respond_to do |format|
+			if user_is_following_you.save
+				format.any { render json: 1, status: :created}
+			else
+				format.any { render json: user_is_following_you.errors, status: :unprocessable_entity }
+			end
+		end
+	else
+		respond_to do |format|
+			format.any { render json: ['You are not friends'], notice: "You are not friends" ,status: :unprocessable_entity }
+		end
+	end
+  end
+
+  def unfollow_user
+	user_is_following_you = Friend.find_by(user_id: params[:id], friend_id: current_user.id)
+	you_are_following_user = Friend.find_by(user_id: current_user.id, friend_id: params[:id])
+
+	if (user_is_following_you == nil && you_are_following_user)
+		you_are_following_user.destroy
+		respond_to do |format|
+			format.any { render json: 1, status: :created}
+		end
+	elsif (you_are_following_user == nil)
+		respond_to do |format|
+			format.any { render json: ['You are not following this user'], notice: "You are not following this user" ,status: :unprocessable_entity }
+		end
+	else
+		respond_to do |format|
+			format.any { render json: ['This user is following you'], notice: "This user is following you" ,status: :unprocessable_entity }
+		end
+	end
+  end
+
+
   # POST /friends or /friends.json
   def create
-    @friend = Friend.new(user_id: 4, friend_id: 8)
+    @friend = Friend.new(user_id: params[:user_id], friend_id: params[:friend_id])
 
     respond_to do |format|
       if @friend.save
@@ -59,6 +153,28 @@ class FriendsController < ApplicationController
   def get_friends
     @friends = Friend.select(:friend_id).where(user_id: params[:id])
     render json: @friends
+  end
+
+  def get_followers
+    followers = Friend.select(:user_id).where(friend_id: params[:id], is_friend: false)
+	# render :json => followers.to_json
+	render json: followers, each_serializer: FollowerSerializer
+  end
+
+  def is_friend
+	user = Friend.find_by(user_id: current_user.id, friend_id: params[:id])
+	if user == nil
+		user = Friend.find_by(user_id: params[:id], friend_id: current_user.id)
+		if user == nil
+			render json: 0		 # they are not friends
+		else
+			render json: 3		 # user is following you
+		end
+	elsif user.is_friend == true # they are friends
+		render json: 1
+	else						 # you are following user
+		render json: 2
+	end
   end
 
   private

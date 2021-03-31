@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   post 'guilds/update_name' => "guilds#update_name"
   post 'guilds/update_anagram' => "guilds#update_anagram"
   post 'guilds/update_logo' => "guilds#update_logo"
+  get 'guilds/get_guild/:id' => 'guilds#get_guild'
 
 
 # ------------------
@@ -52,7 +53,15 @@ Rails.application.routes.draw do
   post 'users/edit/update_nickname' => "users#update_nickname"
 
   get 'friends/get_friends/:id' => 'friends#get_friends'
+  get 'friends/get_followers/:id' => 'friends#get_followers'
+  get 'friends/is_friend/:id' => 'friends#is_friend'
 
+  get 'friends/follow_back/:id' => 'friends#follow_back'
+  get 'friends/send_request/:id' => 'friends#send_request'
+  get 'friends/delete_from_friends/:id' => 'friends#delete_from_friends'
+  get 'friends/unfollow_user/:id' => 'friends#unfollow_user'
+  
+  
   get 'welcome/index'
   root 'welcome#index'
 

@@ -27,6 +27,11 @@ class GuildsController < ApplicationController
   end
 
 
+  def get_guild
+	guild = Guild.find(params[:id])
+	render json: guild
+  end
+
   def get_guild_users
   # Костыль(?) из-за 2ф авторизации без :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt ничего не работает
 	guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])

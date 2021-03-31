@@ -112,7 +112,6 @@ $(function () {
 				var userView = new App.Views.GuildMember({ model: user});
 				this.$el.append(userView.render().el);
 			}
-			
 		}
 	})
 
