@@ -4,8 +4,6 @@ document.addEventListener('turbolinks:load', () => {
   const room_element = document.getElementById('room-id');
   const room_id = (room_element != null) ? room_element.getAttribute('data-room-id') : -1;
 
-  console.log(consumer.subscriptions)
-
   consumer.subscriptions.subscriptions.forEach((subscription) => {
     consumer.subscriptions.remove(subscription)
   })
@@ -30,13 +28,13 @@ document.addEventListener('turbolinks:load', () => {
       let html;
 
       if (user_id === data.message.user_id) {
-        html = data.mine
+        html = data.mine;
       } else {
-        html = data.theirs
+        html = data.theirs;
       }
 
-      const messageContainer = document.getElementById('messages')
-      messageContainer.innerHTML = messageContainer.innerHTML + html
+      const messageContainer = document.getElementById('messages');
+      messageContainer.innerHTML = messageContainer.innerHTML + html;
     }
   });
 })
