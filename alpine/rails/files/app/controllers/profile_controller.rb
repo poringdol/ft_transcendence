@@ -19,33 +19,9 @@ class ProfileController < ApplicationController
     end
   end
 
-  def add_friends
-    friend = Friend.create(user_id: current_user, friend_id: User.find(5))
-    friend = Friend.create(user_id: current_user, friend_id: User.find(6))
-    friend = Friend.create(user_id: current_user, friend_id: User.find(7))
-    render json: friend
-  end
-
-  def get_friends
-    friend = Friend.all
-    render json: friend
-  end
-
-  def get_user_friends
-    # friends = Friend.select(:friend_id).where(user_id: params[:id])
-    # friends = Friend.where(user_id: User.find(params[:id]))
-    render json: friends
-  end
-
   def get_user
     @user = User.find(params[:id])
     render json: @user
-  end
-
-  def get_user_friends2
-	# friends = Friend.select(:friend_id).where(user_id: params[:id])
-    friends = Friend.where(user_id: 1)
-    render json: friends
   end
 
 # Returns current user in JSON
