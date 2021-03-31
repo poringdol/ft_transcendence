@@ -25,11 +25,11 @@ RUN gem update --system && \
 # setup
 WORKDIR /pingpong
 COPY ./files /pingpong
-RUN bundle update mimemagic && \
-	bundle update
-
 COPY ./Gemfile.lock /pingpong/Gemfile.lock
-RUN bundle install && \
+
+RUN bundle update mimemagic && \
+	bundle update && \
+	bundle install && \
 	yarn install --check-files && \
 	yarn add jquery \
 			 backbone \
