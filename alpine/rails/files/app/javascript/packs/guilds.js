@@ -208,7 +208,7 @@ $(function () {
 			return this;
 		},
 		renderCard: function (owner) {
-			window.current_guild = this.model;
+			window.current_guild_id = this.model.id;
 			this.model.owner_nickname = owner.nickname;
 			var template = this.templateCard(this.model);
 			this.$el.html(template);

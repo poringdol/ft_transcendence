@@ -31,5 +31,5 @@ class UsersController < ApplicationController
       current_user.save!
       redirect_to '/user'
     end
-  end
+  endzz
 end

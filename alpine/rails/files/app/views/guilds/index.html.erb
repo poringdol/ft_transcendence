@@ -194,20 +194,20 @@
 			
 				form_name.addEventListener("submit", function (e) {				// перехватываем отправку формы f.submit
 					e.preventDefault();
-					event.target.id.value = current_guild.id;					// заменяем значение id в поле f.hidden_field
+					event.target.id.value = current_guild_id;					// заменяем значение id в поле f.hidden_field
 					return true;												// отправляем форму f
 				})
 			
 				form_anag.addEventListener("submit", function (e) {
 					e.preventDefault();
-					event.target.id.value = current_guild.id;
+					event.target.id.value = current_guild_id;
 					return true;
 				})
 
 				form_avat.addEventListener("submit", function (e) {
 					e.preventDefault();
 					console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-					event.target.id.value = current_guild.id;
+					event.target.id.value = current_guild_id;
 					return true;
 				})
 

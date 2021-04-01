@@ -26,6 +26,10 @@ class User < ApplicationRecord
 
   mount_uploader :avatar, AvatarUploader
 
+  # has_many :messages, dependent: :destroy
+  # has_many :friends, dependent: :destroy
+  # has_many :users, class_name: "Friend", dependent: :destroy
+
   def otp_qr_code
     issuer = 'PingPongApp'
     label = "#{issuer}:#{email}"
