@@ -6,14 +6,18 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.create!(email: 'polinaria@a.a', nickname: 'polinaria', password: 'polinaria', password_confirmation: 'polinaria')
+user = User.create!(email: 'polinaria@a.a', nickname: 'polinaria', password: 'polinaria', password_confirmation: 'polinaria')
+user.update_column :is_admin, true
 guild = Guild.create!(name: 'Creators', anagram: 'CRT', score: 100, rating: 1, owner_id: User.where(nickname: 'polinaria').first.id)
 guild.update_column :logo, 'cat_mem.jpg'
 # Пользователю (владельцу гильдии) записывается id гильдии в функции-коллбеке в файле models/guild.rb 
 
-User.create!(email: 'cddoma@a.a', nickname: 'cddoma', avatar: 'dog.jpg', guild_id: guild.id, password: 'cddoma', password_confirmation: 'cddoma')
-User.create!(email: 'alldeady@a.a', nickname: 'alldeady', avatar: 'cat.jpg', guild_id: guild.id, password: 'alldeady', password_confirmation: 'alldeady')
-User.create!(email: 'markvel@a.a', nickname: 'markvel', guild_id: guild.id, password: 'markvel', password_confirmation: 'markvel')
+user = User.create!(email: 'cddoma@a.a', nickname: 'cddoma', avatar: 'dog.jpg', guild_id: guild.id, password: 'cddoma', password_confirmation: 'cddoma')
+user.update_column :is_admin, true
+user = User.create!(email: 'alldeady@a.a', nickname: 'alldeady', avatar: 'cat.jpg', guild_id: guild.id, password: 'alldeady', password_confirmation: 'alldeady')
+user.update_column :is_admin, true
+user = User.create!(email: 'markvel@a.a', nickname: 'markvel', guild_id: guild.id, password: 'markvel', password_confirmation: 'markvel')
+user.update_column :is_admin, true
 
 User.create!(email: 'splinter@a.a', nickname: 'splinter', password: 'splinter', password_confirmation: 'splinter')
 guild = Guild.create(name: 'Ninja Turtles', anagram: 'TMNT', score: 80, rating: 3, owner_id: User.where(nickname: 'splinter').first.id)

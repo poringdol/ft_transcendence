@@ -15,7 +15,11 @@
 </head>
 
 <body>
-	<% if user_signed_in? %>
+	<% if user_signed_in? && current_user.is_banned? %>
+		<div class="all_page">
+			<%= render 'layouts/banned' %>
+			<div id="BlockPage" class="content">
+	<% elsif user_signed_in? %>
 		<div class="all_page">
 			<%= render 'layouts/navbar' %>
 			<div class="content">

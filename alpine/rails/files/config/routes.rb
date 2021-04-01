@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :blocklists
   resources :war_matches
   resources :matches
   resources :wars

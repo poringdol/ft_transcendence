@@ -1,0 +1,2 @@
+module BlocklistsHelper
+end

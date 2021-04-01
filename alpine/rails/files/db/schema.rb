@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_31_170322) do
+ActiveRecord::Schema.define(version: 2021_04_01_215034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(version: 2021_03_31_170322) do
     t.boolean "addon3"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "blocklists", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "blocked_user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["blocked_user_id"], name: "index_blocklists_on_blocked_user_id"
+    t.index ["user_id"], name: "index_blocklists_on_user_id"
   end
 
   create_table "friends", force: :cascade do |t|
@@ -113,6 +122,8 @@ ActiveRecord::Schema.define(version: 2021_03_31_170322) do
     t.string "nickname"
     t.bigint "guild_id", default: 0
     t.string "encrypted_password", default: "", null: false
+    t.boolean "is_admin", default: false
+    t.boolean "is_banned", default: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -168,6 +179,8 @@ ActiveRecord::Schema.define(version: 2021_03_31_170322) do
     t.index ["guild_2_id"], name: "index_wars_on_guild_2_id"
   end
 
+  add_foreign_key "blocklists", "users"
+  add_foreign_key "blocklists", "users", column: "blocked_user_id"
   add_foreign_key "friends", "users"
   add_foreign_key "friends", "users", column: "friend_id"
   add_foreign_key "matches", "addons", column: "addons_id"
