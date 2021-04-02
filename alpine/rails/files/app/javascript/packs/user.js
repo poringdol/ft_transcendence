@@ -168,7 +168,7 @@ $(function () {
 			.catch(() => alert('some error'));
 		},
 		banUser: function () {
-			if (current_user.is_admin == true) {
+			if (current_user.is_admin == true && model.is_admin == false) {
 				fetch(("/profile/ban_user/" + this.model.id))
 				.then(res => res.ok ? res.json() : Promise.reject(res))
 				.then(_.bind((res) => {
@@ -217,10 +217,12 @@ $(function () {
 					this.$el.append(this.templateUnfollowBtn);
 				else if (!this.model.is_banned)
 					this.$el.append(this.templateFollowBackBtn);
-				if (current_user.is_admin == true && !this.model.is_banned)
-					this.$el.append(this.templateBanBtn);
-				else if (current_user.is_admin == true && this.model.is_banned)
-					this.$el.append(this.templateUnbanBtn);
+				if (!this.model.is_admin) {
+					if (current_user.is_admin == true && !this.model.is_banned)
+						this.$el.append(this.templateBanBtn);
+					else if (current_user.is_admin == true && this.model.is_banned)
+						this.$el.append(this.templateUnbanBtn);
+				}
 			}, this))
 		}
 	})
