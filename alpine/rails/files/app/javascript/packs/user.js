@@ -345,24 +345,28 @@ $(function () {
 		}
 	})
 	function renderPage(user) {
-		window.usr_id = user.id
-
-		userInfoView = new App.Views.UserInfo({ model: user })
-		userInfoView.render()
-
-		UserFriends = new App.Collections.UserFriends()
-		UserFriendsView = new App.Views.UserFriends({ collection: UserFriends })
-		UserFriendsView.render()
-
-		if (user.id == current_user.id) {
-			UserFriendRequests = new App.Collections.UserFollowers()
-			UserFriendRequestsView = new App.Views.UserFriendRequests({ collection: UserFriendRequests })
+		if (!current_user.is_banned) {
+			window.usr_id = user.id
+	
+			userInfoView = new App.Views.UserInfo({ model: user })
+			userInfoView.render()
+	
+			UserFriends = new App.Collections.UserFriends()
+			UserFriendsView = new App.Views.UserFriends({ collection: UserFriends })
+			UserFriendsView.render()
+	
+			if (user.id == current_user.id) {
+				UserFriendRequests = new App.Collections.UserFollowers()
+				UserFriendRequestsView = new App.Views.UserFriendRequests({ collection: UserFriendRequests })
+			}
+	
+			UserGuildView = new App.Views.UserGuild({ model: user })
+			UserGuildView.render()
+	
+			UserMatchesView = new App.Views.UserMatches({ model: user })
+			UserMatchesView.render()
 		}
-
-		UserGuildView = new App.Views.UserGuild({ model: user })
-		UserGuildView.render()
-
-		UserMatchesView = new App.Views.UserMatches({ model: user })
-		UserMatchesView.render()
+		else
+			$(".content").html("<h3>You account was blocked by administrator</h3>")
 	}
 }());

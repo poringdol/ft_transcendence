@@ -409,10 +409,14 @@ $(function () {
 	fetch("/get_curr_user")
 	.then(res => res.ok ? res.json() : Promise.reject(res))
 	.then(function(curr_user) {
-		window.curr_user = curr_user;
-		col = new App.Collections.Guild();
-		form = new App.Views.NewGuild({ collection: col });
-		form.render();
-		guilds_view = new App.Views.Guilds({ collection: col });
+		if (!curr_user.is_banned) {
+			window.curr_user = curr_user;
+			col = new App.Collections.Guild();
+			form = new App.Views.NewGuild({ collection: col });
+			form.render();
+			guilds_view = new App.Views.Guilds({ collection: col });
+		}
+		else
+			$(".content").html("<h3>You account was blocked by administrator</h3>")
 	})	
 }());
