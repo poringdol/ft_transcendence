@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get 'profile/add_friends' => 'profile#add_friends'
   get 'profile/get_friends' => 'profile#get_friends'
 
+  get 'users' => "users#edit"
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_
   post 'users/update_avatar' => "users#update_avatar"
   post 'users/edit/update_avatar' => "users#update_avatar"

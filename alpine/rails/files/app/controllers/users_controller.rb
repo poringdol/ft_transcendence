@@ -10,6 +10,10 @@ class UsersController < ApplicationController
     return render json: @user
   end
 
+  def edit
+    redirect_to '/users/edit'
+  end
+
   def enable_otp
     current_user.otp_secret = User.generate_otp_secret
     current_user.otp_required_for_login = true
@@ -20,7 +24,7 @@ class UsersController < ApplicationController
   def update_nickname
     current_user.nickname = params[:user][:nickname]
     current_user.save!
-    redirect_to '/user'
+    redirect_to '/users/edit'
   end
 
   def update_avatar
@@ -29,7 +33,7 @@ class UsersController < ApplicationController
         current_user.avatar = f
       end
       current_user.save!
-      redirect_to '/user'
+      redirect_to '/users/edit'
     end
-  endzz
+  end
 end
