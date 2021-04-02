@@ -22,6 +22,7 @@ $(function () {
 			this.wins = data.user.wins
 			this.score = data.user.score
 			this.is_banned = data.user.is_banned
+			this.is_admin = data.user.is_admin
 		}
 	})
 
@@ -97,18 +98,22 @@ $(function () {
 	// -----------------------------------------
 	App.Views.UserInfoBtn = Backbone.View.extend({
 		id: 'UserButtons',
-		// templateBtn: _.template($("#UserInfoBtnTemplate").html()),
-		templateEditBtn: _.template($("#UserInfoEditBtnTemplate").html()),
-		templateAddBtn: _.template($("#UserInfoAddBtnTemplate").html()),
-		templateDelBtn: _.template($("#UserInfoDelBtnTemplate").html()),
-		templateUnfollowBtn: _.template($("#UserInfoUnfollowBtnTemplate").html()),
-		templateFollowBackBtn: _.template($("#UserInfoFollowBackBtnTemplate").html()),
-		templateBannedStatus: _.template($("#UserInfoBannedStatusTemplate").html()),
+		templateEditBtn:		_.template($("#UserInfoEditBtnTemplate").html()),
+		templateAddBtn:			_.template($("#UserInfoAddBtnTemplate").html()),
+		templateDelBtn:			_.template($("#UserInfoDelBtnTemplate").html()),
+		templateUnfollowBtn:	_.template($("#UserInfoUnfollowBtnTemplate").html()),
+		templateFollowBackBtn:	_.template($("#UserInfoFollowBackBtnTemplate").html()),
+		templateBanBtn:			_.template($("#UserInfoBanBtnTemplate").html()),
+		templateUnbanBtn:		_.template($("#UserInfoUnbanBtnTemplate").html()),
+		templateBannedStatus:	_.template($("#UserInfoBannedStatusTemplate").html()),
+		
 		events: {
 			'click #UserInfoAddBtn':		'addFriend',
 			'click #UserInfoDelBtn':		'deleteFriend',
 			'click #UserInfoUnfollowBtn': 	'unfollowUser',
-			'click #UserInfoFollowBackBtn': 'followBackUser'
+			'click #UserInfoFollowBackBtn': 'followBackUser',
+			'click #UserInfoBanBtn': 		'banUser',
+			'click #UserInfoUnbanBtn': 		'unbanUser'
 		},
 		render: function () {
 			if (current_user.id == this.model.id)
@@ -123,6 +128,8 @@ $(function () {
 			.then(_.bind((res) => {
 				if (res == 1)
 					alert('You sent request to ' + this.model.nickname + '!')
+				else
+					alert(res)
 				this.render()
 			}, this))
 		},
@@ -134,6 +141,7 @@ $(function () {
 					alert('You and ' + this.model.nickname + ' became friends!')
 				this.render()
 			}, this))
+			.catch(() => alert('some error'));
 		},
 		deleteFriend: function () {
 			fetch(("/friends/delete_from_friends/" + this.model.id))
@@ -141,8 +149,11 @@ $(function () {
 			.then(_.bind((res) => {
 				if (res == 1)
 					alert('You deleted ' + this.model.nickname + ' from friends :(')
+				else
+					alert(res)
 				this.render()
 			}, this))
+			.catch(() => alert('some error'));
 		},
 		unfollowUser: function () {
 			fetch(("/friends/unfollow_user/" + this.model.id))
@@ -150,30 +161,50 @@ $(function () {
 			.then(_.bind((res) => {
 				if (res == 1)
 					alert('You unfollowed ' + this.model.nickname + ' :(')
+				else
+					alert(res)
 				this.render()
 			}, this))
+			.catch(() => alert('some error'));
+		},
+		banUser: function () {
+			if (current_user.is_admin == true) {
+				fetch(("/profile/ban_user/" + this.model.id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					if (res == 1)
+						alert('You banned ' + this.model.nickname + ' :(')
+					else
+						alert(res)
+					this.model.is_banned = true;
+					this.render()
+				}, this))
+				.catch(() => alert('some error'));
+			}
+			else
+				alert("You don't have a permission!")
+		},
+		unbanUser: function () {
+			if (current_user.is_admin == true) {
+				fetch(("/profile/unban_user/" + this.model.id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					if (res == 1)
+						alert('You unbanned ' + this.model.nickname + ' :)')
+					else
+						alert(res)
+					this.model.is_banned = false;
+					this.render()
+				}, this))
+				.catch(() => alert('some error'));
+			}
+			else
+				alert("You don't have a permission!")
 		},
 		drawBtn: function () {
 			fetch(("/friends/is_friend/" + this.model.id))
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(function (res) {
-				// if (res == 0) {
-				// 	var template = this.templateBtn({ button_text: "ADD TO FRIENDS" })
-				// 	$('#UserInfoBtnHref').attr({ 'href': "/guilds" })
-				// }
-				// else if (res == 1) {
-				// 	var template = this.templateBtn({ button_text: "DELETE FROM FRIENDS" })
-				// 	this.$el.html(template);
-				// 	$('#UserInfoBtnHref').attr({ 'href': "/guilds" })
-				// }
-				// else if (res == 2)
-				// 	var template = this.templateBtn({ button_text: "UNFOLLOW" })
-				// else {
-				// 	var template = this.templateBtn({ button_text: "FOLLOW BACK" })
-				// 	this.$el.html(template);
-				// 	$('#UserInfoBtnHref').attr({ 'href': "/guilds" })
-				// }
-				// this.$el.html(template);
 				if (this.model.is_banned)
 					this.$el.html(this.templateBannedStatus);
 				else
@@ -186,6 +217,10 @@ $(function () {
 					this.$el.append(this.templateUnfollowBtn);
 				else if (!this.model.is_banned)
 					this.$el.append(this.templateFollowBackBtn);
+				if (current_user.is_admin == true && !this.model.is_banned)
+					this.$el.append(this.templateBanBtn);
+				else if (current_user.is_admin == true && this.model.is_banned)
+					this.$el.append(this.templateUnbanBtn);
 			}, this))
 		}
 	})
@@ -272,9 +307,10 @@ $(function () {
 	App.Views.UserFriendsIcon = Backbone.View.extend({
 		template: _.template($("#UserFriendsIconTemplate").html()),
 		tagName: 'a',
-		className: 'col-2 UserFriendIcon UserHref',
+		className: 'col-2 UserFriendIcon SimpleHref',
 		render: function () {
 			var template = this.template(this.model);
+		
 			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
 			this.$el.html(template);
 		}

@@ -16,18 +16,7 @@
   border-radius: 50%;
 }
 
-// .navbar-brand img {
-//   height: 35px;
-//   float: none;
-//   margin-right: 7px;
-// }
-
 body {
-//   overflow-y: hidden;
-//   ::-webkit-scrollbar {
-//     display: none;
-//   }
-//   -ms-overflow-style: none;
   box-sizing: border-box;
   position:relative;
   height: 100%;
@@ -41,12 +30,6 @@ body {
     overflow-y: scroll;
     padding: 20px;
   }
-
-//   .navbar {
-//     border-bottom: 1px solid #eeeeee;
-//     margin-left: -15px;
-//     width: calc(100% + 30px);
-//   }
 
   .message {
     min-height: 59px;
@@ -168,14 +151,24 @@ body {
 	margin: 20px;
 }
 
-.GuildCard {
-	display: inline-block;
-	margin: 10px;
+
+//------------------------------------------------------------
+// GUILD PAGE STYLES
+//------------------------------------------------------------
+
+// --- page construction ---
+.PageBody {
+	min-width: 850px;
 }
 
-.GuildButton {
-  margin: 5px;
+#GuildList {
+	min-width: 230px;
 }
+
+#GuildContent {
+	min-width: 290px;
+}
+// -------------------------
 
 .list-group-item.active {
 	z-index: 2;
@@ -203,28 +196,66 @@ body {
 	background-color: #82a4d786;
 }
 
-#GuildCard.badge {
+#GuildCardBadge.badge {
 	color: #00000063;
 	font-weight: 100;
 	font-size: 0.95em;
-}
-
-#GuildCard.bg-primary {
 	background-color: #0d6dfd00 !important;
 }
+
+
+//------------------------------------------------------------
+// PROFILE PAGE STYLES
+//------------------------------------------------------------
+
+// --- page construction ---
+#UserInfo {
+	min-width: 300px;
+	margin-bottom: 25px;
+}
+
+#UserRightCol {
+	min-width: 570px;
+}
+
+#UserGuild {
+	margin-bottom: 25px;
+}
+
+#UserGuildCardBody {
+	padding-bottom: 0.3rem;
+}
+// -------------------------
 
 #UserInfoPhoto {
 	text-align: center;
 	margin: 20px 0px 15px;
 }
 
-#UserInfoEditBtn {
-	width: 90%;
-}
-
 .UserInfoBtns {
 	width: 90%;
 }
+
+.UserFriendIcon {
+	text-align: center;
+	font-size: 13px;
+}
+
+.InfoFieldText {
+	min-width: 105px;
+	color: #212529b8;
+}
+
+#UserInfoBannedStatus {
+  background-color: #832525bd;
+  margin-bottom: 10px;
+  color: #eae4e4;
+}
+
+
+//------------------------------------------------------------
+// ALL PURPOSE STYLES
+//------------------------------------------------------------
 
 .accordion-button {
 	padding: 0.5rem 1.25rem;
@@ -238,81 +269,69 @@ body {
 	background-color: #82a4d714;
 }
 
-#UserInfo {
-	min-width: 300px;
-	margin-bottom: 25px;
+.SimpleHref {
+	color: black;
+	text-decoration: none;
 }
 
-#UserGuild {
-	margin-bottom: 25px;
-}
-
-.UserFriendIcon {
-	text-align: center;
-	font-size: 13px;
-}
-
-#UserRightCol {
-	min-width: 570px;
-}
-
-.image-cropper {
-	width: 100px;
-	height: 100px;
-	position: relative;
-	overflow: hidden;
-	border-radius: 50%;
-}
-
-.profile-pic {
-	display: inline;
-	margin: 0 auto;
-	margin-left: -25%; //centers the image
-	height: 100%;
-	width: auto;
-}
-
-#UserGuildCardBody {
-	padding-bottom: 0.3rem;
-}
-
-.InfoFieldText {
-	min-width: 105px;
-	color: #212529b8;
+.AdminBtns {
+	margin-top: 10px;
+	// background-color: #bf647e42;
+	// background-color: #83252536;
+	background-color: #ac3e3e36;
 }
 
 #UserButtons {
 	text-align: center;
 }
 
-.UserHref {
-	color: black;
-	text-decoration: none;
-}
 
-#userFriendsNotification {
-	border-radius: 30px;
-	width: 30px;
-	height: 30px;
+// .image-cropper {
+// 	width: 100px;
+// 	height: 100px;
+// 	position: relative;
+// 	overflow: hidden;
+// 	border-radius: 50%;
+// }
 
-	background-color: #82a4d7;
-	display: inline-block;
-	padding: 0.35em 0.65em;
-	font-size: 0.75em;
+// .profile-pic {
+// 	display: inline;
+// 	margin: 0 auto;
+// 	margin-left: -25%; //centers the image
+// 	height: 100%;
+// 	width: auto;
+// }
 
-	color: #fff;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: baseline;
-} 
+// #BlockPage {
+//   color: rgb(200, 10, 10);
+//   margin: 20px;
+// }
 
-#BlockPage {
-  color: rgb(200, 10, 10);
-  margin: 20px;
-}
+// #userFriendsNotification {
+// 	border-radius: 30px;
+// 	width: 30px;
+// 	height: 30px;
 
-#UserInfoBannedStatus {
-  background-color: rgb(200, 10, 10);
-  border-radius: 0.25rem;
-  padding: 0.375rem 0.75rem;
-}
+// 	background-color: #82a4d7;
+// 	display: inline-block;
+// 	padding: 0.35em 0.65em;
+// 	font-size: 0.75em;
+
+// 	color: #fff;
+// 	text-align: center;
+// 	white-space: nowrap;
+// 	vertical-align: baseline;
+// } 
+
+
+
+
+
+
+
+
+
+
+
+
+

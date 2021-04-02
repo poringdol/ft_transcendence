@@ -9,16 +9,6 @@ class ProfileController < ApplicationController
     end
   end
 
-  def index_id
-    respond_to do |format|
-      format.html { 
-        @user = User.find(params[:id])
-        @user
-	    }
-      format.json { render json: @user}
-    end
-  end
-
   def get_user
     @user = User.find(params[:id])
     render json: @user
@@ -29,9 +19,32 @@ class ProfileController < ApplicationController
     render json: current_user
   end
 
-  def get_guild
-    guild = Guild.find(params[:guild_id])
-    render json: guild
+  def ban_user
+	user = User.find(params[:id])
+	if (user && current_user.is_admin == true)
+		user.is_banned = true
+		respond_to do |format|
+			if user.save
+				format.any { render json: 1, status: :created}
+			else
+				format.any { render json: ['unprocessable_entity'], notice: "unprocessable_entity" ,status: :unprocessable_entity }
+			end
+		end
+	end
+  end
+
+  def unban_user
+	user = User.find(params[:id])
+	if (user && current_user.is_admin == true && user.is_banned == true)
+		user.is_banned = false
+		respond_to do |format|
+			if user.save
+				format.any { render json: 1, status: :created}
+			else
+				format.any { render json: ['unprocessable_entity'], notice: "unprocessable_entity" ,status: :unprocessable_entity }
+			end
+		end
+	end
   end
 
 end

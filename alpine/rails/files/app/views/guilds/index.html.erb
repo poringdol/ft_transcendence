@@ -22,7 +22,7 @@
 	<div class="col-4"></div>
 	<div class="col-4"></div>
 </div>
-<div class="row justify-content-center">
+<div class="row justify-content-center PageBody">
 	<div class="col-3" id="GuildList"></div>
 	<div class="col-4" id="GuildCard"></div>
 	<div class="col-4" id="GuildContent"></div>
@@ -35,7 +35,7 @@
 <script type="text/template" id="GuildListElTemplate">
 	<div id="GuildNameList" style="padding: 10px">
 		<a style="margin-right: 5px">
-		<%%= rating %>. 
+			<%%= rating %>. 
 		</a>
 		<img width="30" height="30" class="rounded-circle" src=<%%= logo.url %>> 
 		<%%= name %>
@@ -51,6 +51,33 @@
 		<%%= nickname %>
 	</div>
 </script>
+
+<script type="text/template" id="GuildMemberListBtnTemplate">
+	<div class='row' id='AdminGuildMemberBtn' style="padding-left: 10px;padding-right: 10px;">
+	</div>
+</script>
+
+<!-- 
+	MEMBER LIST ADMIN BUTTONS TEMPLATE
+-->
+<script type="text/template" id="AdminExitMemberBtnTemplate">
+	<button id='AdminExitMember' type="button" class="btn card-link btn-guild col">
+		remove
+	</button>
+</script>
+
+<script type="text/template" id="AdminDoOfficerBtnTemplate">
+	<button id='AdminDoOfficer' type="button" class="btn card-link btn-guild col">
+		do officer
+	</button>
+</script>
+
+<script type="text/template" id="AdminDoOwnerBtnTemplate">
+	<button id='AdminDoOwner' type="button" class="btn card-link btn-guild col">
+		do owner
+	</button>
+</script>
+
 
 
 <!-- 
@@ -68,15 +95,15 @@
 			<li class="list-group-item">Score:  <%%= score %></li>
 			<li class="list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardMembers" data-bs-toggle="list">
 				Members
-				<span class="badge bg-primary rounded-pill" id="GuildCard">ᐳ</span>
+				<span class="badge" id="GuildCardBadge">ᐳ</span>
 			</li>
 			<li class="list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardOfficers" data-bs-toggle="list">
 				Officers
-				<span class="badge bg-primary rounded-pill" id="GuildCard">ᐳ</span>
+				<span class="badge" id="GuildCardBadge">ᐳ</span>
 			</li>
 			<li class="list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardWars" data-bs-toggle="list">
 				Wars
-				<span class="badge bg-primary rounded-pill" id="GuildCard">ᐳ</span>
+				<span class="badge" id="GuildCardBadge">ᐳ</span>
 			</li>
 	</div>
 	<div id="GuildCardBtn" class="card-body">

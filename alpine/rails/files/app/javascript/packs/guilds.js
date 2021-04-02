@@ -109,8 +109,12 @@ $(function () {
 		},
 		addOne: function (user) {
 			if (user.nickname) {
-				var userView = new App.Views.GuildMember({ model: user});
+				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
+				if (curr_user.is_admin == true) {
+					var userViewBtn = new App.Views.GuildMemberBtn({ model: user });
+					this.$el.append(userViewBtn.render().el);
+				}
 			}
 		}
 	})
@@ -121,22 +125,89 @@ $(function () {
 	// -----------------------------------------
 	App.Views.GuildMember = Backbone.View.extend({
 		tagName: 'a',
-		// className: 'list-group-item list-group-item-action',
 		className: 'list-group-item',
 		templateList: _.template($("#GuildMemberListTemplate").html()),
 
 		initialize: function () {
 			this.model.on('destroy', this.remove, this);
 		},
-		events: {
-			// 'click #GuildNameList' : 'showCard'
-		},
 		render: function () {
-			// this.$el.attr({ 'data-bs-toggle': "list" });
 			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
+			
 			return this;
+		},
+		remove: function () {
+			this.$el.remove();
+		}
+	})
+
+	App.Views.GuildMemberBtn = Backbone.View.extend({
+		tagName: 'div',
+		className: 'list-group-item',
+		template_exit:		_.template($("#AdminExitMemberBtnTemplate").html()),
+		template_officer:	_.template($("#AdminDoOfficerBtnTemplate").html()),
+		template_owner:  	_.template($("#AdminDoOwnerBtnTemplate").html()),
+
+		initialize: function () {
+			this.model.on('destroy', this.remove, this);
+		},
+		events: {
+			'click #AdminExitMember':	'exitMember',
+			'click #AdminDoOfficer':	'doOfficer',
+			'click #AdminDoOwner':		'doOwner'
+		},
+		render: function () {
+			this.$el.attr({ 'style': 'text-align: center;' });
+			this.drawExitBtn();
+			this.drawDoOfficerBtn();
+			this.drawDoOwnerBtn();
+
+			return this;
+		},
+		drawExitBtn: function () {
+			var template_exit = this.template_exit(this.model);
+			this.$el.append(template_exit);
+		},
+		drawDoOfficerBtn: function () {
+			fetch("/guilds/is_officer/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				if (res == 0) {
+					var template_officer = this.template_officer(this.model);
+					this.$el.append(template_officer);
+				}
+			}, this))
+		},
+		drawDoOwnerBtn: function () {
+			fetch("/guilds/is_owner/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				if (res == 0) {
+					var template_owner = this.template_owner(this.model);
+					this.$el.append(template_owner);
+				}
+			}, this))
+		},
+		exitMember: function () {
+			fetch("/guilds/exit_user/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				alert('Success! User ' + this.model.nickname + ' removed from guild!')
+				window.location.reload()
+			}, this))
+		},
+		doOfficer: function () {
+			
+		},
+		doOwner: function () {
+			fetch("/guilds/do_owner/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				alert('Success! User ' + this.model.nickname + ' became an owner!')
+				window.location.reload()
+			}, this))
 		},
 		remove: function () {
 			this.$el.remove();
@@ -269,7 +340,7 @@ $(function () {
 			'click #DelGuildBtn':   'deleteGuild',
 			'click #JoinGuildBtn':  'joinGuild',
 			'click #LeaveGuildBtn': 'leaveGuild',
-			'click #EditGuildBtn':   'editGuild',
+			'click #EditGuildBtn':  'editGuild',
 		},
 		deleteGuild: function () {
 			alert("DELETE");

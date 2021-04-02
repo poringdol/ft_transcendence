@@ -11,3 +11,16 @@ class FriendSerializer < ActiveModel::Serializer
   end
 
 end
+
+
+class ErrorSerializer < ActiveModel::Serializer
+  attributes :id, :error
+
+  def error
+    {
+      name: self.object.name, 
+      text: self.object.text,
+    }
+  end
+
+end

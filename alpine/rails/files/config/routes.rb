@@ -30,6 +30,12 @@ Rails.application.routes.draw do
   post 'guilds/update_logo' => "guilds#update_logo"
   get 'guilds/get_guild/:id' => 'guilds#get_guild'
 
+  get 'guilds/is_officer/:id' => 'guilds#is_officer'
+  get 'guilds/is_owner/:id' => 'guilds#is_owner'
+  get 'guilds/exit_user/:id' => 'guilds#exit_user'
+  get 'guilds/do_owner/:id' => 'guilds#do_owner'
+  get 'guilds/do_officer/:id' => 'guilds#do_officer'
+
 
 # ------------------
 #    PROFILE PAGE
@@ -39,13 +45,9 @@ Rails.application.routes.draw do
   get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
   get 'profile/get_curr_user' => "profile#get_curr_user"
   get 'profile/:id' => "profile#index"
-#   get 'profile/get_user_friends/:id' => "profile#get_user_friends"
-#   get 'profile/get_user_friends2' => "profile#get_user_friends2"
-  post 'profile/get_guild' => "profile#get_guild"
   get 'profile/get_user/:id' => "profile#get_user"
-
-  get 'profile/add_friends' => 'profile#add_friends'
-  get 'profile/get_friends' => 'profile#get_friends'
+  get 'profile/ban_user/:id' => "profile#ban_user"
+  get 'profile/unban_user/:id' => "profile#unban_user"
 
   get 'users' => "users#edit"
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_
@@ -54,10 +56,13 @@ Rails.application.routes.draw do
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
 
+
+# ------------------------------------
+#   PROFILE PAGE - FRIENDS CONTROLLER
+# ------------------------------------
   get 'friends/get_friends/:id' => 'friends#get_friends'
   get 'friends/get_followers/:id' => 'friends#get_followers'
   get 'friends/is_friend/:id' => 'friends#is_friend'
-
   get 'friends/follow_back/:id' => 'friends#follow_back'
   get 'friends/send_request/:id' => 'friends#send_request'
   get 'friends/delete_from_friends/:id' => 'friends#delete_from_friends'

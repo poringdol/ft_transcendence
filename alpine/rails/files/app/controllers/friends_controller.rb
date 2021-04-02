@@ -65,8 +65,10 @@ class FriendsController < ApplicationController
 				end
 			end
 	else
+		puts("ssssssssssssssss")
+		puts("ssssssssssssssss")
 		respond_to do |format|
-			format.any { render json: ['This user is not your follower'], notice: "This user is not your follower" ,status: :unprocessable_entity }
+			format.any { render json: ['hhh'], each_serializer: ErrorSerializer }
 		end
 	end
   end

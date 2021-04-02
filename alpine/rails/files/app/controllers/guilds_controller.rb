@@ -51,6 +51,83 @@ class GuildsController < ApplicationController
     current_user.save
   end
 
+  def is_officer
+	user = User.find(params[:id])
+	if (user && user.guild_id)
+		officer = GuildOfficer.find_by(user_id: user.id, guild_id: user.guild_id)
+		if (officer)
+			render json: 1, status: :created
+		else
+			render json: 0, status: :created
+		end
+	end
+  end
+
+  def is_owner
+	user = User.find(params[:id])
+	if (user && user.guild_id)
+		guild = Guild.find(user.guild_id)
+		if (guild)
+			if (guild.owner_id == user.id)
+				render json: 1, status: :created
+			else
+				render json: 0, status: :created
+			end
+		end
+	end
+  end
+
+  def exit_user
+	if current_user.is_admin == true
+	  user = User.find(params[:id])
+
+      unless user.guild_id?
+        redirect_and_responce("User not in guild")
+      else
+        guild_id = user.guild_id
+        user.guild_id = 0
+        user.save
+        guild = Guild.all.find(guild_id)
+        guild_members = User.all.find_by(guild_id: guild_id)
+      
+        unless guild_members
+          guild.destroy
+        else
+          if user.id == guild.owner_id
+            guild.owner_id = guild_members.id
+            guild.save
+          end
+        end
+      
+        if guild_members
+          new_owner = User.all.find(guild.owner_id)
+          render json: new_owner
+        else
+          render json: 0
+        end
+      end
+    end
+  end
+
+  def do_officer
+	user = User.find(params[:id])
+  end
+
+
+  def do_owner
+	if current_user.is_admin == true
+		user = User.find(params[:id])
+		unless user.guild_id?
+			redirect_and_responce("User not in guild")
+		else
+			guild = Guild.find(user.guild_id)
+			guild.owner_id = user.id
+			if guild.save
+				render json: 1
+			end
+		end
+	end
+  end
 
   def new
     @guild = Guild.new
@@ -95,7 +172,6 @@ class GuildsController < ApplicationController
   end
 
   def join
-
     if current_user.guild_id?
       redirect_and_responce("You allready in guild")
     else

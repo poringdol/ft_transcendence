@@ -68,7 +68,7 @@
 			<h5 class="card-title">GUILD</h5>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
-			<a href='/guilds' class='UserHref'>
+			<a href='/guilds' class='SimpleHref'>
 				<li class="list-group-item" href='/guilds'>
 					Click here to join a guild
 				</li>
@@ -158,11 +158,19 @@
 
 
 <!-- -------------------- BUTTONS --------------------------->
-<script type="text/template" id="UserInfoBtnTemplate">
-	<button type="button" class="btn card-link btn-guild mx-auto UserInfoBtns">
-		<%%= button_text %>
+<!-- INFO ADMIN BUTTON TEMPLATE -->
+<script type="text/template" id="UserInfoBanBtnTemplate">
+	<button id="UserInfoBanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns">
+		BAN USER
 	</button>
 </script>
+
+<script type="text/template" id="UserInfoUnbanBtnTemplate">
+	<button id="UserInfoUnbanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns">
+		UNBAN USER
+	</button>
+</script>
+
 
 <!-- INFO EDIT BUTTON TEMPLATE -->
 <script type="text/template" id="UserInfoEditBtnTemplate">
@@ -203,7 +211,7 @@
 
 <!-- INFO BANNED STATUS -->
 <script type="text/template" id="UserInfoBannedStatusTemplate">
-	<div id="UserInfoBannedStatus" class="btn-guild mx-auto UserInfoBtns">
+	<div id="UserInfoBannedStatus" class="btn card-link btn-guild mx-auto UserInfoBtns">
 		BANNED
 	</div>
 </script>
