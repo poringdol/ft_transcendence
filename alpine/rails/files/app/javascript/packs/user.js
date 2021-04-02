@@ -21,6 +21,7 @@ $(function () {
 			this.loses = data.user.loses
 			this.wins = data.user.wins
 			this.score = data.user.score
+			this.is_banned = data.user.is_banned
 		}
 	})
 
@@ -102,6 +103,7 @@ $(function () {
 		templateDelBtn: _.template($("#UserInfoDelBtnTemplate").html()),
 		templateUnfollowBtn: _.template($("#UserInfoUnfollowBtnTemplate").html()),
 		templateFollowBackBtn: _.template($("#UserInfoFollowBackBtnTemplate").html()),
+		templateBannedStatus: _.template($("#UserInfoBannedStatusTemplate").html()),
 		events: {
 			'click #UserInfoAddBtn':		'addFriend',
 			'click #UserInfoDelBtn':		'deleteFriend',
@@ -172,14 +174,18 @@ $(function () {
 				// 	$('#UserInfoBtnHref').attr({ 'href': "/guilds" })
 				// }
 				// this.$el.html(template);
-				if (res == 0)
-					this.$el.html(this.templateAddBtn)
-				else if (res == 1)
-					this.$el.html(this.templateDelBtn)
-				else if (res == 2)
-					this.$el.html(this.templateUnfollowBtn)
+				if (this.model.is_banned)
+					this.$el.html(this.templateBannedStatus);
 				else
-					this.$el.html(this.templateFollowBackBtn)
+					this.$el.html("");
+				if (res == 0 && !this.model.is_banned)
+					this.$el.append(this.templateAddBtn);
+				else if (res == 1)
+					this.$el.append(this.templateDelBtn);
+				else if (res == 2)
+					this.$el.append(this.templateUnfollowBtn);
+				else if (!this.model.is_banned)
+					this.$el.append(this.templateFollowBackBtn);
 			}, this))
 		}
 	})
