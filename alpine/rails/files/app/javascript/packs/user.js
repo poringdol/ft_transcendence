@@ -168,7 +168,7 @@ $(function () {
 			.catch(() => alert('some error'));
 		},
 		banUser: function () {
-			if (current_user.is_admin == true && model.is_admin == false) {
+			if (current_user.is_admin == true) {
 				fetch(("/profile/ban_user/" + this.model.id))
 				.then(res => res.ok ? res.json() : Promise.reject(res))
 				.then(_.bind((res) => {
