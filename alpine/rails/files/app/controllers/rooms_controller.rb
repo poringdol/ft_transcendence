@@ -27,20 +27,28 @@ class RoomsController < ApplicationController
   # POST /rooms
   # POST /rooms.json
   def create
-    p "-----------------------------------"
-    #p room_params
-    p params
-    p "-------------------------------------"
-    if params[:password] != ""
-      @room = Room.new(name: params[:name], password: BCrypt::Password.create(params[:password]))
+    #p "-----------------------------------"
+    if params[:room]
+      pass = params[:room][:password]
+      name = params[:room][:name]
+      #p room_params
     else
-      @room = Room.new(name: params[:name])
+      pass = params[:password]
+      name = params[:name]
+      #p params
     end
-    @room.owner_id = current_user.id
-    RoomUser.create(room_id: @room.id, user_id: current_user.id)
+    #p "-------------------------------------"
 
+    if pass != ""
+      @room = Room.new(name: name, password: BCrypt::Password.create(pass))
+    else
+      @room = Room.new(name: name)
+    end
+
+    @room.owner_id = current_user.id
     respond_to do |format|
       if @room.save
+        RoomUser.create(room_id: @room.id, user_id: current_user.id)
         format.html { redirect_to "/rooms/#{@room.id}", notice: 'Room was successfully created.' }
         format.json { render :show, status: :created, location:"/rooms/#{@room.id}" }
       else
@@ -54,7 +62,7 @@ class RoomsController < ApplicationController
   # PATCH/PUT /rooms/1.json
   def update
     respond_to do |format|
-      if @room.update(room_params)
+      if @room.update(params)
         format.html { redirect_to @room, notice: 'Room was successfully updated.' }
         format.json { render :show, status: :ok, location: @room }
       else
@@ -84,8 +92,27 @@ class RoomsController < ApplicationController
   end
 
   def leave
-    RoomUser.where(room_id: @room.id, user_id: current_user.id).destroy_all
+    @room = Room.find(params[:room_id])
+    if @room.owner_id == current_user.id
+      RoomUser.where(room_id: params[:room_id]).destroy_all
+      @room.destroy
+    else
+      RoomUser.where(room_id: params[:room_id], user_id: current_user.id).destroy_all
+    end
     redirect_to "/rooms/"
+  end
+
+  def change_pass
+    @room = Room.find(params[:room][:room_id])
+    if params[:room][:password] != ""
+      @room.password = BCrypt::Password.create(params[:room][:password])
+      flash.now.notice = 'Password has changed'
+    else
+      @room.password = ""
+      flash.now.notice = 'Password has removed'
+    end
+    @room.save
+    redirect_to "/rooms/#{@room.id}"
   end
 
   private
@@ -95,7 +122,7 @@ class RoomsController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def room_params
-      params.require(:room).permit(:name, :password)
-    end
+    # def room_params
+    #   params.require(:room).permit(:name, :password)
+    # end
 end

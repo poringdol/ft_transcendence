@@ -80,6 +80,7 @@ Rails.application.routes.draw do
   post 'rooms/create' => 'rooms#create'
  # post 'create' => 'rooms#create' # ПОДУМОЙ
   post 'rooms/leave' => 'rooms#leave'
+  post 'rooms/change_pass' => 'rooms#change_pass'
 
   get '/game' => 'game#index'
 

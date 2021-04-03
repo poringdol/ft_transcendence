@@ -15,7 +15,7 @@
               <div class = "card-body">
                 <span class = 'name'><%= room.name %></span><br>
                 <span class = 'member-count'>
-                  <small><%= room.users.uniq.count %> Members</small>
+                  <small><%= RoomUser.where(room_id: room.id).size() %> Members</small>
                 </span>
               </div>
             </div>

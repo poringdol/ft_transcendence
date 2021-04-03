@@ -4,8 +4,19 @@
 	<span class = "navbar-brand">
 		<b><%= @room.name %></b>
 	</span>
-	<small><%= @room.users.uniq.count %> Members</small>
+	<small><%= RoomUser.where(room_id: @room.id).size() %> Members</small>
 	</nav>
+	<%= button_to "Leave from chat", "leave", :method => :post, class: "btn btn-outline-primary btn-block", params: { room_id: @room.id, authenticity_token: form_authenticity_token } %>
+
+	<%= form_with model: @room, url: "change_pass", method: :post do |form| %>
+			<%= form.hidden_field :room_id, value: @room.id %>
+		<div class="form-group mb-3 col-2">
+    		<%= form.password_field :password, class: 'form-control', placeholder: "New password or empy for remove", :autocomplete => :off %>
+  		</div>
+  		<%= form.submit "Add room", class: "btn btn-outline-primary btn-block" %>
+	<% end %>
+
+
 	<div id = "messages">
 	<% @room.messages.each do |message| %>
 		<%= render 'messages/message', message: message %>
