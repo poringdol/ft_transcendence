@@ -1,0 +1,9 @@
+<%= form_with model: @room, url: "pass_check", method: :post do |f| %>
+	<div class="row">
+		<%= f.hidden_field :id, value: @room.id %>
+	<div class="col-9">
+		<%= f.password_field :password %>
+	<div class="col-3">
+		<%= f.submit "push" %>
+	</div>
+<% end %>

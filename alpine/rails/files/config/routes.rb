@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :room_users
   resources :blocklists
   resources :war_matches
   resources :matches
@@ -67,11 +68,21 @@ Rails.application.routes.draw do
   get 'friends/send_request/:id' => 'friends#send_request'
   get 'friends/delete_from_friends/:id' => 'friends#delete_from_friends'
   get 'friends/unfollow_user/:id' => 'friends#unfollow_user'
-  
-  
+
+
   get 'welcome/index'
   root 'welcome#index'
 
+# ------------------
+#    CHAT PAGE
+# ------------------
+  post 'rooms/pass_check' => 'rooms#pass_check'
+  post 'rooms/create' => 'rooms#create'
+ # post 'create' => 'rooms#create' # ПОДУМОЙ
+  post 'rooms/leave' => 'rooms#leave'
+  post 'rooms/change_pass' => 'rooms#change_pass'
+  post 'rooms/do_admin' => 'rooms#do_admin'
+  post 'rooms/rm_admin' => 'rooms#rm_admin'
 
   get '/game' => 'game#index'
 

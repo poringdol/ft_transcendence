@@ -6,7 +6,7 @@ class Guild < ApplicationRecord
   mount_uploader :logo, GuildAvatarUploader
 
   # has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
-  # belongs_to :owner_id, class_name: 'User', foreign_key: 'owner_id'
+  belongs_to :owner, class_name: 'User', foreign_key: 'owner_id'
 
   has_many :guild_members
   has_many :guild_officers

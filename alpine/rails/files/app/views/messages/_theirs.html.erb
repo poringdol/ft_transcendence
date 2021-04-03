@@ -1,10 +1,21 @@
 <div class = "message mb-2">
   <div class = "content-container">
-    <div class = "messageContent">
-      <%= message.content %>
+    <div class=" nav-item dropdown">
+      <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown" type="button" data-bs-toggle="dropdown">
+        <%= message.content %>
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
+          <li><a class="dropdown-item" aria-current="page" href=<%= "/profile/#{message.user_id}" %> >Profile</a></li>
+          <li><a class="dropdown-item" aria-current="page" href="#">Invite to game</a></li>
+          <li><a class="dropdown-item" aria-current="page" href="#">Start direct</a></li>
+          <li><a class="dropdown-item" aria-current="page" href="#">Block user</a></li>
+          <!--
+          <%#= RoomUser.where(room_id: message.room.id, user_id: current_user.id).first.id %>
+          -->
+      </ul>
     </div>
     <div class = "author">
-      <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).name %>)
+      <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).anagram if message.user.guild_id? %>)
     </div>
   </div>
 </div>

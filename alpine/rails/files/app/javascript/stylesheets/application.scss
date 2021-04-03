@@ -10,6 +10,10 @@
   font-weight: bold;
 }
 
+.removecaret.dropdown-toggle::after {
+  display: none;
+}
+
 .img-avatar {
   width: 30px;
   height: 30px;
@@ -321,7 +325,7 @@ body {
 // 	text-align: center;
 // 	white-space: nowrap;
 // 	vertical-align: baseline;
-// } 
+// }
 
 
 

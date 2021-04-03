@@ -51,6 +51,15 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.index ["user_id"], name: "index_guild_members_on_user_id"
   end
 
+  create_table "guild_officers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "guild_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["guild_id"], name: "index_guild_officers_on_guild_id"
+    t.index ["user_id"], name: "index_guild_officers_on_user_id"
+  end
+
   create_table "guilds", force: :cascade do |t|
     t.string "name"
     t.string "anagram"
@@ -92,10 +101,24 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "rooms", force: :cascade do |t|
-    t.string "name"
+  create_table "room_users", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "room_id"
+    t.boolean "is_admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["room_id"], name: "index_room_users_on_room_id"
+    t.index ["user_id"], name: "index_room_users_on_user_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.string "name"
+    t.string "password"
+    t.bigint "owner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_direct", default: false
+    t.index ["owner_id"], name: "index_rooms_on_owner_id"
   end
 
   create_table "sessions", force: :cascade do |t|

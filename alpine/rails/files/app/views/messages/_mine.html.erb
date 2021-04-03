@@ -4,7 +4,7 @@
       <%= message.content %>
     </div>
     <div class = "author">
-      <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).name %>)
+      <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).anagram if message.user.guild_id? %>)
     </div>
   </div>
 </div>
