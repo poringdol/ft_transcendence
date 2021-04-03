@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
-
 # ------------------
 #    GUILDS PAGE
 # ------------------
@@ -72,6 +71,9 @@ Rails.application.routes.draw do
   
   get 'welcome/index'
   root 'welcome#index'
+
+
+  get '/game' => 'game#index'
 
   # 2 factor
   post 'users/enable_otp'
