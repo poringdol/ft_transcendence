@@ -1,7 +1,29 @@
 <div class = "message mb-2 <%= 'me' if message.user == current_user %>">
-  <div class = "content-container">
-    <div class = "messageContent">
-      <%= message.content %>
+  <div class="content-container">
+    <div class=" nav-item dropdown">
+      <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown" type="button" data-bs-toggle="dropdown">
+        <%= message.content %>
+      </a>
+      <% if message.user != current_user %>
+      <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
+          <li><a class="dropdown-item" aria-current="page" href=<%= "/profile/#{message.user_id}" %> >Profile</a></li>
+          <li><a class="dropdown-item" aria-current="page" href="#">Invite to game</a></li>
+
+          <!-- REFERSH -->
+          <li><a> <%= link_to 'Direct', rooms_create_path(name: message.user.nickname), data: {turbolinks: true}, method: :post, class: "dropdown-item" %> </a></li>
+
+          <li><a> <%= link_to 'Block user', "show", method: :post, class: "dropdown-item", data: { confirm: 'Are you sure?' } %> </a></li>
+
+          <% chat_admin = RoomUser.where(room_id: message.room.id, user_id: current_user.id).first; if chat_admin && chat_admin.is_admin? || current_user.is_admin? %>
+            <li><a class="dropdown-item" aria-current="page" href="#">Block chat(1-5-10min)</a></li>
+          <% end %>
+
+          <% if message.room.owner_id == current_user.id || current_user.is_admin? %>
+            <li><a> <%= link_to 'Do admin', rooms_do_admin_path(user_id: message.user_id), method: :post, class: "dropdown-item" %> </a></li>
+            <li><a> <%= link_to 'RM admin', rooms_rm_admin_path(user_id: message.user_id), method: :post, class: "dropdown-item" %> </a></li>
+          <% end %>
+      </ul>
+      <% end %>
     </div>
     <div class = "author">
       <%= message.user.nickname %>(<%= Guild.all.find(message.user.guild_id).anagram if message.user.guild_id? %>)

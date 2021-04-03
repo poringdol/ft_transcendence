@@ -9,9 +9,6 @@
       <hr>
       <div class = "rooms-bar">
         <% @rooms.each do |room| %>
-          <%= room.is_direct %>
-          <%= current_user.id %>
-          <%= RoomUser.where(room_id: room.id, user_id: current_user.id).size() > 0 %>
           <% if !room.is_direct || (room.is_direct && RoomUser.where(room_id: room.id, user_id: current_user.id).size() > 0) %>
             <%= link_to room, class: 'room-link' do %>
               <% active_class = (@room == room) ? 'active' : '' %>

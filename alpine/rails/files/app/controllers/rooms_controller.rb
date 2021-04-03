@@ -44,21 +44,19 @@ class RoomsController < ApplicationController
       @room = Room.new(name: name)
     end
 
-
-    user = User.where(nickname: name).first
-    if user.present?
+    direct_user = User.where(nickname: name).first
+    if direct_user.present?
       @room.is_direct = true
       @room.name = name + '-' + current_user.nickname
     end
 
-
     @room.owner_id = current_user.id
     respond_to do |format|
       if @room.save
-        if user.present?
-          RoomUser.create(room_id: @room.id, user_id: user.id)
+        if direct_user.present?
+          RoomUser.create(room_id: @room.id, user_id: direct_user.id)
         end
-        RoomUser.create(room_id: @room.id, user_id: current_user.id)
+        RoomUser.create(room_id: @room.id, user_id: current_user.id, is_admin: true)
         format.html { redirect_to "/rooms/#{@room.id}", notice: 'Room was successfully created.' }
         format.json { render :show, status: :created, location:"/rooms/#{@room.id}" }
       else
@@ -101,6 +99,7 @@ class RoomsController < ApplicationController
     redirect_to "/rooms/#{params[:room][:id]}"
   end
 
+  # REFRESH
   def leave
     @room = Room.find(params[:room_id])
     if @room.owner_id == current_user.id
@@ -109,7 +108,10 @@ class RoomsController < ApplicationController
     else
       RoomUser.where(room_id: params[:room_id], user_id: current_user.id).destroy_all
     end
-    redirect_to "/rooms/"
+    # respond_to do |format|
+    #   format.html { redirect_to rooms_url, notice: 'Room was successfully destroyed.' }
+    redirect_to("/rooms/", turbolinks: true)
+    # end
   end
 
   def change_pass
@@ -123,6 +125,25 @@ class RoomsController < ApplicationController
     end
     @room.save
     redirect_to "/rooms/#{@room.id}"
+  end
+
+  def do_admin
+    user = RoomUser.where(user_id: params[:user_id]).first
+    p "-----------------------------------------"
+    p params
+    user
+    p "-----------------------------------------"
+
+    user.is_admin = true
+    user.save
+    flash.now.notice = 'Admin added'
+  end
+
+  def rm_admin
+    user = RoomUser.where(user_id: params[:user_id]).first
+    user.is_admin = false
+    user.save
+    flash.now.notice = 'Admin removed'
   end
 
   private
