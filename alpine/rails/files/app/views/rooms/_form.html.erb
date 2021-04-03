@@ -14,6 +14,8 @@
   <div class="form-group mb-3">
     <%= form.text_field :name, class: 'form-control', placeholder: "Room name" %>
   </div>
-
+  <div class="form-group mb-3">
+    <%= form.password_field :password, class: 'form-control', placeholder: "Password" %>
+  </div>
   <%= form.submit "Add room", class: "btn btn-outline-primary btn-block" %>
 <% end %>

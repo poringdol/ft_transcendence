@@ -51,6 +51,15 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.index ["user_id"], name: "index_guild_members_on_user_id"
   end
 
+  create_table "guild_officers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "guild_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["guild_id"], name: "index_guild_officers_on_guild_id"
+    t.index ["user_id"], name: "index_guild_officers_on_user_id"
+  end
+
   create_table "guilds", force: :cascade do |t|
     t.string "name"
     t.string "anagram"
@@ -94,6 +103,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
 
   create_table "rooms", force: :cascade do |t|
     t.string "name"
+    t.string "password"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

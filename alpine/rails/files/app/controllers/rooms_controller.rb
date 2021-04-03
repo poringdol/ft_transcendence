@@ -26,8 +26,18 @@ class RoomsController < ApplicationController
   # POST /rooms
   # POST /rooms.json
   def create
-    @room = Room.new(room_params)
+    p "___________________________________"
+    p params
+    p room_params
 
+    if room_params[:password] != ""
+      p "IFFFFFFFFFFFFFFFFFFF"
+      @room = Room.new(name: room_params[:name], password: BCrypt::Password.create(room_params[:password]))
+    else
+      p "ELSEEEEEEEEEEEEEEEEEEEEE"
+      @room = Room.new(name: room_params[:name])
+    end
+    p "-----------------------------------"
     respond_to do |format|
       if @room.save
         format.html { redirect_to @room, notice: 'Room was successfully created.' }
@@ -63,6 +73,30 @@ class RoomsController < ApplicationController
     end
   end
 
+  def pass_check
+    p "_______________________________-"
+    p "rooms/chat_room/#{params[:room][:id]}"
+
+    @room = Room.find(params[:room][:id])
+    room_pass = Room.find(params[:room][:id]).password
+    my_password = BCrypt::Password.create(params[:room][:password])
+
+
+    if room_pass == my_password
+      render 'index'
+    end
+    render 'chat_room'
+    respond_to do |format|
+      if room_pass == my_password
+        format.html { render "rooms/chat_room", notice: 'Room was successfully updated.' }
+        format.json { render :show, status: :ok, location: "rooms/chat_room" }
+      else
+        format.html { render :edit }
+        format.json { render json: @room.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_room
@@ -71,6 +105,6 @@ class RoomsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def room_params
-      params.require(:room).permit(:name)
+      params.require(:room).permit(:name, :password)
     end
 end

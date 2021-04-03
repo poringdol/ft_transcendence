@@ -67,11 +67,15 @@ Rails.application.routes.draw do
   get 'friends/send_request/:id' => 'friends#send_request'
   get 'friends/delete_from_friends/:id' => 'friends#delete_from_friends'
   get 'friends/unfollow_user/:id' => 'friends#unfollow_user'
-  
-  
+
+
   get 'welcome/index'
   root 'welcome#index'
 
+# ------------------
+#    CHAT PAGE
+# ------------------
+  post 'rooms/pass_check' => 'rooms#pass_check'
 
   get '/game' => 'game#index'
 

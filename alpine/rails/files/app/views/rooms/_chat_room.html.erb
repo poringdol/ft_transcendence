@@ -1,0 +1,18 @@
+
+	<div class = "chat-room">
+		<nav class = "navbar navbar-light">
+		<span class = "navbar-brand" href = "#">
+			<b><%= @room.name %></b>
+		</span>
+		<small><%= @room.users.uniq.count %> Members</small>
+		</nav>
+		<div id = "messages">
+		<% @room.messages.each do |message| %>
+			<%= render 'messages/message', message: message %>
+		<% end %>
+		</div>
+		<div class = "chat-box">
+		<%= render 'messages/form', message: Message.new, room: @room %>
+		</div>
+	</div>
+
