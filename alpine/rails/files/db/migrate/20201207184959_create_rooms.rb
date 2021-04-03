@@ -5,6 +5,7 @@ class CreateRooms < ActiveRecord::Migration[6.0]
       t.string :password, default: nil
       t.references :owner
       t.timestamps
+      t.boolean :is_direct, default: false
     end
   end
 end

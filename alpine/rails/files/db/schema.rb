@@ -113,11 +113,10 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   create_table "rooms", force: :cascade do |t|
     t.string "name"
     t.string "password"
-    t.bigint "login_users_id"
     t.bigint "owner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["login_users_id"], name: "index_rooms_on_login_users_id"
+    t.boolean "is_direct", default: false
     t.index ["owner_id"], name: "index_rooms_on_owner_id"
   end
 
@@ -205,7 +204,6 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   add_foreign_key "matches", "users", column: "player_2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
-  add_foreign_key "rooms", "room_users", column: "login_users_id"
   add_foreign_key "war_matches", "matches"
   add_foreign_key "war_matches", "wars"
   add_foreign_key "wars", "addons", column: "addons_id"

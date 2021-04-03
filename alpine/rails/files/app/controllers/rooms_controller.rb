@@ -31,13 +31,12 @@ class RoomsController < ApplicationController
     if params[:room]
       pass = params[:room][:password]
       name = params[:room][:name]
-      #p room_params
+      #p params[:room]
     else
       pass = params[:password]
       name = params[:name]
       #p params
     end
-    #p "-------------------------------------"
 
     if pass != ""
       @room = Room.new(name: name, password: BCrypt::Password.create(pass))
@@ -45,9 +44,20 @@ class RoomsController < ApplicationController
       @room = Room.new(name: name)
     end
 
+
+    user = User.where(nickname: name).first
+    if user.present?
+      @room.is_direct = true
+      @room.name = name + '-' + current_user.nickname
+    end
+
+
     @room.owner_id = current_user.id
     respond_to do |format|
       if @room.save
+        if user.present?
+          RoomUser.create(room_id: @room.id, user_id: user.id)
+        end
         RoomUser.create(room_id: @room.id, user_id: current_user.id)
         format.html { redirect_to "/rooms/#{@room.id}", notice: 'Room was successfully created.' }
         format.json { render :show, status: :created, location:"/rooms/#{@room.id}" }

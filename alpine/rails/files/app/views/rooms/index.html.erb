@@ -9,16 +9,21 @@
       <hr>
       <div class = "rooms-bar">
         <% @rooms.each do |room| %>
-          <%= link_to room, class: 'room-link' do %>
-            <% active_class = (@room == room) ? 'active' : '' %>
-            <div class = "card no-outline mb-2 room-card <%= active_class %>">
-              <div class = "card-body">
-                <span class = 'name'><%= room.name %></span><br>
-                <span class = 'member-count'>
-                  <small><%= RoomUser.where(room_id: room.id).size() %> Members</small>
-                </span>
+          <%= room.is_direct %>
+          <%= current_user.id %>
+          <%= RoomUser.where(room_id: room.id, user_id: current_user.id).size() > 0 %>
+          <% if !room.is_direct || (room.is_direct && RoomUser.where(room_id: room.id, user_id: current_user.id).size() > 0) %>
+            <%= link_to room, class: 'room-link' do %>
+              <% active_class = (@room == room) ? 'active' : '' %>
+              <div class = "card no-outline mb-2 room-card <%= active_class %>">
+                <div class = "card-body">
+                  <span class = 'name'><%= room.name %></span><br>
+                  <span class = 'member-count'>
+                    <small><%= RoomUser.where(room_id: room.id).size() %> Members</small>
+                  </span>
+                </div>
               </div>
-            </div>
+            <% end %>
           <% end %>
         <% end %>
       </div>
