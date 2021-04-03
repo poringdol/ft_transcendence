@@ -65,8 +65,6 @@ class FriendsController < ApplicationController
 				end
 			end
 	else
-		puts("ssssssssssssssss")
-		puts("ssssssssssssssss")
 		respond_to do |format|
 			format.any { render json: ['hhh'], each_serializer: ErrorSerializer }
 		end

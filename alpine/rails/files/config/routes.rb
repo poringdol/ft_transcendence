@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 # ------------------
   get 'guilds/index'
   get '/get_guild_users/:id', to: 'guilds#get_guild_users'
+  put '/get_guild_users/:id', to: 'guilds#user_update'
   get '/get_owner_nick/:id', to: 'guilds#get_owner_nick'
   post 'guilds/join'
   post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'

@@ -5,7 +5,7 @@ class Guild < ApplicationRecord
 
   mount_uploader :logo, GuildAvatarUploader
 
-  has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
+  # has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
   # belongs_to :owner_id, class_name: 'User', foreign_key: 'owner_id'
 
   has_many :guild_members
@@ -26,6 +26,22 @@ class Guild < ApplicationRecord
     guilds = Guild.order(:score).reverse
     guilds.each do |g|
       g.update_columns(rating: (guilds.index(g) + 1))
+    end
+  }
+
+  after_destroy {
+    guilds = Guild.order(:score).reverse
+    guilds.each do |g|
+      g.update_columns(rating: (guilds.index(g) + 1))
+    end
+  }
+
+  before_destroy {
+    users = User.where(guild_id: self.id)
+    users.each do |u|
+      u.is_officer = false
+      u.guild_id = nil
+      u.save
     end
   }
 

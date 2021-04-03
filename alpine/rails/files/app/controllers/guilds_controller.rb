@@ -34,9 +34,13 @@ class GuildsController < ApplicationController
 
   def get_guild_users
   # Костыль(?) из-за 2ф авторизации без :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt ничего не работает
-	guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])
-	# guild_users = User.all.where(guild_id: params[:id])
-	render json: guild_users
+  # guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])
+	  guild_users = User.all.where(guild_id: params[:id])
+    render json: guild_users, each_serializer: GuildUserSerializer
+  end
+
+  def user_update
+    User.find(params[:id]).update
   end
 
   def get_guilds
@@ -47,45 +51,45 @@ class GuildsController < ApplicationController
 
   def destroy
     @guild.destroy
-    current_user.guild_id = 0
-    current_user.save
   end
 
-  def is_officer
-	user = User.find(params[:id])
-	if (user && user.guild_id)
-		officer = GuildOfficer.find_by(user_id: user.id, guild_id: user.guild_id)
-		if (officer)
-			render json: 1, status: :created
-		else
-			render json: 0, status: :created
-		end
-	end
-  end
+  # def is_officer
+  #   user = User.find(params[:id])
+  #   if (user && user.guild_id)
+  #     officer = GuildOfficer.find_by(user_id: user.id, guild_id: user.guild_id)
+  #     if (officer)
+  #       render json: 1, status: :created
+  #     else
+  #       render json: 0, status: :created
+  #     end
+  #   end
+  # end
 
   def is_owner
-	user = User.find(params[:id])
-	if (user && user.guild_id)
-		guild = Guild.find(user.guild_id)
-		if (guild)
-			if (guild.owner_id == user.id)
-				render json: 1, status: :created
-			else
-				render json: 0, status: :created
-			end
-		end
-	end
+    user = User.find(params[:id])
+    if (user && user.guild_id)
+      guild = Guild.find(user.guild_id)
+      if (guild)
+        if (guild.owner_id == user.id)
+          render json: 1, status: :created
+        else
+          render json: 0, status: :created
+        end
+      end
+    end
   end
 
   def exit_user
-	if current_user.is_admin == true
-	  user = User.find(params[:id])
+
+    if current_user.is_admin == true
+      user = User.find(params[:id])
 
       unless user.guild_id?
         redirect_and_responce("User not in guild")
       else
         guild_id = user.guild_id
         user.guild_id = 0
+        user.is_officer = false
         user.save
         guild = Guild.all.find(guild_id)
         guild_members = User.all.find_by(guild_id: guild_id)
@@ -110,23 +114,27 @@ class GuildsController < ApplicationController
   end
 
   def do_officer
-	user = User.find(params[:id])
+	  user = User.find(params[:id])
+    user.is_officer = true
+    if user.save
+      render json: 1
+    end
   end
 
 
   def do_owner
-	if current_user.is_admin == true
-		user = User.find(params[:id])
-		unless user.guild_id?
-			redirect_and_responce("User not in guild")
-		else
-			guild = Guild.find(user.guild_id)
-			guild.owner_id = user.id
-			if guild.save
-				render json: 1
-			end
-		end
-	end
+    if current_user.is_admin == true
+      user = User.find(params[:id])
+      unless user.guild_id?
+        redirect_and_responce("User not in guild")
+      else
+        guild = Guild.find(user.guild_id)
+        guild.owner_id = user.id
+        if guild.save
+          render json: 1
+        end
+      end
+    end
   end
 
   def new

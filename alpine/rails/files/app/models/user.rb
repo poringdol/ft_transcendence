@@ -26,6 +26,7 @@ class User < ApplicationRecord
 
   mount_uploader :avatar, AvatarUploader
 
+  belongs_to :guild, class_name: 'Guild', foreign_key: 'guild_id', optional: true
   # has_many :messages, dependent: :destroy
   # has_many :friends, dependent: :destroy
   # has_many :users, class_name: "Friend", dependent: :destroy

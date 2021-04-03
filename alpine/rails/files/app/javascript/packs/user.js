@@ -63,7 +63,6 @@ $(function () {
 			this.id = data.user.user_id
 			this.nickname = data.user.nickname
 			this.avatar = data.user.avatar
-			console.log(this.nickname)
 		}
 	})
 

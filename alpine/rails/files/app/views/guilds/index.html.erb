@@ -60,22 +60,17 @@
 <!-- 
 	MEMBER LIST ADMIN BUTTONS TEMPLATE
 -->
-<script type="text/template" id="AdminExitMemberBtnTemplate">
-	<button id='AdminExitMember' type="button" class="btn card-link btn-guild col">
-		remove
-	</button>
-</script>
-
-<script type="text/template" id="AdminDoOfficerBtnTemplate">
-	<button id='AdminDoOfficer' type="button" class="btn card-link btn-guild col">
-		do officer
-	</button>
-</script>
-
-<script type="text/template" id="AdminDoOwnerBtnTemplate">
-	<button id='AdminDoOwner' type="button" class="btn card-link btn-guild col">
-		do owner
-	</button>
+<script type="text/template" id="AdminGuildPanelTemplate">
+	<div class="nav-item dropdown">
+		<a class="btn card-link btn-guild dropdown-toggle" id="AdminGuildDropdown" type="button" data-bs-toggle="dropdown">
+			Admin options
+		</a>
+		<ul class="dropdown-menu" aria-labelledby="AdminGuildDropdown">
+				<li><a class="dropdown-item" aria-current="page" href="#" id='AdminExitMember'>Remove</a></li>
+				<li><a class="dropdown-item" aria-current="page" href="#" id='AdminDoOfficer'>Do officer</a></li>
+				<li><a class="dropdown-item" aria-current="page" href="#" id='AdminDoOwner'>Do owner</a></li>
+		</ul>
+	</div>
 </script>
 
 

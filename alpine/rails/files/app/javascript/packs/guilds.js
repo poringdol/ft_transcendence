@@ -38,6 +38,10 @@ $(function () {
 		newGuildMemberList: function (data) {
 			col = new App.Collections.GuildMember({ guild: data.model.id })
 			this.GuildMemberList = new App.Views.GuildMembers({ collection: col, view: this })
+		},
+		newGuildOfficerList: function (data) {
+			col = new App.Collections.GuildMember({ guild: data.model.id })
+			this.GuildOfficerList = new App.Views.GuildOfficers({ collection: col, view: this })
 		}
 	})
 
@@ -76,6 +80,7 @@ $(function () {
 		initialize: function (user) {
 			this.nickname = user.nickname;
 			this.avatar = user.avatar;
+			this.is_officer = user.is_officer;
 		}
 	})
 
@@ -121,6 +126,37 @@ $(function () {
 
 
 	// -----------------------------------------
+	// GUILD_OFFICERS         COLLECTION VIEW
+	// -----------------------------------------
+	App.Views.GuildOfficers = Backbone.View.extend({
+		className: 'list-group',
+		initialize: function (data) {
+			this.collection = data.collection;
+			this.view = data.view;
+
+			this.collection.on('add', this.addOne, this);
+			this.collection.on('change', this.addOne, this);
+		},
+		render: function () {
+			this.$el.html("")
+			this.collection.each(this.addOne, this);
+			$('#GuildContent').html(this.el);
+			return this;
+		},
+		addOne: function (user) {
+			if (user.nickname && user.is_officer) {
+				var userView = new App.Views.GuildMember({ model: user });
+				this.$el.append(userView.render().el);
+				if (curr_user.is_admin == true) {
+					var userViewBtn = new App.Views.GuildMemberBtn({ model: user });
+					this.$el.append(userViewBtn.render().el);
+				}
+			}
+		}
+	})
+
+
+	// -----------------------------------------
 	// GUILD_MEMBERS          MODEL VIEW
 	// -----------------------------------------
 	App.Views.GuildMember = Backbone.View.extend({
@@ -144,14 +180,13 @@ $(function () {
 	})
 
 	App.Views.GuildMemberBtn = Backbone.View.extend({
-		tagName: 'div',
-		className: 'list-group-item',
-		template_exit:		_.template($("#AdminExitMemberBtnTemplate").html()),
-		template_officer:	_.template($("#AdminDoOfficerBtnTemplate").html()),
-		template_owner:  	_.template($("#AdminDoOwnerBtnTemplate").html()),
+		template:		  _.template($("#AdminGuildPanelTemplate").html()),
 
 		initialize: function () {
 			this.model.on('destroy', this.remove, this);
+
+			var template = this.template(this.model);
+			this.$el.append(template);
 		},
 		events: {
 			'click #AdminExitMember':	'exitMember',
@@ -159,36 +194,12 @@ $(function () {
 			'click #AdminDoOwner':		'doOwner'
 		},
 		render: function () {
-			this.$el.attr({ 'style': 'text-align: center;' });
-			this.drawExitBtn();
-			this.drawDoOfficerBtn();
-			this.drawDoOwnerBtn();
+			// if (this.model.is_officer == true)
+				$("#AdminDoOfficer").append({ "display": "none" });
+			// if (this.model.id == this.model.attributes.guild.owner_id)
+				$("#AdminDoOwner").css({ "display": "none" });
 
 			return this;
-		},
-		drawExitBtn: function () {
-			var template_exit = this.template_exit(this.model);
-			this.$el.append(template_exit);
-		},
-		drawDoOfficerBtn: function () {
-			fetch("/guilds/is_officer/" + this.model.id)
-			.then(res => res.ok ? res.json() : Promise.reject(res))
-			.then(_.bind(res => {
-				if (res == 0) {
-					var template_officer = this.template_officer(this.model);
-					this.$el.append(template_officer);
-				}
-			}, this))
-		},
-		drawDoOwnerBtn: function () {
-			fetch("/guilds/is_owner/" + this.model.id)
-			.then(res => res.ok ? res.json() : Promise.reject(res))
-			.then(_.bind(res => {
-				if (res == 0) {
-					var template_owner = this.template_owner(this.model);
-					this.$el.append(template_owner);
-				}
-			}, this))
 		},
 		exitMember: function () {
 			fetch("/guilds/exit_user/" + this.model.id)
@@ -199,7 +210,12 @@ $(function () {
 			}, this))
 		},
 		doOfficer: function () {
-			
+			fetch("/guilds/do_officer/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				alert('Success! User ' + this.model.nickname + ' became an officer!')
+				window.location.reload()
+			}, this))
 		},
 		doOwner: function () {
 			fetch("/guilds/do_owner/" + this.model.id)
@@ -301,7 +317,14 @@ $(function () {
 			}
 		},
 		renderOfficerList: function () {
-			$('#GuildContent').html("");
+			if (!this.view.GuildOfficerList) {
+				this.view.newGuildOfficerList({ model: this.model })
+				this.view.GuildOfficerList.render();
+			}
+			else {
+				this.view.GuildOfficerList.collection.fetch()
+				.then(() => this.view.GuildOfficerList.render())
+			}
 		},
 		renderWarList: function () {
 			$('#GuildContent').html("");
