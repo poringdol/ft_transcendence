@@ -101,11 +101,24 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "room_users", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "room_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["room_id"], name: "index_room_users_on_room_id"
+    t.index ["user_id"], name: "index_room_users_on_user_id"
+  end
+
   create_table "rooms", force: :cascade do |t|
     t.string "name"
     t.string "password"
+    t.bigint "login_users_id"
+    t.bigint "owner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["login_users_id"], name: "index_rooms_on_login_users_id"
+    t.index ["owner_id"], name: "index_rooms_on_owner_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -192,6 +205,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   add_foreign_key "matches", "users", column: "player_2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
+  add_foreign_key "rooms", "room_users", column: "login_users_id"
   add_foreign_key "war_matches", "matches"
   add_foreign_key "war_matches", "wars"
   add_foreign_key "wars", "addons", column: "addons_id"

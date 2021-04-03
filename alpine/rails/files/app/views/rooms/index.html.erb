@@ -25,9 +25,13 @@
     </div>
     <div class = "col-9">
       <% if @room.present? %>
-        <%= @room.password %>
-        <% if @room.password? %>
-          <%= render "rooms/pass_check" %>
+        <% if RoomUser.where(room_id: @room.id, user_id: current_user.id).size() == 0 && !current_user.is_admin %>
+          <% if @room.password? %>
+            <%= render "rooms/pass_check" %>
+          <% else %>
+            <% RoomUser.create(room_id: @room.id, user_id: current_user.id) %>
+            <%= render "rooms/chat_room" %>
+          <% end %>
         <% else %>
           <%= render "rooms/chat_room" %>
         <% end %>

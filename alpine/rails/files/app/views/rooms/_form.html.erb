@@ -1,4 +1,4 @@
-<%= form_with(model: room, local: true) do |form| %>
+<%= form_with model: @room, url: "/rooms/create", method: :post do |form| %>
   <% if room.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(room.errors.count, "error") %> prohibited this room from being saved:</h2>
@@ -15,7 +15,7 @@
     <%= form.text_field :name, class: 'form-control', placeholder: "Room name" %>
   </div>
   <div class="form-group mb-3">
-    <%= form.password_field :password, class: 'form-control', placeholder: "Password" %>
+    <%= form.password_field :password, class: 'form-control', placeholder: "Password", :autocomplete => :off %>
   </div>
   <%= form.submit "Add room", class: "btn btn-outline-primary btn-block" %>
 <% end %>

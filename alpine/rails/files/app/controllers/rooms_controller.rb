@@ -1,5 +1,6 @@
 class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :edit, :update, :destroy]
+  require 'bcrypt'
 
   # GET /rooms
   # GET /rooms.json
@@ -26,22 +27,22 @@ class RoomsController < ApplicationController
   # POST /rooms
   # POST /rooms.json
   def create
-    p "___________________________________"
-    p params
-    p room_params
-
-    if room_params[:password] != ""
-      p "IFFFFFFFFFFFFFFFFFFF"
-      @room = Room.new(name: room_params[:name], password: BCrypt::Password.create(room_params[:password]))
-    else
-      p "ELSEEEEEEEEEEEEEEEEEEEEE"
-      @room = Room.new(name: room_params[:name])
-    end
     p "-----------------------------------"
+    #p room_params
+    p params
+    p "-------------------------------------"
+    if params[:password] != ""
+      @room = Room.new(name: params[:name], password: BCrypt::Password.create(params[:password]))
+    else
+      @room = Room.new(name: params[:name])
+    end
+    @room.owner_id = current_user.id
+    RoomUser.create(room_id: @room.id, user_id: current_user.id)
+
     respond_to do |format|
       if @room.save
-        format.html { redirect_to @room, notice: 'Room was successfully created.' }
-        format.json { render :show, status: :created, location: @room }
+        format.html { redirect_to "/rooms/#{@room.id}", notice: 'Room was successfully created.' }
+        format.json { render :show, status: :created, location:"/rooms/#{@room.id}" }
       else
         format.html { render :new }
         format.json { render json: @room.errors, status: :unprocessable_entity }
@@ -74,27 +75,17 @@ class RoomsController < ApplicationController
   end
 
   def pass_check
-    p "_______________________________-"
-    p "rooms/chat_room/#{params[:room][:id]}"
+    room_pass = BCrypt::Password.new(Room.find(params[:room][:id]).password)
 
-    @room = Room.find(params[:room][:id])
-    room_pass = Room.find(params[:room][:id]).password
-    my_password = BCrypt::Password.create(params[:room][:password])
-
-
-    if room_pass == my_password
-      render 'index'
+    if room_pass == params[:room][:password]
+      RoomUser.create(user_id: current_user.id, room_id: params[:room][:id])
     end
-    render 'chat_room'
-    respond_to do |format|
-      if room_pass == my_password
-        format.html { render "rooms/chat_room", notice: 'Room was successfully updated.' }
-        format.json { render :show, status: :ok, location: "rooms/chat_room" }
-      else
-        format.html { render :edit }
-        format.json { render json: @room.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to "/rooms/#{params[:room][:id]}"
+  end
+
+  def leave
+    RoomUser.where(room_id: @room.id, user_id: current_user.id).destroy_all
+    redirect_to "/rooms/"
   end
 
   private

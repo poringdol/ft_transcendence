@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :room_users
   resources :blocklists
   resources :war_matches
   resources :matches
@@ -76,6 +77,9 @@ Rails.application.routes.draw do
 #    CHAT PAGE
 # ------------------
   post 'rooms/pass_check' => 'rooms#pass_check'
+  post 'rooms/create' => 'rooms#create'
+ # post 'create' => 'rooms#create' # ПОДУМОЙ
+  post 'rooms/leave' => 'rooms#leave'
 
   get '/game' => 'game#index'
 
