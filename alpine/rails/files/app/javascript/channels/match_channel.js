@@ -7,9 +7,9 @@ document.addEventListener("turbolinks:load", () => {
 
   consumer.subscriptions.create({ channel: "MatchChannel", match_id: match_id}, {
     connected() {
+      $.get("/users/connected");
       if (match_id > 0)
         console.log("Connected to match " + match_id);
-        $.get("/users/connected");
       },
       
     disconnected() {
@@ -18,7 +18,12 @@ document.addEventListener("turbolinks:load", () => {
     
     received(data) {
       console.log(data);
-    }
+    },
+
+    update() {
+      this.documentIsActive ? $.get("/users/connected") : $.get("/users/disconnected");
+    },
+
   });
 
 })

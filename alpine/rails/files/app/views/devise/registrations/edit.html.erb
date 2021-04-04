@@ -15,15 +15,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.password_field :password %>
-    <%= f.label :password, "New password" %> <i>(blank if you don't want to change it)</i><br />
+    <%= f.password_field :password, placeholder: "Blank if don't need to change it" , autocomplete: "new-password" %>
+    <%= f.label :password, "New password" %><br />
     <% if @minimum_password_length %>
       <em><%= @minimum_password_length %> characters minimum</em>
     <% end %>
   </div>
 
   <div class="field">
-    <%= f.password_field :password_confirmation %>
+    <%= f.password_field :password_confirmation, placeholder: "Blank if don't need to change it" %>
     <%= f.label :password_confirmation, "New password confirmation" %>
   </div>
   <br>
@@ -41,7 +41,7 @@
 <br>
 <br>
 
-<h4>Enable two factor authorization</h4>
+<h4>Enable 2 factor authentication</h4>
 <% if !current_user.otp_required_for_login %>
   <%= button_to "Enable 2FA", users_enable_otp_path, :method => :post %>
 <% end %>
