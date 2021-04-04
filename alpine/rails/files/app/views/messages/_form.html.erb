@@ -15,7 +15,7 @@
   <div class="input-group">
     <%= form.text_field :content, placeholder: "Type your message here...", class: 'form-control' %>
     <div class="input-group-append">
-      <%= form.submit "Add Message", id: "AddMessage", class: "btn btn-primary", data: { disable_with: false }%>
+      <%= form.submit "Add Message", id: "AddMessage", class: "btn btn-primary", data: { disable_with: false } %>
       <script type="text/javascript">
         $("#NewMessageForm").submit(function(event) {
           event.preventDefault();
@@ -41,3 +41,4 @@
     </div>
   </div>
 <% end %>
+

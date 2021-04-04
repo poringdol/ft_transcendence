@@ -108,6 +108,7 @@ body {
     .room-card {
      transition: background-color 0.5s ease;
       border-radius: 20px;
+      margin-right: 20px;
       &:hover {
       background-color: #eeeeee;
       }

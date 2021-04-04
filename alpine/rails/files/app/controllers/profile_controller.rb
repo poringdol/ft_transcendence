@@ -47,4 +47,10 @@ class ProfileController < ApplicationController
 	end
   end
 
+
+  def block_list
+	@block = Blocklist.where(user_id: current_user.id)
+	render json: @block
+  end
+
 end

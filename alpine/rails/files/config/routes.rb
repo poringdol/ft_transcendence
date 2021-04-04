@@ -50,6 +50,7 @@ Rails.application.routes.draw do
   get 'profile/get_user/:id' => "profile#get_user"
   get 'profile/ban_user/:id' => "profile#ban_user"
   get 'profile/unban_user/:id' => "profile#unban_user"
+  get 'block_list' => "profile#block_list"
 
   get 'users' => "users#edit"
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_
@@ -57,10 +58,15 @@ Rails.application.routes.draw do
   post 'users/edit/update_avatar' => "users#update_avatar"
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
-
+  # block/unblock in chat
+  post 'users/block_user' => 'users#block_user'
+  post 'rooms/block_user' => 'users#block_user'
+  post 'users/unblock_user' => 'users#unblock_user'
+  post 'rooms/unblock_user' => 'users#unblock_user'
+  # update is_online status
   get 'users/connected' => 'users#connected'
   get 'users/disconnected' => 'users#disconnected'
-
+  
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
 # ------------------------------------
@@ -86,6 +92,7 @@ Rails.application.routes.draw do
   post 'rooms/change_pass' => 'rooms#change_pass'
   post 'rooms/do_admin' => 'rooms#do_admin'
   post 'rooms/rm_admin' => 'rooms#rm_admin'
+  post 'rooms/mute_user' => 'rooms#mute_user'
 
 # ------------------
 #    GAME PAGE
