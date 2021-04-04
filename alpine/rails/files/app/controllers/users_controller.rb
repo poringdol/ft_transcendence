@@ -36,4 +36,18 @@ class UsersController < ApplicationController
       redirect_to '/users/edit'
     end
   end
+
+  def block_user
+    p "-------------------------"
+    p params
+    p "-------------------------"
+    Blocklist.create(user_id: params[:user_id], blocked_user_id: params[:blocked_user_id])
+  end
+
+  def unblock_user
+    p "-------------------------"
+    p params
+    p "-------------------------"
+    Blocklist.where(user_id: params[:user_id], blocked_user_id: params[:blocked_user_id]).destroy_all
+  end
 end

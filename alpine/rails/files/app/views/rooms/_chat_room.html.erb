@@ -1,29 +1,39 @@
 <% if !@room.is_direct || (@room.is_direct && RoomUser.where(room_id: @room.id, user_id: current_user.id).size() > 0) %>
-	<div class = "chat-room">
-		<nav class = "navbar navbar-light">
-		<span class = "navbar-brand">
-			<b><%= @room.name %></b>
-		</span>
-		<small><%= RoomUser.where(room_id: @room.id).size() %> Members</small>
-		</nav>
-		<%= button_to "Leave from chat", "leave", :method => :post, class: "btn btn-outline-primary btn-block", params: { room_id: @room.id, authenticity_token: form_authenticity_token } %>
+  <div class = "chat-room">
+    <nav class = "navbar navbar-light">
+    <span class = "navbar-brand">
+      <b><%= @room.name %></b>
+    </span>
+    <small><%= RoomUser.where(room_id: @room.id).size() %> Members</small>
+    </nav>
 
-		<%= form_with model: @room, url: "change_pass", method: :post do |form| %>
-				<%= form.hidden_field :room_id, value: @room.id %>
-			<div class="form-group mb-3 col-2">
-				<%= form.password_field :password, class: 'form-control', placeholder: "New password or empy for remove", :autocomplete => :off %>
-			</div>
-			<%= form.submit "Add room", class: "btn btn-outline-primary btn-block" %>
-		<% end %>
+    <div class="row">
+      <%# <div class="btn-outline-primary mb-3 btn-chat"> %>
+      <div class="mb-3 col-2">
+        <%= button_to "Leave from chat", "leave", :method => :post, class: "btn btn-outline-primary", params: { room_id: @room.id, authenticity_token: form_authenticity_token } %>
+      </div>
+        <% if @room.owner_id == current_user.id || current_user.is_admin %>
+          <div class="btn-group col-8">
+            <div>
+            <%= form_with model: @room, url: "change_pass", method: :post do |form| %>
+              <%= form.hidden_field :room_id, value: @room.id %>
+              <%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", :autocomplete => :off %>
+            </div>
+            <div>
+              <%= form.submit "Change pass", class: "btn btn-outline-primary" %>
+            </div>
+            <%end %>
+        </div>
+        <% end %>
+    </div>
 
-
-		<div id = "messages">
-		<% @room.messages.each do |message| %>
-			<%= render 'messages/message', message: message %>
-		<% end %>
-		</div>
-		<div class = "chat-box">
-		<%= render 'messages/form', message: Message.new, room: @room %>
-		</div>
-	</div>
+    <div id = "messages">
+    <% @room.messages.each do |message| %>
+      <%= render 'messages/message', message: message %>
+    <% end %>
+    </div>
+    <div class = "chat-box">
+    <%= render 'messages/form', message: Message.new, room: @room %>
+    </div>
+  </div>
 <% end %>

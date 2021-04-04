@@ -1,5 +1,3 @@
 class BlocklistSerializer < ActiveModel::Serializer
-  attributes :id
-  has_one :user
-  has_one :blocked_user
+  attributes :blocked_user_id
 end

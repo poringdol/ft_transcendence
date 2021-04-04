@@ -26,15 +26,26 @@ document.addEventListener('turbolinks:load', () => {
       const user_id = Number(user_element.getAttribute('data-user-id'));
 
       let html;
+      let blocked = [];
 
-      if (user_id === data.message.user_id) {
-        html = data.mine;
-      } else {
-        html = data.theirs;
-      }
+      fetch("/block_list")
+      .then(res => res.ok ? res.json() : Promise.reject(res))
+      .then(function(blocked_user) {
 
-      const messageContainer = document.getElementById('messages');
-      messageContainer.innerHTML = messageContainer.innerHTML + html;
+        for (var i = 0; blocked_user.length != i; i++) {
+          blocked.push(blocked_user[i].blocked_user_id)
+        }
+
+        if (user_id === data.message.user_id) {
+          html = data.mine;
+          const messageContainer = document.getElementById('messages');
+          messageContainer.innerHTML = messageContainer.innerHTML + html;
+        } else if (blocked.includes(data.message.user_id) == false) {
+          html = data.theirs;
+          const messageContainer = document.getElementById('messages');
+          messageContainer.innerHTML = messageContainer.innerHTML + html;
+        }
+      })
     }
   });
 })
