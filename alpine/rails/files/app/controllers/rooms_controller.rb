@@ -105,13 +105,17 @@ class RoomsController < ApplicationController
     if @room.owner_id == current_user.id
       RoomUser.where(room_id: params[:room_id]).destroy_all
       @room.destroy
+      respond_to do |format|
+        format.html { redirect_to rooms_url, notice: 'Room was successfully destroyed.' }
+        format.json { head :no_content }
+      end
     else
       RoomUser.where(room_id: params[:room_id], user_id: current_user.id).destroy_all
+      respond_to do |format|
+        format.html { redirect_to rooms_url, notice: 'Leaved from room' }
+        format.json { head :no_content }
+      end
     end
-    # respond_to do |format|
-    #   format.html { redirect_to rooms_url, notice: 'Room was successfully destroyed.' }
-    redirect_to("/rooms/", turbolinks: true)
-    # end
   end
 
   def change_pass
