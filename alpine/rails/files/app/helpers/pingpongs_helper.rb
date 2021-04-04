@@ -1,0 +1,2 @@
+module PingpongsHelper
+end

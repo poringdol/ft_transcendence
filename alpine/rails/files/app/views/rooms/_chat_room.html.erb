@@ -6,15 +6,24 @@
 		</span>
 		<small><%= RoomUser.where(room_id: @room.id).size() %> Members</small>
 		</nav>
-		<%= button_to "Leave from chat", "leave", :method => :post, class: "btn btn-outline-primary btn-block", params: { room_id: @room.id, authenticity_token: form_authenticity_token } %>
 
-		<%= form_with model: @room, url: "change_pass", method: :post do |form| %>
-				<%= form.hidden_field :room_id, value: @room.id %>
-			<div class="form-group mb-3 col-2">
-				<%= form.password_field :password, class: 'form-control', placeholder: "New password or empy for remove", :autocomplete => :off %>
+		<div class="row">
+			<%# <div class="btn-outline-primary mb-3 btn-chat"> %>
+			<div class="mb-3 col-2">
+				<%= button_to "Leave from chat", "leave", :method => :post, class: "btn btn-outline-primary", params: { room_id: @room.id, authenticity_token: form_authenticity_token } %>
 			</div>
-			<%= form.submit "Add room", class: "btn btn-outline-primary btn-block" %>
-		<% end %>
+			<div class="btn-group col-8">
+				<div>
+				<%= form_with model: @room, url: "change_pass", method: :post do |form| %>
+					<%= form.hidden_field :room_id, value: @room.id %>
+					<%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", :autocomplete => :off %>
+				</div>
+				<div>
+					<%= form.submit "Change pass", class: "btn btn-outline-primary" %>
+				</div>
+			</div>
+			<% end %>
+		</div>
 
 
 		<div id = "messages">
