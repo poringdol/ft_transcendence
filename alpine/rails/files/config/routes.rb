@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :messages
   resources :rooms
   resources :guilds
+  resources :pingpongs
 
 # ------------------
 #    GUILDS PAGE
@@ -57,6 +58,8 @@ Rails.application.routes.draw do
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
 
+  get 'users/connected' => 'users#connected'
+  get 'users/disconnected' => 'users#disconnected'
 
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
@@ -84,8 +87,14 @@ Rails.application.routes.draw do
   post 'rooms/do_admin' => 'rooms#do_admin'
   post 'rooms/rm_admin' => 'rooms#rm_admin'
 
-  get '/game' => 'game#index'
+# ------------------
+#    GAME PAGE
+# ------------------
+  get 'matches/move_racket/:id' => 'matches#move_racket'
 
+# --------------------
+#    AUTHENTIFICATION
+# --------------------
   # 2 factor
   post 'users/enable_otp'
   post 'users/disable_otp'

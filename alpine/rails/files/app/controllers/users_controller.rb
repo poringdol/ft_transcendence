@@ -36,4 +36,15 @@ class UsersController < ApplicationController
       redirect_to '/users/edit'
     end
   end
+
+  def connected
+    current_user.is_online = true
+    current_user.save
+  end
+
+  def disconnected
+    current_user.is_online = false
+    current_user.save
+  end
+
 end

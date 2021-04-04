@@ -1,44 +1,110 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
 
-<p>
-  <strong>Player 1:</strong>
-  <%= @match.player_1_id %>
-</p>
+  <div class="col-2">
 
-<p>
-  <strong>Player 2:</strong>
-  <%= @match.player_2_id %>
-</p>
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Player 1 score:</strong>
-  <%= @match.player_1_score %>
-</p>
+    <div id="MatchID" data-MatchID="<%= @match.id %>">
+      <strong>Match ID:</strong>
+      <%= @match.id %>
+    </div>
 
-<p>
-  <strong>Player 2 score:</strong>
-  <%= @match.player_2_score %>
-</p>
+    <p>
+      <strong>Player 1:</strong>
+      <%= @match.player_1_id %>
+    </p>
 
-<p>
-  <strong>Guild 1:</strong>
-  <%= @match.guild_1_id %>
-</p>
+    <p>
+      <strong>Player 2:</strong>
+      <%= @match.player_2_id %>
+    </p>
 
-<p>
-  <strong>Guild 2:</strong>
-  <%= @match.guild_2_id %>
-</p>
+    <p>
+      <strong>Player 1 score:</strong>
+      <%= @match.player_1_score %>
+    </p>
 
-<p>
-  <strong>Addons:</strong>
-  <%= @match.addons_id %>
-</p>
+    <p>
+      <strong>Player 2 score:</strong>
+      <%= @match.player_2_score %>
+    </p>
 
-<p>
-  <strong>Is end:</strong>
-  <%= @match.is_end %>
-</p>
+    <p>
+      <strong>Guild 1:</strong>
+      <%= @match.guild_1_id %>
+    </p>
 
-<%= link_to 'Edit', edit_match_path(@match) %> |
-<%= link_to 'Back', matches_path %>
+    <p>
+      <strong>Guild 2:</strong>
+      <%= @match.guild_2_id %>
+    </p>
+
+    <p>
+      <strong>Addons:</strong>
+      <%= @match.addons_id %>
+    </p>
+
+    <p>
+      <strong>Is end:</strong>
+      <%= @match.is_end %>
+    </p>
+
+    <%= link_to 'Edit', edit_match_path(@match) %> |
+    <%= link_to 'Back', matches_path %>
+
+    </div>
+
+    <div class="col-10">
+    
+    <%# Игра %>
+
+    <div class="game__wrapper">
+        <canvas id="pingpong" width="960" height="600"></canvas>
+        <div class="game__description">
+          <dl>
+            <dt>E</dt> <dd>- рестарт шарика</dd>
+            <dt>R</dt> <dd>- рестарт игры</dd><br>
+            <dt>1</dt> <dd>- 1 игрок вверх</dd>
+            <dt>2</dt> <dd>- 1 игрок вниз</dd><br>
+            <dt>9</dt> <dd>- 2 игрок вверх</dd>
+            <dt>0</dt> <dd>- 2 игрок вниз</dd> <br>
+            <dt id="btn-enter">Enter</dt> <dd>- пуск шарика</dd>
+          </dl>
+        </div>
+      </div>
+      <style>
+      body {
+        font-family: 'Arial', sans-serif;
+      }
+        .game__wrapper	{
+          display: block;
+          width: 960px;
+          margin: 0 auto;
+        }
+        .game__description dl > dd {
+          display: inline-block;
+          margin: 0 10px 0 0;
+          margin-bottom: 5px;
+        }
+        .game__description dl > dt {
+          display: inline-block;
+            border: 1px solid #d7d7d7;
+            padding: 4px 6px;
+            font-size: 10px;
+            border-radius: 3px;
+            box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+            margin-bottom: 5px;
+        }
+      </style>
+      
+    </div>
+</div>  
+
+<script type="text/javascript">
+  $("#btn-enter").click(function() {
+    const id = $("#MatchID").attr("data-MatchID");
+    $.get("/matches/move_racket/" + id, { id: id })
+  })
+</script>
+
+<%= javascript_pack_tag 'pingpong' %>

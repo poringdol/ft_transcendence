@@ -56,6 +56,10 @@ class MatchesController < ApplicationController
     end
   end
 
+  def move_racket
+    ActionCable.server.broadcast "match_channel_#{params[:id]}", message: "CLICK"
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_match
