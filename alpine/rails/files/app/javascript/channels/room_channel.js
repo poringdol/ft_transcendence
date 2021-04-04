@@ -4,9 +4,10 @@ document.addEventListener('turbolinks:load', () => {
   const room_element = document.getElementById('room-id');
   const room_id = (room_element != null) ? room_element.getAttribute('data-room-id') : -1;
 
-  consumer.subscriptions.subscriptions.forEach((subscription) => {
-    consumer.subscriptions.remove(subscription)
-  })
+    // эта хрень не дает создавать новые подключения. Выяснить, зачем она была нужна
+  // consumer.subscriptions.subscriptions.forEach((subscription) => {
+  //   consumer.subscriptions.remove(subscription)
+  // })
 
   consumer.subscriptions.create({ channel: "RoomChannel", room_id: room_id }, {
     connected() {
@@ -14,7 +15,6 @@ document.addEventListener('turbolinks:load', () => {
         console.log("Room doesn't exist");
       else
         console.log("connected to " + room_id);
-      // Called when the subscription is ready for use on the server
     },
 
     disconnected() {

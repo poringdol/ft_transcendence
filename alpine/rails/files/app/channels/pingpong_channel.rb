@@ -1,7 +1,6 @@
 class PingpongChannel < ApplicationCable::Channel
   def subscribed
     stream_from "pingpong_channel"
-    console.log("CONNECTED TO CABLE")
   end
 
   def unsubscribed
