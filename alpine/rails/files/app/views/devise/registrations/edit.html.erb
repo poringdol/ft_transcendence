@@ -16,7 +16,7 @@
 
   <div class="field">
     <%= f.password_field :password %>
-    <%= f.label :password, "New password" %> <i>(blank if you don't want to change it)</i><br />
+    <%= f.label :password, "New password" %> <i>(leave blank if you don't want to change it)</i><br />
     <% if @minimum_password_length %>
       <em><%= @minimum_password_length %> characters minimum</em>
     <% end %>

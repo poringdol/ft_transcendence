@@ -38,16 +38,26 @@ class UsersController < ApplicationController
   end
 
   def block_user
-    p "-------------------------"
-    p params
-    p "-------------------------"
-    Blocklist.create(user_id: params[:user_id], blocked_user_id: params[:blocked_user_id])
+    if params[:room].present?
+      user_id = params[:room][:user_id]
+      blocked_user_id = params[:room][:blocked_user_id]
+    else
+      user_id = params[:user_id]
+      blocked_user_id = params[:blocked_user_id]
+    end
+
+    Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
   end
 
   def unblock_user
-    p "-------------------------"
-    p params
-    p "-------------------------"
-    Blocklist.where(user_id: params[:user_id], blocked_user_id: params[:blocked_user_id]).destroy_all
+    if params[:room].present?
+      user_id = params[:room][:user_id]
+      blocked_user_id = params[:room][:blocked_user_id]
+    else
+      user_id = params[:user_id]
+      blocked_user_id = params[:blocked_user_id]
+    end
+
+    Blocklist.where(user_id: user_id, blocked_user_id: blocked_user_id).destroy_all
   end
 end

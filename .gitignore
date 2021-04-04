@@ -1,6 +1,6 @@
 .devcontainer
 *.DS_Store
-
+.vscode
 alpine/rails/files/*.rbc
 alpine/rails/files/capybara-*.html
 alpine/rails/files/.rspec

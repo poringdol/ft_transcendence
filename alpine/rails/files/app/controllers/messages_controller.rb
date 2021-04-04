@@ -24,13 +24,16 @@ class MessagesController < ApplicationController
   # POST /messages
   # POST /messages.json
   def create
-    @message = Message.new(message_params)
-    @message.user = current_user
-    @message.save
+    muted = RoomUser.where(user_id: current_user.id, room_id: message_params[:room_id]).first
 
-    SendMessageJob.perform_later(@message)
-
-    #redirect_to request.referrer
+    if muted.present? && muted.is_muted == false
+      @message = Message.new(message_params)
+      @message.user = current_user
+      @message.save
+      SendMessageJob.perform_later(@message)
+    else
+      flash[:alert] = "UR MUTED"
+    end
   end
 
   # PATCH/PUT /messages/1

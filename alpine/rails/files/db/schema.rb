@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.bigint "user_id"
     t.bigint "room_id"
     t.boolean "is_admin", default: false
+    t.boolean "is_muted", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["room_id"], name: "index_room_users_on_room_id"
