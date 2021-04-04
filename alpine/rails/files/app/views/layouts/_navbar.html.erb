@@ -65,7 +65,7 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
 						<!--<%= current_user.nickname %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.thumb.url %>>-->
-						<%= current_user.nickname + (current_user.is_admin ? "(admin)" : "") %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
+						<%= current_user.nickname %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item" aria-current="page" href="/profile/0">Profile</a></li>

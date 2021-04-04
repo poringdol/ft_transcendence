@@ -6,25 +6,41 @@
           <%= message.content %>
         </a>
         <% if message.user != current_user %>
-        <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
+          <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
             <li><a class="dropdown-item" aria-current="page" href=<%= "/profile/#{message.user_id}" %> >Profile</a></li>
             <li><a class="dropdown-item" aria-current="page" href="#">Invite to game</a></li>
 
-            <!-- REFERSH -->
-            <li><a> <%= link_to 'Direct', rooms_create_path(name: message.user.nickname), data: {turbolinks: false}, method: :post, class: "dropdown-item" %> </a></li>
+            <%= form_with model: @room, url: "create", method: :post do |form| %>
+              <%= form.hidden_field :name, value: message.user.nickname %>
+              <%= form.hidden_field :authenticity_token, value: form_authenticity_token %>
+              <%= form.submit "Direct", class: "dropdown-item" %>
+            <%end %>
 
-            <li><a> <%= link_to 'Block user', users_block_user_path(user_id: current_user.id, blocked_user_id: message.user.id), method: :post, class: "dropdown-item", data: { confirm: 'Are you sure?' } %> </a></li>
-            <li><a> <%= link_to 'UNBlock user', users_unblock_user_path(user_id: current_user.id, blocked_user_id: message.user.id), method: :post, class: "dropdown-item", data: { confirm: 'Are you sure?' } %> </a></li>
+            <%= form_with model: @room, url: "block_user", method: :post do |form| %>
+              <%= form.hidden_field :user_id, value: current_user.id %>
+              <%= form.hidden_field :blocked_user_id, value: message.user.id %>
+              <%= form.submit "Block user", class: "dropdown-item" %>
+            <%end %>
 
             <% chat_admin = RoomUser.where(room_id: message.room.id, user_id: current_user.id).first; if chat_admin && chat_admin.is_admin? || current_user.is_admin? %>
-              <li><a class="dropdown-item" aria-current="page" href="#">Block chat(1-5-10min)</a></li>
+              <%= form_with model: @room, url: "mute_user", method: :post do |form| %>
+                <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= form.hidden_field :room_id, value: @room.id %>
+                <%= form.submit "Mute user for 1 min", class: "dropdown-item" %>
+              <%end %>
             <% end %>
 
             <% if message.room.owner_id == current_user.id || current_user.is_admin? %>
-              <li><a> <%= link_to 'Do admin', rooms_do_admin_path(user_id: message.user_id), method: :post, class: "dropdown-item" %> </a></li>
-              <li><a> <%= link_to 'RM admin', rooms_rm_admin_path(user_id: message.user_id), method: :post, class: "dropdown-item" %> </a></li>
+              <%= form_with model: @room, url: "do_admin", method: :post do |form| %>
+                <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= form.submit "Do admin", class: "dropdown-item" %>
+              <%end %>
+              <%= form_with model: @room, url: "rm_admin", method: :post do |form| %>
+                <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= form.submit "RM admin", class: "dropdown-item" %>
+              <%end %>
             <% end %>
-        </ul>
+          </ul>
         <% end %>
       </div>
       <div class = "author">
