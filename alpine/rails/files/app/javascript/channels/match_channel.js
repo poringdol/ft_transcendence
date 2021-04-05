@@ -14,6 +14,7 @@ document.addEventListener("turbolinks:load", () => {
       
     disconnected() {
       $.post("/users/disconnected");
+      console.log("Disconnected from match " + match_id);
     },
     
     received(data) {

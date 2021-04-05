@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, only: [:connected, :disconnected]
+  # skip_before_action :verify_authenticity_token, only: [:connected, :disconnected]
 
   def disable_otp
     current_user.otp_required_for_login = false

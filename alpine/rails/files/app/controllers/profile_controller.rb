@@ -47,10 +47,14 @@ class ProfileController < ApplicationController
 	end
   end
 
-
   def block_list
 	@block = Blocklist.where(user_id: current_user.id)
 	render json: @block
+  end
+
+  def block_list_detailed
+    @block = Blocklist.where(user_id: params[:id])
+    render json: @block, each_serializer: BlocklistDetailedSerializer
   end
 
 end

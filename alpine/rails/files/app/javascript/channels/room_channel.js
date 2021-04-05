@@ -1,16 +1,16 @@
 import consumer from "./consumer"
 
+let subscribe = 0;
+
 document.addEventListener('turbolinks:load', () => {
   
   const room_element = document.getElementById('room-id');
   const room_id = (room_element != null) ? room_element.getAttribute('data-room-id') : -1;
 
-    // эта хрень не дает создавать новые подключения. Выяснить, зачем она была нужна
-  // consumer.subscriptions.subscriptions.forEach((subscription) => {
-  //   consumer.subscriptions.remove(subscription)
-  // })
+  if (subscribe)
+    consumer.subscriptions.remove(subscribe)
 
-  consumer.subscriptions.create({ channel: "RoomChannel", room_id: room_id }, {
+  subscribe = consumer.subscriptions.create({ channel: "RoomChannel", room_id: room_id }, {
     connected() {
       if (room_id > 0)
         console.log("Connected to room " + room_id);
@@ -18,6 +18,7 @@ document.addEventListener('turbolinks:load', () => {
 
     disconnected() {
       // Called when the subscription has been terminated by the server
+      console.log("Disconnected from room " + room_id);
     },
 
     received(data) {
