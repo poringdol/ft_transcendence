@@ -334,7 +334,6 @@
 	//При загрузке window, стартуем нашу игру
 	window.onload = function () {
 		window.game = new Game();
-		window.curr_match = new App.Models.Match()
 		
 		game.startGame();
 	}		
