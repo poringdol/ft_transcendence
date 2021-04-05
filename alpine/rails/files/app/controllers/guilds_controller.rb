@@ -136,19 +136,33 @@ class GuildsController < ApplicationController
 
 
   def do_owner
-    if current_user.is_admin == true
-      user = User.find(params[:id])
-      unless user.guild_id?
-        redirect_and_responce("User not in guild")
-      else
-        guild = Guild.find(user.guild_id)
-        guild.owner_id = user.id
-        if guild.save
-          render json: 1
+	# if current_user.is_admin != true
+	user = User.find(params[:id])
+    unless user.guild_id?
+		redirect_and_responce("User not in guild")
+    else
+		guild = Guild.find(user.guild_id)
+		if guild.owner_id == current_user.id || current_user.is_admin == true
+			guild.owner_id = user.id
+        	if guild.save
+          		render json: 1
         #   redirect_to '/guilds'
-        end
-      end
-    end
+        	end
+		end
+	end
+    # if current_user.is_admin == true
+    #   user = User.find(params[:id])
+    #   unless user.guild_id?
+    #     redirect_and_responce("User not in guild")
+    #   else
+    #     guild = Guild.find(user.guild_id)
+    #     guild.owner_id = user.id
+    #     if guild.save
+    #       render json: 1
+    #     #   redirect_to '/guilds'
+    #     end
+    #   end
+    # end
   end
 
   def new
