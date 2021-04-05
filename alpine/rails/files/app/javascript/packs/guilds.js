@@ -25,6 +25,8 @@ $(function () {
 		initialize: function (data) {
 			this.newGuildListEl(data);
 			this.newGuildCard(data);
+			this.guild_id = data.model.id;
+			this.guild = data.model;
 		},
 		newGuildListEl: function (data) {
 			this.GuildListEl = new App.Views.GuildListEl({ model: data.model, view: this });
@@ -36,8 +38,8 @@ $(function () {
 			this.GuildCardBtn = new App.Views.GuildCardBtn({ model: data.model, view: this });
 		},
 		newGuildMemberList: function (data) {
-			col = new App.Collections.GuildMember({ guild: data.model.id })
-			this.GuildMemberList = new App.Views.GuildMembers({ collection: col, view: this })
+			this.MemberCol = new App.Collections.GuildMember({ guild: data.model.id })
+			this.GuildMemberList = new App.Views.GuildMembers({ collection: this.MemberCol, view: this })
 		},
 		newGuildOfficerList: function (data) {
 			col = new App.Collections.GuildMember({ guild: data.model.id })
@@ -104,6 +106,7 @@ $(function () {
 			this.view = data.view;
 
 			this.collection.on('add', this.addOne, this);
+			this.collection.on('sync', this.render, this);
 			this.collection.on('change', this.addOne, this);
 		},
 		render: function () {
@@ -116,8 +119,10 @@ $(function () {
 			if (user.nickname) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if (curr_user.is_admin == true) {
-					var userViewBtn = new App.Views.GuildMemberBtn({ model: user });
+				if (curr_user.is_admin == true
+					|| (curr_user.is_officer && this.view.guild_id == curr_user.guild_id)
+					|| curr_user.id == this.view.guild.owner_id) {
+					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
 					this.$el.append(userViewBtn.render().el);
 				}
 			}
@@ -136,9 +141,11 @@ $(function () {
 
 			this.collection.on('add', this.addOne, this);
 			this.collection.on('change', this.addOne, this);
+			this.collection.on('sync', this.render, this);
 		},
 		render: function () {
 			this.$el.html("")
+			console.log('render')
 			this.collection.each(this.addOne, this);
 			$('#GuildContent').html(this.el);
 			return this;
@@ -147,8 +154,9 @@ $(function () {
 			if (user.nickname && user.is_officer) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if (curr_user.is_admin == true) {
-					var userViewBtn = new App.Views.GuildMemberBtn({ model: user });
+				if (curr_user.is_admin == true
+					|| curr_user.id == this.view.guild.owner_id) {
+					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
 					this.$el.append(userViewBtn.render().el);
 				}
 			}
@@ -180,24 +188,59 @@ $(function () {
 	})
 
 	App.Views.GuildMemberBtn = Backbone.View.extend({
-		template:		  _.template($("#AdminGuildPanelTemplate").html()),
+		tagName: 'div',
+		className: 'list-group-item',
 
-		initialize: function () {
+		template_exit:		_.template($("#AdminExitMemberBtnTemplate").html()),
+		template_officer:	_.template($("#AdminDoOfficerBtnTemplate").html()),
+		template_unofficer: _.template($("#AdminUndoOfficerBtnTemplate").html()),
+		template_owner:		_.template($("#AdminDoOwnerBtnTemplate").html()),
+
+		initialize: function (data) {
+			this.model = data.model
+			this.view = data.view
+			this.parent = data.parent
+
 			this.model.on('destroy', this.remove, this);
-
-			var template = this.template(this.model);
-			this.$el.append(template);
+			this.model.on('sync', this.render, this);
 		},
 		events: {
 			'click #AdminExitMember':	'exitMember',
 			'click #AdminDoOfficer':	'doOfficer',
+			'click #AdminUndoOfficer':	'undoOfficer',
 			'click #AdminDoOwner':		'doOwner'
 		},
 		render: function () {
-			// if (this.model.is_officer == true)
-				// $("#AdminDoOfficer").append({ "display": "none" });
-			// if (this.model.id == this.model.attributes.guild.owner_id)
-				// $("#AdminDoOwner").css({ "display": "none" });
+			this.$el.html("")
+			this.$el.attr({ 'style': 'text-align: center;' });
+
+			if (curr_user.is_admin == true ||
+				curr_user.id == this.view.guild.owner_id)
+				var role = 'owner-admin'
+			else if (curr_user.is_officer == true && curr_user.guild_id == this.view.guild_id)
+				var role = 'officer'
+
+			if ((role == 'owner-admin'
+				|| (role == 'officer' && this.model.is_officer == false && this.model.id != this.model.attributes.guild.owner_id))
+				&& this.model.id != curr_user.id) {
+				var template_exit = this.template_exit(this.model);
+				this.$el.append(template_exit);
+			}
+
+			if (this.model.is_officer != true) {
+				var template_officer = this.template_officer(this.model);
+				this.$el.append(template_officer);
+			}
+			else if (role == 'owner-admin'
+					|| (role == 'officer' && this.model.id == curr_user.id)) {
+				var template_unofficer = this.template_unofficer(this.model);
+				this.$el.append(template_unofficer);
+			}
+
+			if (this.model.id != this.model.attributes.guild.owner_id && role == 'owner-admin') {
+				var template_owner = this.template_owner(this.model);
+				this.$el.append(template_owner);
+			}
 
 			return this;
 		},
@@ -206,24 +249,54 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' removed from guild!')
-				window.location.reload()
+				if (res != 0) {
+					this.view.GuildCard.render()
+					this.parent.collection.fetch()
+				}
+				else {
+					$(this.parent.el).html("")
+					this.view.GuildCard.model.destroy()
+				}
 			}, this))
+			.catch(() => alert("You are not able to do that"))
+		},
+		undoOfficer: function () {
+			fetch("/guilds/undo_officer/" + this.model.id)
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind(res => {
+				alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
+				this.model.is_officer = false
+				// this.view.GuildCard.render()
+				this.render()
+				// window.location.reload()
+			}, this))
+			.catch(() => alert("You are not able to do that"))
 		},
 		doOfficer: function () {
 			fetch("/guilds/do_officer/" + this.model.id)
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an officer!')
+				this.model.is_officer = true
+				// this.view.GuildCard.render()
+				this.render()
 				// window.location.reload()
 			}, this))
+			.catch(() => alert("You are not able to do that"))
 		},
 		doOwner: function () {
 			fetch("/guilds/do_owner/" + this.model.id)
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an owner!')
+				this.model.attributes.guild.owner_id = this.model.id
+				this.view.GuildCard.render()
+				this.parent.collection.fetch()
+				// this.view.MemberCol.fetch()
+				this.render()
 				// window.location.reload()
 			}, this))
+			.catch(() => alert("You are not able to do that"))
 		},
 		remove: function () {
 			this.$el.remove();
@@ -351,7 +424,7 @@ $(function () {
 				this.$el.append(this.templateLeaveBtn)
 				this.$el.append(this.templateDeleteBtn)
 			}
-			else if (curr_user.guild_id == 0)
+			else if (!curr_user.guild_id)
 				this.$el.html(this.templateJoinBtn)
 			else if (curr_user.guild_id == this.model.id)
 				this.$el.html(this.templateLeaveBtn)

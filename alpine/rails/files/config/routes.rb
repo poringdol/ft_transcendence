@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   get 'guilds/exit_user/:id' => 'guilds#exit_user'
   get 'guilds/do_owner/:id' => 'guilds#do_owner'
   get 'guilds/do_officer/:id' => 'guilds#do_officer'
+  get 'guilds/undo_officer/:id' => 'guilds#undo_officer'
 
 
 # ------------------

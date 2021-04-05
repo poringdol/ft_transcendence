@@ -81,7 +81,8 @@ class GuildsController < ApplicationController
 
   def exit_user
 
-    if current_user.is_admin == true
+    # if ((current_user.is_admin == true) || 
+	# 	(current_user.is_officer == true))
       user = User.find(params[:id])
 
       unless user.guild_id?
@@ -105,13 +106,13 @@ class GuildsController < ApplicationController
       
         if guild_members
           new_owner = User.all.find(guild.owner_id)
-          # render json: new_owner
-          redirect_to '/guilds'
+          render json: new_owner
+        #   redirect_to '/guilds'
         else
-          # render json: 0
-          redirect_to '/guilds'
+          render json: 0
+        #   redirect_to '/guilds'
         end
-      end
+    #   end
     end
   end
 
@@ -119,8 +120,17 @@ class GuildsController < ApplicationController
 	  user = User.find(params[:id])
     user.is_officer = true
     if user.save
-      # render json: 1
-      redirect_to '/guilds'
+      render json: 1
+    #   redirect_to '/guilds'
+    end
+  end
+
+  def undo_officer
+	  user = User.find(params[:id])
+    user.is_officer = false
+    if user.save
+      render json: 1
+    #   redirect_to '/guilds'
     end
   end
 
@@ -134,8 +144,8 @@ class GuildsController < ApplicationController
         guild = Guild.find(user.guild_id)
         guild.owner_id = user.id
         if guild.save
-          # render json: 1
-          redirect_to '/guilds'
+          render json: 1
+        #   redirect_to '/guilds'
         end
       end
     end
@@ -203,6 +213,7 @@ class GuildsController < ApplicationController
     else
       guild_id = current_user.guild_id
       current_user.guild_id = 0
+	  current_user.is_officer = false
       current_user.save
       guild = Guild.all.find(guild_id)
       guild_members = User.all.find_by(guild_id: guild_id)
