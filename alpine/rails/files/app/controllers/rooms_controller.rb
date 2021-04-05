@@ -35,11 +35,11 @@ class RoomsController < ApplicationController
       name = params[:name]
     end
 
-    dierct_room_exists = Room.where(name: name + '-' + current_user.nickname).first
-    if dierct_room_exists.present?
+    direct_room_exists = Room.where(name: name + '-' + current_user.nickname).first
+    if direct_room_exists.present?
       respond_to do |format|
-        format.html { redirect_to "/rooms/#{dierct_room_exists.id}" }
-      end
+        format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
+      end 
     else
 
       if pass != ""

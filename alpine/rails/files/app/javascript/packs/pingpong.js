@@ -1,6 +1,6 @@
 (function(){
 	'use strict';
-	
+
 	//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 	var Ball = function () {
 		return {
@@ -18,7 +18,7 @@
 				ctx.fill();
 			},
 			//Передвижение шара всегда происходит с определенной скоростью 
-			//по этому мы не будем передавть x y для кастомного перемещения.
+			//поэтому мы не будем передавть x y для кастомного перемещения.
 			move: function () {
 				this.x = this.x + this.xspeed;
 				this.y = this.y + this.yspeed;
@@ -252,33 +252,41 @@
 		//Инициализация игровых событий
 		keyDownEvent: function (event) {
 			var kCode = event.keyCode;
-				//1-вверх 
+			const match_id = $("#MatchID").attr("data-MatchID");
+				//1-вверх
 				if(kCode === 49) {
-					game.objects.bracket1.y = game.objects.bracket1.y + game.objects.bracket1.speed;
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// game.objects.bracket1.y = game.objects.bracket1.y + game.objects.bracket1.speed;
 				} 
 				//2-вниз
 				if(kCode === 50) {
-					game.objects.bracket1.y = game.objects.bracket1.y - game.objects.bracket1.speed;
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// game.objects.bracket1.y = game.objects.bracket1.y - game.objects.bracket1.speed;
 				} 
 				//9-вверх 
 				if(kCode === 57) {
-					game.objects.bracket2.y = game.objects.bracket2.y + game.objects.bracket2.speed;
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// game.objects.bracket2.y = game.objects.bracket2.y + game.objects.bracket2.speed;
 				} 
 				//0-вниз
 				if(kCode === 48) {
-					game.objects.bracket2.y = game.objects.bracket2.y - game.objects.bracket2.speed;
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// game.objects.bracket2.y = game.objects.bracket2.y - game.objects.bracket2.speed;
 				} 
 				//E - рестарт шарика
 				if(kCode === 69) {
-					this.restartBall();
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// this.restartBall();
 				}
 				//R - рестарт игры
 				if(kCode === 82) {
-					this.restartGame();
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// this.restartGame();
 				}
 				//Enter - пуск шарика
 				if(kCode === 13 && game.params.state === 'playerwait') {
-					this.kickBall();
+					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
+					// this.kickBall();
 				}
 		},
 		
@@ -326,6 +334,7 @@
 	//При загрузке window, стартуем нашу игру
 	window.onload = function () {
 		window.game = new Game();
+		window.curr_match = new App.Models.Match()
 		
 		game.startGame();
 	}		

@@ -64,8 +64,8 @@ Rails.application.routes.draw do
   post 'users/unblock_user' => 'users#unblock_user'
   post 'rooms/unblock_user' => 'users#unblock_user'
   # update is_online status
-  get 'users/connected' => 'users#connected'
-  get 'users/disconnected' => 'users#disconnected'
+  post 'users/connected' => 'users#connected'
+  post 'users/disconnected' => 'users#disconnected'
   
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
@@ -97,7 +97,7 @@ Rails.application.routes.draw do
 # ------------------
 #    GAME PAGE
 # ------------------
-  get 'matches/move_racket/:id' => 'matches#move_racket'
+  post 'matches/move_bracket/:id' => 'matches#move_bracket'
 
 # --------------------
 #    AUTHENTIFICATION

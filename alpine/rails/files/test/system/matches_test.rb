@@ -18,10 +18,10 @@ class MatchesTest < ApplicationSystemTestCase
     fill_in "Guild 1", with: @match.guild_1_id
     fill_in "Guild 2", with: @match.guild_2_id
     check "Is end" if @match.is_end
-    fill_in "Player 1", with: @match.player_1_id
-    fill_in "Player 1 score", with: @match.player_1_score
-    fill_in "Player 2", with: @match.player_2_id
-    fill_in "Player 2 score", with: @match.player_2_score
+    fill_in "Player 1", with: @match.player1_id
+    fill_in "Player 1 score", with: @match.player1_score
+    fill_in "Player 2", with: @match.player2_id
+    fill_in "Player 2 score", with: @match.player2_score
     click_on "Create Match"
 
     assert_text "Match was successfully created"
@@ -36,10 +36,10 @@ class MatchesTest < ApplicationSystemTestCase
     fill_in "Guild 1", with: @match.guild_1_id
     fill_in "Guild 2", with: @match.guild_2_id
     check "Is end" if @match.is_end
-    fill_in "Player 1", with: @match.player_1_id
-    fill_in "Player 1 score", with: @match.player_1_score
-    fill_in "Player 2", with: @match.player_2_id
-    fill_in "Player 2 score", with: @match.player_2_score
+    fill_in "Player 1", with: @match.player1_id
+    fill_in "Player 1 score", with: @match.player1_score
+    fill_in "Player 2", with: @match.player2_id
+    fill_in "Player 2 score", with: @match.player2_score
     click_on "Update Match"
 
     assert_text "Match was successfully updated"

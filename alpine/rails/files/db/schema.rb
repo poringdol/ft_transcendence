@@ -74,10 +74,10 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   end
 
   create_table "matches", force: :cascade do |t|
-    t.bigint "player_1_id", null: false
-    t.bigint "player_2_id", null: false
-    t.integer "player_1_score", default: 0
-    t.integer "player_2_score", default: 0
+    t.bigint "player1_id", null: false
+    t.bigint "player2_id", null: false
+    t.integer "player1_score", default: 0
+    t.integer "player2_score", default: 0
     t.bigint "guild_1_id"
     t.bigint "guild_2_id"
     t.bigint "addons_id"
@@ -87,8 +87,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.index ["addons_id"], name: "index_matches_on_addons_id"
     t.index ["guild_1_id"], name: "index_matches_on_guild_1_id"
     t.index ["guild_2_id"], name: "index_matches_on_guild_2_id"
-    t.index ["player_1_id"], name: "index_matches_on_player_1_id"
-    t.index ["player_2_id"], name: "index_matches_on_player_2_id"
+    t.index ["player1_id"], name: "index_matches_on_player1_id"
+    t.index ["player2_id"], name: "index_matches_on_player2_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -202,8 +202,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   add_foreign_key "matches", "addons", column: "addons_id"
   add_foreign_key "matches", "guilds", column: "guild_1_id"
   add_foreign_key "matches", "guilds", column: "guild_2_id"
-  add_foreign_key "matches", "users", column: "player_1_id"
-  add_foreign_key "matches", "users", column: "player_2_id"
+  add_foreign_key "matches", "users", column: "player1_id"
+  add_foreign_key "matches", "users", column: "player2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
   add_foreign_key "war_matches", "matches"

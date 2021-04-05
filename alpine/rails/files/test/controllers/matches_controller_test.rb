@@ -17,7 +17,7 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create match" do
     assert_difference('Match.count') do
-      post matches_url, params: { match: { addons_id: @match.addons_id, guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_end: @match.is_end, player_1_id: @match.player_1_id, player_1_score: @match.player_1_score, player_2_id: @match.player_2_id, player_2_score: @match.player_2_score } }
+      post matches_url, params: { match: { addons_id: @match.addons_id, guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_end: @match.is_end, player1_id: @match.player1_id, player1_score: @match.player1_score, player2_id: @match.player2_id, player2_score: @match.player2_score } }
     end
 
     assert_redirected_to match_url(Match.last)
@@ -34,7 +34,7 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update match" do
-    patch match_url(@match), params: { match: { addons_id: @match.addons_id, guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_end: @match.is_end, player_1_id: @match.player_1_id, player_1_score: @match.player_1_score, player_2_id: @match.player_2_id, player_2_score: @match.player_2_score } }
+    patch match_url(@match), params: { match: { addons_id: @match.addons_id, guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_end: @match.is_end, player1_id: @match.player1_id, player1_score: @match.player1_score, player2_id: @match.player2_id, player2_score: @match.player2_score } }
     assert_redirected_to match_url(@match)
   end
 

@@ -11,22 +11,22 @@
 
     <p>
       <strong>Player 1:</strong>
-      <%= @match.player_1_id %>
+      <%= @match.player1_id %>
     </p>
 
     <p>
       <strong>Player 2:</strong>
-      <%= @match.player_2_id %>
+      <%= @match.player2_id %>
     </p>
 
     <p>
       <strong>Player 1 score:</strong>
-      <%= @match.player_1_score %>
+      <%= @match.player1_score %>
     </p>
 
     <p>
       <strong>Player 2 score:</strong>
-      <%= @match.player_2_score %>
+      <%= @match.player2_score %>
     </p>
 
     <p>
@@ -103,7 +103,7 @@
 <script type="text/javascript">
   $("#btn-enter").click(function() {
     const id = $("#MatchID").attr("data-MatchID");
-    $.get("/matches/move_racket/" + id, { id: id })
+    $.get("/matches/move_bracket/" + id, { id: id })
   })
 </script>
 

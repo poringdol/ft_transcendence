@@ -1,5 +1,6 @@
 class MatchesController < ApplicationController
   before_action :set_match, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token, only: [:move_bracket]
 
   # GET /matches or /matches.json
   def index
@@ -56,8 +57,9 @@ class MatchesController < ApplicationController
     end
   end
 
-  def move_racket
-    ActionCable.server.broadcast "match_channel_#{params[:id]}", message: "CLICK"
+  def move_bracket
+    # Принимаем параметры, посланные из pingpong.js пост запросом, передаем параметры в match_channel.js
+    ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id], key_code: params[:key_code]}
   end
 
   private
@@ -68,6 +70,6 @@ class MatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_params
-      params.require(:match).permit(:player_1_id, :player_2_id, :player_1_score, :player_2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end)
+      params.require(:match).permit(:player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end)
     end
 end

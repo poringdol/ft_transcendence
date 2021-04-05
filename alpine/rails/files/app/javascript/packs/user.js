@@ -328,12 +328,12 @@ $(function () {
 			$("#UserGuild").css({ "display": "block" })
 			if (this.model.guild_id) {
 				fetch(("/guilds/get_guild/" + this.model.guild_id))
-					.then(res => res.ok ? res.json() : Promise.reject(res))
-					.then(_.bind(res => {
-						var template = this.template(res);
-						this.$el.html(template);
-						$("#UserGuild").html(this.el)
-					}, this))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind(res => {
+					var template = this.template(res);
+					this.$el.html(template);
+					$("#UserGuild").html(this.el)
+				}, this))
 			}
 			else if (current_user.id == this.model.id) {
 				var template = this.template_none();
