@@ -22,7 +22,7 @@
             <div>
             <%= form_with model: @room, url: "change_pass", id: "ch_pass", method: :post do |form| %>
               <%= form.hidden_field :room_id, value: @room.id %>
-              <%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", :autocomplete => :off %>
+              <%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", autocomplete: "new-password" %>
             </div>
             <div>
               <%= form.submit "Change pass", class: "btn btn-outline-primary", data: { disable_with: false } %>

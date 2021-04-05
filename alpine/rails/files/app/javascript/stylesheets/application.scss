@@ -98,7 +98,7 @@ body {
 
 .rooms-bar {
   height: 50%;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding-bottom: 200px;
   padding-top: 20px;
   .room-link {
