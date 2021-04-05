@@ -35,8 +35,10 @@
             <%= render "rooms/chat_room" %>
           <% end %>
         <% else %>
-          <% RoomUser.create(room_id: @room.id, user_id: current_user.id) %>
-          <%= render "rooms/chat_room" %>
+          <% if RoomUser.where(room_id: @room.id, user_id: current_user.id).size() == 0 %>
+            <% RoomUser.create(room_id: @room.id, user_id: current_user.id) %>
+          <% end %>
+            <%= render "rooms/chat_room" %>
         <% end %>
       <% end %>
     </div>

@@ -59,7 +59,7 @@ class MatchesController < ApplicationController
 
   def move_bracket
     # Принимаем параметры, посланные из pingpong.js пост запросом, передаем параметры в match_channel.js
-    ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id], key_code: params[:key_code]}
+    ActionCable.server.broadcast "match_channel", { match_id: params[:id], key_code: params[:key_code]}
   end
 
   private

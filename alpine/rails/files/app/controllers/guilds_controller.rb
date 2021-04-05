@@ -105,9 +105,11 @@ class GuildsController < ApplicationController
       
         if guild_members
           new_owner = User.all.find(guild.owner_id)
-          render json: new_owner
+          # render json: new_owner
+          redirect_to '/guilds'
         else
-          render json: 0
+          # render json: 0
+          redirect_to '/guilds'
         end
       end
     end
@@ -117,7 +119,8 @@ class GuildsController < ApplicationController
 	  user = User.find(params[:id])
     user.is_officer = true
     if user.save
-      render json: 1
+      # render json: 1
+      redirect_to '/guilds'
     end
   end
 
@@ -131,7 +134,8 @@ class GuildsController < ApplicationController
         guild = Guild.find(user.guild_id)
         guild.owner_id = user.id
         if guild.save
-          render json: 1
+          # render json: 1
+          redirect_to '/guilds'
         end
       end
     end

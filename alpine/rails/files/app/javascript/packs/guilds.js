@@ -195,9 +195,9 @@ $(function () {
 		},
 		render: function () {
 			// if (this.model.is_officer == true)
-				$("#AdminDoOfficer").append({ "display": "none" });
+				// $("#AdminDoOfficer").append({ "display": "none" });
 			// if (this.model.id == this.model.attributes.guild.owner_id)
-				$("#AdminDoOwner").css({ "display": "none" });
+				// $("#AdminDoOwner").css({ "display": "none" });
 
 			return this;
 		},
@@ -214,7 +214,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an officer!')
-				window.location.reload()
+				// window.location.reload()
 			}, this))
 		},
 		doOwner: function () {
@@ -222,7 +222,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an owner!')
-				window.location.reload()
+				// window.location.reload()
 			}, this))
 		},
 		remove: function () {

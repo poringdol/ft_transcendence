@@ -17,7 +17,6 @@ document.addEventListener("turbolinks:load", () => {
     },
     
     received(data) {
-
       console.log("Match " + data.match_id + ", Клавиша " + data.key_code);
       let kCode = data.key_code;
 
