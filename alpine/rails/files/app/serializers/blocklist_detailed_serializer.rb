@@ -1,6 +1,6 @@
 class BlocklistDetailedSerializer < ActiveModel::Serializer
   
-  attributes :user_id, :blocked_user
+  attributes :user_id, :blocked_user, :id
 
   def blocked_user
     {

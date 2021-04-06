@@ -51,8 +51,11 @@ Rails.application.routes.draw do
   get 'profile/get_user/:id' => "profile#get_user"
   get 'profile/ban_user/:id' => "profile#ban_user"
   get 'profile/unban_user/:id' => "profile#unban_user"
+
+
   get 'block_list' => "profile#block_list"
   get 'profile/block_list_detailed/:id' => "profile#block_list_detailed"
+  get 'blocklists/unblock_user/:id' => 'blocklists#unblock_user'
 
   get 'users' => "users#edit"
   # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_

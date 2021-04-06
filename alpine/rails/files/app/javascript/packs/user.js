@@ -76,6 +76,31 @@ $(function () {
 	})
 
 	// -----------------------------------------
+	//  USER_BLOCKLIST      MODEL and COLLECTION
+	// -----------------------------------------
+	App.Models.Blocklist = Backbone.Model.extend({
+		urlRoot: "/profile/block_list_detailed/",
+		initialize: function (data) {
+			this.urlRoot += usr_id
+			if (typeof data.blocked_user === "undefined")
+				return;
+			this.id = data.blocked_user.blocked_user_id
+			this.nickname = data.blocked_user.blocked_nickname
+			this.avatar = data.blocked_user.blocked_avatar
+			this.block_id = data.id
+		}
+	})
+
+	App.Collections.Blocklist = Backbone.Collection.extend({
+		model: App.Models.Blocklist,
+		url: "/profile/block_list_detailed/",
+		initialize: function () {
+			this.url += usr_id
+			this.fetch()
+		}
+	})
+
+	// -----------------------------------------
 	//  USER           INFO CARD VIEW
 	// -----------------------------------------
 	App.Views.UserInfo = Backbone.View.extend({
@@ -239,6 +264,8 @@ $(function () {
 			var template = this.template()
 			this.$el.html(template)
 			$("#UserFriends").html(this.el)
+			$("#accordionFlushExample").css({ 'display': 'none' })
+			$("#UserFriendsCard").css({ 'border-bottom': '0px' })
 			return this
 		},
 		renderIcons: function () {
@@ -254,6 +281,8 @@ $(function () {
 				this.n += 1
 			}
 			else if (this.n > 5) {
+				$("#accordionFlushExample").css({ 'display': 'block' })
+				$("#UserFriendsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
 				icon = new App.Views.UserFriendsIcon({ model: user })
 				icon.render()
 				$("#UserFriendsIconsAll").append(icon.el);
@@ -276,6 +305,8 @@ $(function () {
 				var template = this.template()
 				this.$el.html(template)
 				$("#UserFriendRequests").html(this.el)
+				$("#UserFriendRequestsIconsFlash").css({ 'display': 'none' })
+				$("#UserFriendRequestsCard").css({ 'border-bottom': '0px' })
 				this.renderIcons()
 			}
 			return this
@@ -293,6 +324,8 @@ $(function () {
 				this.n += 1
 			}
 			else if (this.n > 5) {
+				$("#accordionFlushExample").css({ 'display': 'block' })
+				$("#UserFriendRequestsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
 				icon = new App.Views.UserFriendsIcon({ model: user })
 				icon.render()
 				$("#UserFriendRequestsIconsAll").append(icon.el);
@@ -360,6 +393,77 @@ $(function () {
 
 
 	// -----------------------------------------
+	//  USER_BLOCKLIST    	BLOCKLIST CARD VIEW
+	// -----------------------------------------
+	App.Views.UserBlocklist = Backbone.View.extend({
+		template: _.template($("#UserBlocklistTemplate").html()),
+		initialize: function () {
+			this.collection.on('sync', this.render, this)
+		},
+		render: function () {
+			if (this.collection.length != 0) {
+				this.n = 0
+				var template = this.template();
+				this.$el.html(template);
+				$("#UserBlocklist").html(this.el)
+				$("#accordionFlushExample3").css({ 'display': 'none' })
+				$("#UserBlocklistCard").css({ 'border-bottom': '0px' })
+				this.collection.each(this.addOne, this)
+			}
+			return this;
+		},
+		addOne: function (user) {
+			if (this.n < 3) {
+				icon = new App.Views.UserBlocklistIcon({ model: user })
+				icon.render()
+				$("#UserBlocklistIcons").append(icon.el);
+				$("#BlocklistHref" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				$("#BlocklistHrefName" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				this.n += 1
+			}
+			else if (this.n > 2) {
+				$("#accordionFlushExample3").css({ 'display': 'block' })
+				$("#UserBlocklistCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
+				icon = new App.Views.UserBlocklistIcon({ model: user })
+				icon.render()
+				$("#UserBlocklistIconsAll").append(icon.el);
+				this.n += 1
+			}
+		},
+	})
+
+	// -----------------------------------------
+	//  USER_BLOCKLIST      MODEL VIEW (ICON)
+	// -----------------------------------------
+
+	App.Views.UserBlocklistIcon = Backbone.View.extend({
+		template_list: _.template($("#BlocklistIconTemplate").html()),
+		tagName: 'div',
+		className: 'row',
+		events: {
+			'click #UserUnblockBtn': 'unblockUser'
+		},
+		render: function () {
+			var template_list = this.template_list(this.model);
+			this.$el.html(template_list);
+		},
+		unblockUser: function () {
+			fetch(('/blocklists/unblock_user/' + this.model.block_id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					alert('You unblocked ' + this.model.nickname + '!');
+					this.$el.remove();
+				}, this))
+				.catch(function (res) {
+					alert("Error accured! Try again!")
+				})
+		}
+	})
+
+	
+
+
+	// -----------------------------------------
 	//           		MAIN
 	// -----------------------------------------
 	const urlArray = window.jQuery.ajaxSettings.url.split('/')
@@ -403,11 +507,10 @@ $(function () {
 			UserMatchesView = new App.Views.UserMatches({ model: user })
 			UserMatchesView.render()
 
-			// fetch("/profile/block_list_detailed/" + user.id)
-			// .then(result => result.ok ? result.json() : Promise.reject(result))
-			// .then(function (result) {
-			// 	console.log(result);
-			// })
+			// if (user.id == current_user.id) {
+				UserBlocklist = new App.Collections.Blocklist()
+				UserBlocklistView = new App.Views.UserBlocklist({ collection: UserBlocklist })
+			// }
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")

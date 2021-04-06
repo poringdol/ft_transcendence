@@ -56,6 +56,15 @@ class BlocklistsController < ApplicationController
     end
   end
 
+  def unblock_user
+	@blocklist = Blocklist.find(params[:id])
+	if @blocklist.user_id == current_user.id
+		if @blocklist.destroy
+			render json: 1
+		end
+	end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_blocklist
