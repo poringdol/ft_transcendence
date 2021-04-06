@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   end
 
   create_table "matches", force: :cascade do |t|
+    t.bigint "current_user_id"
     t.bigint "player1_id", null: false
     t.bigint "player2_id", null: false
     t.integer "player1_score", default: 0
@@ -85,6 +86,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addons_id"], name: "index_matches_on_addons_id"
+    t.index ["current_user_id"], name: "index_matches_on_current_user_id"
     t.index ["guild_1_id"], name: "index_matches_on_guild_1_id"
     t.index ["guild_2_id"], name: "index_matches_on_guild_2_id"
     t.index ["player1_id"], name: "index_matches_on_player1_id"
@@ -202,6 +204,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   add_foreign_key "matches", "addons", column: "addons_id"
   add_foreign_key "matches", "guilds", column: "guild_1_id"
   add_foreign_key "matches", "guilds", column: "guild_2_id"
+  add_foreign_key "matches", "users", column: "current_user_id"
   add_foreign_key "matches", "users", column: "player1_id"
   add_foreign_key "matches", "users", column: "player2_id"
   add_foreign_key "messages", "rooms"

@@ -7,6 +7,13 @@ class MatchesController < ApplicationController
     @matches = Match.all
   end
 
+  def match_users
+    @match = Match.find(params[:id])
+    @match.current_user = current_user
+    @match.save
+    render json: @match
+  end
+
   # GET /matches/1 or /matches/1.json
   def show
   end
@@ -59,7 +66,7 @@ class MatchesController < ApplicationController
 
   def move_bracket
     # Принимаем параметры, посланные из pingpong.js пост запросом, передаем параметры в match_channel.js
-    ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id], key_code: params[:key_code]}
+    ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id], key_code: params[:key_code], player: params[:player]}
   end
 
   private

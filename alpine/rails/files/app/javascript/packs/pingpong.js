@@ -1,6 +1,31 @@
 (function(){
 	'use strict';
 
+	const KEYS = {start: 13, up: 87, down: 83};
+	const MATCH_ID = $("#MatchID").attr("data-MatchID");
+
+	window.App = {
+		Models: {},
+		Views: {},
+		Collections: {},
+		Router: {}
+	};
+
+	//  MATCH              MODEL
+	App.Models.Match = Backbone.Model.extend({
+		urlRoot: `/matches/match_users/${MATCH_ID}.json`,
+		initialize: function () { this.fetch(); }
+	})
+
+	App.Views.Test = Backbone.View.extend({
+		initialize: function () {
+			this.model.on("sync", function () {
+				window.game = new Game(this.model);
+				game.startGame();
+			}, this)
+		}
+	})
+
 	//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 	var Ball = function () {
 		return {
@@ -50,7 +75,8 @@
 	};
 
 	//Теперь сама игра
-	var Game = function () {
+	var Game = function (curr_match) {
+
 		//Сохраним ссылку на контекст
 		//для дальнейшей передачи в ивенты
 		var _this = this;
@@ -67,10 +93,14 @@
 		this.canvasBlock = document.getElementById('pingpong');
 		this.ctx = this.canvasBlock.getContext('2d');
 
-		//Подписываемся на события кнопок
-		document.addEventListener('keydown', function (event) {
-			_this.keyDownEvent.call(_this, event);
-		});
+		//Подписываемся на события кнопок, если пользователь участник игры
+		let player = curr_match.get("current_user").id == curr_match.get("player1").id ? 1 :
+					 curr_match.get("current_user").id == curr_match.get("player2").id ? 2 : 0;
+		if (player > 0) {
+			document.addEventListener('keydown', function (event) {
+				_this.keyDownEvent.call(_this, event, curr_match, player);
+			});
+		}
 
 		return this;
 	};
@@ -79,6 +109,7 @@
 	Game.prototype = {
 		//Старт игры
 		startGame: function () {
+
 			var _this = this;
 
 			//Инициализируем игровые объекты
@@ -250,44 +281,17 @@
 		},
 
 		//Инициализация игровых событий
-		keyDownEvent: function (event) {
+		keyDownEvent: function (event, curr_match, player) {
 			var kCode = event.keyCode;
-			const match_id = $("#MatchID").attr("data-MatchID");
-				//1-вверх
-				if(kCode === 49) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// game.objects.bracket1.y = game.objects.bracket1.y + game.objects.bracket1.speed;
-				} 
-				//2-вниз
-				if(kCode === 50) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// game.objects.bracket1.y = game.objects.bracket1.y - game.objects.bracket1.speed;
-				} 
-				//9-вверх 
-				if(kCode === 57) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// game.objects.bracket2.y = game.objects.bracket2.y + game.objects.bracket2.speed;
-				} 
-				//0-вниз
-				if(kCode === 48) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// game.objects.bracket2.y = game.objects.bracket2.y - game.objects.bracket2.speed;
-				} 
-				//E - рестарт шарика
-				if(kCode === 69) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// this.restartBall();
-				}
-				//R - рестарт игры
-				if(kCode === 82) {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// this.restartGame();
-				}
-				//Enter - пуск шарика
-				if(kCode === 13 && game.params.state === 'playerwait') {
-					$.post("/matches/move_bracket/" + match_id, { match_id: match_id, key_code: kCode });
-					// this.kickBall();
-				}
+			if(kCode === KEYS.start && game.params.state === "playerwait" || kCode === KEYS.up || kCode === KEYS.down) {
+				$.post("/matches/move_bracket/" + MATCH_ID, { match_id: MATCH_ID,
+																key_code: kCode,
+																player
+			// 												  bracket1: game.objects.bracket1,
+			// 												  bracket2: game.objects.bracket2,
+			// 												  ball:		game.objects.ball
+															});
+			}
 		},
 		
 		//Пуск шарика после гола
@@ -316,14 +320,6 @@
 			this.state = 'pause';
 		},
 
-		//Рестарт шарика
-		restartBall: function () {
-			this.objects.ball.x = game.params.width/2;
-			this.objects.ball.y = game.params.height/2;
-			this.objects.ball.xspeed = 3;
-			this.objects.ball.yspeed = 3;
-		},
-
 		//Рестарт игры
 		restartGame: function () {
 			this.stopGame();
@@ -331,10 +327,9 @@
 		}
 	};
 
-	//При загрузке window, стартуем нашу игру
+	// //При загрузке window, стартуем нашу игру
 	window.onload = function () {
-		window.game = new Game();
-		
-		game.startGame();
+		let match_model = new App.Models.Match();
+		let match_view = new App.Views.Test({ model: match_model });
 	}		
 })();

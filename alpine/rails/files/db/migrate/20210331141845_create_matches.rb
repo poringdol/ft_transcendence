@@ -1,6 +1,7 @@
 class CreateMatches < ActiveRecord::Migration[6.0]
   def change
     create_table :matches do |t|
+      t.references :current_user, foreign_key: { to_table: :users }
       t.references :player1, null: false, foreign_key: { to_table: :users }
       t.references :player2, null: false, foreign_key: { to_table: :users }
       t.integer :player1_score, default: 0

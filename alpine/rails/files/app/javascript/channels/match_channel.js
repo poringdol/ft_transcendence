@@ -2,6 +2,8 @@ import consumer from "./consumer"
 
 document.addEventListener("turbolinks:load", () => {
   
+  const KEYS = {start: 13, up: 87, down: 83};
+
   const match_element = $("#MatchID");
   const match_id = (match_element != null) ? match_element.attr("data-MatchID") : -1;
 
@@ -18,28 +20,19 @@ document.addEventListener("turbolinks:load", () => {
     },
     
     received(data) {
-      console.log("Match " + data.match_id + ", Клавиша " + data.key_code);
       let kCode = data.key_code;
-
-      if(kCode == 49) {
-        game.objects.bracket1.y = game.objects.bracket1.y + game.objects.bracket1.speed;
+      // W - up
+      if(kCode == KEYS.up) {
+        data.player == 1 
+          ? game.objects.bracket1.y = game.objects.bracket1.y - game.objects.bracket1.speed
+          : game.objects.bracket2.y = game.objects.bracket2.y - game.objects.bracket2.speed;
       } 
-      //2-вниз
-      if(kCode == 50) {
-        game.objects.bracket1.y = game.objects.bracket1.y - game.objects.bracket1.speed;
+      // S - down
+      if(kCode == KEYS.down) {
+        data.player == 1
+          ? game.objects.bracket1.y = game.objects.bracket1.y + game.objects.bracket1.speed
+          : game.objects.bracket2.y = game.objects.bracket2.y + game.objects.bracket2.speed;
       } 
-      //9-вверх 
-      if(kCode == 57) {
-        game.objects.bracket2.y = game.objects.bracket2.y + game.objects.bracket2.speed;
-      } 
-      //0-вниз
-      if(kCode == 48) {
-        game.objects.bracket2.y = game.objects.bracket2.y - game.objects.bracket2.speed;
-      } 
-      //E - рестарт шарика
-      if(kCode == 69) {
-        game.restartBall();
-      }
       //R - рестарт игры
       if(kCode == 82) {
         game.restartGame();

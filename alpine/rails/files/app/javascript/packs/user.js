@@ -403,11 +403,11 @@ $(function () {
 			UserMatchesView = new App.Views.UserMatches({ model: user })
 			UserMatchesView.render()
 
-			fetch("/profile/block_list_detailed/" + user.id)
-			.then(result => result.ok ? result.json() : Promise.reject(result))
-			.then(function (result) {
-				console.log(result);
-			})
+			// fetch("/profile/block_list_detailed/" + user.id)
+			// .then(result => result.ok ? result.json() : Promise.reject(result))
+			// .then(function (result) {
+			// 	console.log(result);
+			// })
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")

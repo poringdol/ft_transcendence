@@ -100,6 +100,7 @@ Rails.application.routes.draw do
 #    GAME PAGE
 # ------------------
   post 'matches/move_bracket/:id' => 'matches#move_bracket'
+  get 'matches/match_users/:id' => 'matches#match_users'
 
 # --------------------
 #    AUTHENTIFICATION
