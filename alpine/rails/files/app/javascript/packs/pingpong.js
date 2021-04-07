@@ -1,4 +1,4 @@
-(function(){
+$(function(){
 	'use strict';
 
 	const KEYS = {start: 13, up: 87, down: 83};
@@ -16,15 +16,33 @@
 		urlRoot: `/matches/match_users/${MATCH_ID}.json`,
 		initialize: function () { this.fetch(); }
 	})
-
-	App.Views.Test = Backbone.View.extend({
+	
+	//  MATCH              VIEW
+	App.Views.Match = Backbone.View.extend({
+		template_score: _.template($("#MatchScoreTemplate").html()),
+		
 		initialize: function () {
-			this.model.on("sync", function () {
-				window.game = new Game(this.model);
-				game.startGame();
-			}, this)
+
+			this.model.on("sync", this.start_game, this);
+			this.model.on("change", this.render_score, this);
+		},
+
+		start_game: function () {
+			window.game = new Game(this.model);
+			game.startGame();
+			
+			this.render_score();
+		},
+
+		render_score: function () {
+			var template = this.template_score(this.model.attributes);
+			this.$el.html(template);
+			$("#MatchScore").html(this.el);
 		}
 	})
+
+	// SCORE								VIEW
+
 
 	//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 	var Ball = function () {
@@ -95,11 +113,14 @@
 
 		//Подписываемся на события кнопок, если пользователь участник игры
 		let player = curr_match.get("current_user").id == curr_match.get("player1").id ? 1 :
-					 curr_match.get("current_user").id == curr_match.get("player2").id ? 2 : 0;
+					 			 curr_match.get("current_user").id == curr_match.get("player2").id ? 2 : 0;
+
 		if (player > 0) {
-			document.addEventListener('keydown', function (event) {
-				_this.keyDownEvent.call(_this, event, curr_match, player);
-			});
+			// document.addEventListener('keydown', function (event) {
+			// 	_this.keyDownEvent.call(_this, event, curr_match, player);
+			// });
+			var keeDown = function (event) { _this.keyDownEvent.call(_this, event, curr_match, player); }
+			document.addEventListener('keydown', _.throttle(keeDown, 100));
 		}
 
 		return this;
@@ -129,6 +150,8 @@
 			
 			this.objects.bracket2.x = this.params.width - 50;
 			this.objects.bracket2.y = this.params.height / 2 - this.objects.bracket1.h / 2;
+
+			this.params.lastGoalPlayer = 1;
 
 			//Перекрасим второго игрока
 			this.objects.bracket2.color = '#00FFCC';
@@ -171,7 +194,7 @@
 					this.params.state = 'playerwait';
 					//Сохарним информацию о забившем
 					this.params.lastGoalBracket = this.objects.bracket2;
-					this.params.lastGoalPlayer = 'player2';
+					this.params.lastGoalPlayer = 2;
 				}
 
 				//Шарик оказался за выторым игроком
@@ -182,7 +205,7 @@
 					this.params.state = 'playerwait';
 					//Сохарним информацию о забившем
 					this.params.lastGoalBracket = this.objects.bracket1;
-					this.params.lastGoalPlayer = 'player1';
+					this.params.lastGoalPlayer = 1;
 				}
 
 				//Проверяем наличие победителя
@@ -242,11 +265,11 @@
 			if(this.params.state === 'playerwait') {
 				ball.xspeed = 0;
 				ball.yspeed = 0;
-				if(this.params.lastGoalPlayer === 'player1') {
+				if(this.params.lastGoalPlayer === 1) {
 					ball.x 	= this.params.lastGoalBracket.x + this.params.lastGoalBracket.w + ball.radius + 1;
 					ball.y 	= this.params.lastGoalBracket.y + this.params.lastGoalBracket.h/2;
 				}
-				if(this.params.lastGoalPlayer === 'player2') {
+				if(this.params.lastGoalPlayer === 2) {
 					ball.x 	= this.params.lastGoalBracket.x - ball.radius - 1;
 					ball.y 	= this.params.lastGoalBracket.y + this.params.lastGoalBracket.h/2;
 				}
@@ -283,14 +306,29 @@
 		//Инициализация игровых событий
 		keyDownEvent: function (event, curr_match, player) {
 			var kCode = event.keyCode;
-			if(kCode === KEYS.start && game.params.state === "playerwait" || kCode === KEYS.up || kCode === KEYS.down) {
+
+			if (kCode === KEYS.start && game.params.state === "playerwait"
+					&& game.params.lastGoalPlayer == player) {
 				$.post("/matches/move_bracket/" + MATCH_ID, { match_id: MATCH_ID,
-																key_code: kCode,
-																player
-			// 												  bracket1: game.objects.bracket1,
-			// 												  bracket2: game.objects.bracket2,
-			// 												  ball:		game.objects.ball
-															});
+															  											key_code: kCode,
+																											player: player });
+			}
+			if (kCode === KEYS.down || kCode === KEYS.up) {
+				$.post("/matches/move_bracket/" + MATCH_ID, { match_id: MATCH_ID,
+																											key_code: kCode,
+																											player: player,
+																											// bracket1_pos: game.objects.bracket1,
+																											// bracket2_pos: game.objects.bracket2,
+																											// ball_pos: game.objects.ball
+																										});
+				// let bracket = (player == 1)
+				// 		? game.objects.bracket1.y + game.objects.bracket1.speed
+				// 		: game.objects.bracket2.y + game.objects.bracket2.speed;
+
+				// $.post("/matches/move_bracket/" + MATCH_ID, { match_id: MATCH_ID,
+				// 																							key_code: kCode,
+				// 																							player: player,
+				// 																							bracket: bracket });
 			}
 		},
 		
@@ -328,8 +366,6 @@
 	};
 
 	// //При загрузке window, стартуем нашу игру
-	window.onload = function () {
-		let match_model = new App.Models.Match();
-		let match_view = new App.Views.Test({ model: match_model });
-	}		
-})();
+	let match_model = new App.Models.Match();
+	let match_view = new App.Views.Match({ model: match_model });
+}());

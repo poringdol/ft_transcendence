@@ -1,17 +1,32 @@
 class MatchesController < ApplicationController
-  before_action :set_match, only: %i[ show edit update destroy ]
-  skip_before_action :verify_authenticity_token, only: [:move_bracket]
+  before_action :set_match, only: %i[ show edit update destroy match_users_update ]
+
+  skip_before_action :verify_authenticity_token
 
   # GET /matches or /matches.json
   def index
     @matches = Match.all
   end
 
+  # получить матч и игроков
   def match_users
     @match = Match.find(params[:id])
     @match.current_user = current_user
     @match.save
     render json: @match
+  end
+
+  # обновление модели
+  def match_users_update
+    respond_to do |format|
+      if @match.update(match_params)
+        format.html { redirect_to @match, notice: "War was successfully updated." }
+        format.json { render :show, status: :ok, location: @match }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @match.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # GET /matches/1 or /matches/1.json
@@ -65,8 +80,24 @@ class MatchesController < ApplicationController
   end
 
   def move_bracket
+
+    # REDIS.set "backet1_pos:#{params[:id]}", params[:bracket1_pos]
+    # REDIS.set "backet1_pos:#{params[:id]}", params[:bracket2_pos]
+    # REDIS.set "backet1_pos:#{params[:id]}", params[:ball_pos]
+
+    MatchJob.perform_later({ match_id: params[:id],
+                             key_code: params[:key_code],
+                             player: params[:player],
+                            #  bracket: params[:bracket],
+                            #  backet1_pos: params[:bracket1_pos],
+                            #  backet2_pos: params[:bracket2_pos],
+                            #  ball_pos: params[:ball_pos]
+                            })
     # Принимаем параметры, посланные из pingpong.js пост запросом, передаем параметры в match_channel.js
-    ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id], key_code: params[:key_code], player: params[:player]}
+    # ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id],
+    #                                                                      key_code: params[:key_code],
+    #                                                                      player: params[:player],
+    #                                                                      bracket: params[:bracket]}
   end
 
   private

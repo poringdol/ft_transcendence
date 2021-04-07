@@ -96,13 +96,18 @@
       </style>
       
     </div>
-</div>  
+</div>
 
-<script type="text/javascript">
-  $("#btn-enter").click(function() {
-    const id = $("#MatchID").attr("data-MatchID");
-    $.get("/matches/move_bracket/" + id, { id: id })
-  })
+<div id="MatchScore"></div>
+
+<script type="text/template" id="MatchScoreTemplate">
+  <div class="row">
+    <div class="col-6">
+      Player 1 score: <%%= player1_score %>  
+    </div>
+    <div class="col-6"></div>
+      Player 2 score: <%%= player2_score %> 
+    </div>
 </script>
 
 <%= javascript_pack_tag 'pingpong' %>
