@@ -201,6 +201,10 @@
 					<div class='col'><%%= wins %></div>
 				</div>
 			</li>
+			<li class="list-group-item" id='LastBlockUserInfo'>
+				<div class='row' id='BlockUnblockUser' style="text-align: center;">
+				</div>
+			</li>
 		</div>
 	</div>
 </script>
@@ -209,17 +213,36 @@
 <!-- -------------------- BUTTONS --------------------------->
 <!-- INFO ADMIN BUTTON TEMPLATE -->
 <script type="text/template" id="UserInfoBanBtnTemplate">
-	<button id="UserInfoBanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns">
-		BAN USER
+	<button id="UserInfoBanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns" style="color: #212529b8;">
+		Ban user
 	</button>
 </script>
 
 <script type="text/template" id="UserInfoUnbanBtnTemplate">
-	<button id="UserInfoUnbanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns">
-		UNBAN USER
+	<button id="UserInfoUnbanBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns AdminBtns" style="color: #212529b8;">
+		Unban user
 	</button>
 </script>
 
+<!-- INFO BLOCK BUTTON TEMPLATE -->
+<script type="text/template" id="UserInfoBlockBtnTemplate">
+	<button id="UserInfoBlockBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns" style="color: #212529b8; margin-bottom: 0px">
+		Block user
+	</button>
+</script>
+
+<script type="text/template" id="UserInfoUnblockBtnTemplate">
+	<button id="UserInfoUnblockBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns" style="color: #212529b8; margin-bottom: 0px">
+		Unblock user
+	</button>
+</script>
+
+
+<script type="text/template" id="UserInfoSendBtnTemplate">
+	<button id="UserInfoSendBtn" type="button" class="btn card-link btn-guild mx-auto UserInfoBtns">
+		SEND MESSAGE
+	</button>
+</script>
 
 <!-- INFO EDIT BUTTON TEMPLATE -->
 <script type="text/template" id="UserInfoEditBtnTemplate">

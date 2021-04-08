@@ -1,5 +1,6 @@
 class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :edit, :update, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:create]
   require 'bcrypt'
 
   # GET /rooms
@@ -35,10 +36,15 @@ class RoomsController < ApplicationController
       name = params[:name]
     end
 
-    direct_room_exists = Room.where(name: name + '-' + current_user.nickname).first
+    direct_room_exists1 = Room.where(name: name + '-' + current_user.nickname).first
+	direct_room_exists = Room.where(name: current_user.nickname + '-' + name).first
+	if direct_room_exists1.present?
+		direct_room_exists = direct_room_exists1
+	end
     if direct_room_exists.present?
       respond_to do |format|
         format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
+		format.json { render json: direct_room_exists }
       end 
     else
 
