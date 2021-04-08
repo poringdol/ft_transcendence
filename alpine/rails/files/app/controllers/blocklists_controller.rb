@@ -56,6 +56,40 @@ class BlocklistsController < ApplicationController
     end
   end
 
+  def block_user
+	user_id = current_user.id
+	if User.find(params[:id])
+		blocked_user_id = params[:id]
+		unless Blocklist.find_by(user_id: user_id, blocked_user_id: blocked_user_id)
+			Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
+			render json: 1
+		end
+	end
+  end
+
+  def is_blocked
+	user_id = current_user.id
+	if User.find(params[:id])
+		blocked_user_id = params[:id]
+		if Blocklist.find_by(user_id: user_id, blocked_user_id: blocked_user_id)
+			render json: 1
+		else
+			render json: 0
+		end
+	end
+  end
+
+  def unblock_user_by_id
+	user_id = current_user.id
+	if User.find(params[:id])
+		blocked_user_id = params[:id]
+		blocker = Blocklist.find_by(user_id: user_id, blocked_user_id: blocked_user_id)
+		if blocker.destroy
+			render json: 1
+		end
+	end
+  end
+
   def unblock_user
 	@blocklist = Blocklist.find(params[:id])
 	if @blocklist.user_id == current_user.id

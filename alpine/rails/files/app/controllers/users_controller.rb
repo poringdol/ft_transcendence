@@ -49,7 +49,10 @@ class UsersController < ApplicationController
       blocked_user_id = params[:blocked_user_id]
     end
     
-    Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
+	blocked = Blocklist.find_by(user_id: user_id, blocked_user_id: blocked_user_id)
+	unless blocked
+    	Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
+	end
   end
   
   def unblock_user
