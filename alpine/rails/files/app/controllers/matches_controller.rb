@@ -79,27 +79,6 @@ class MatchesController < ApplicationController
     end
   end
 
-  def move_bracket
-
-    # REDIS.set "backet1_pos:#{params[:id]}", params[:bracket1_pos]
-    # REDIS.set "backet1_pos:#{params[:id]}", params[:bracket2_pos]
-    # REDIS.set "backet1_pos:#{params[:id]}", params[:ball_pos]
-
-    MatchJob.perform_later({ match_id: params[:id],
-                             key_code: params[:key_code],
-                             player: params[:player],
-                            #  bracket: params[:bracket],
-                            #  backet1_pos: params[:bracket1_pos],
-                            #  backet2_pos: params[:bracket2_pos],
-                            #  ball_pos: params[:ball_pos]
-                            })
-    # Принимаем параметры, посланные из pingpong.js пост запросом, передаем параметры в match_channel.js
-    # ActionCable.server.broadcast "match_channel_#{params[:id]}", { match_id: params[:id],
-    #                                                                      key_code: params[:key_code],
-    #                                                                      player: params[:player],
-    #                                                                      bracket: params[:bracket]}
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_match
@@ -108,6 +87,6 @@ class MatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_params
-      params.require(:match).permit(:player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end)
+      params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end)
     end
 end

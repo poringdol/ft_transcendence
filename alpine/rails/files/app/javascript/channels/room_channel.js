@@ -17,8 +17,8 @@ document.addEventListener('turbolinks:load', () => {
     },
 
     disconnected() {
-      // Called when the subscription has been terminated by the server
-      console.log("Disconnected from room " + room_id);
+      if (room_id > 0)
+        console.log("Disconnected from room " + room_id);
     },
 
     received(data) {

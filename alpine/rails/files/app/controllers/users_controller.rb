@@ -63,15 +63,5 @@ class UsersController < ApplicationController
     
     Blocklist.where(user_id: user_id, blocked_user_id: blocked_user_id).destroy_all
   end
-  
-  def connected
-    current_user.is_online = true
-    current_user.save
-  end
-
-  def disconnected
-    current_user.is_online = false
-    current_user.save
-  end
 
 end

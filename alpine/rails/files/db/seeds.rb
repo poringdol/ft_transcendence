@@ -13,7 +13,6 @@ guild.update_column :logo, 'cat_mem.jpg'
 
 user = User.create!(email: 'cddoma@a.a',   nickname: 'cddoma',   is_admin: true, avatar: 'dog.jpg', guild_id: guild.id, password: 'cddoma',   password_confirmation: 'cddoma')
 user = User.create!(email: 'alldeady@a.a', nickname: 'alldeady', is_admin: true, avatar: 'cat.jpg', guild_id: guild.id, password: 'alldeady', password_confirmation: 'alldeady')
-user = User.create!(email: 'markvel@a.a',  nickname: 'markvel',  is_admin: true,                    guild_id: guild.id, password: 'markvel',  password_confirmation: 'markvel')
 
 User.create!(email: 'splinter@a.a', nickname: 'splinter', password: 'splinter', password_confirmation: 'splinter')
 guild = Guild.create(name: 'Ninja Turtles', anagram: 'TMNT', score: 80, rating: 3, owner_id: User.where(nickname: 'splinter').first.id)
