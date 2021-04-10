@@ -29,15 +29,15 @@ class RoomsController < ApplicationController
   # POST /rooms.json
   def create
 
-    if params[:room].present?
-      pass = params[:room][:password]
-      name = params[:room][:name]
-    else
-      pass = params[:password]
-      name = params[:name]
-    end
+  if params[:room].present?
+    pass = params[:room][:password]
+    name = params[:room][:name]
+  else
+    pass = params[:password]
+    name = params[:name]
+  end
 
-    direct_room_exists1 = Room.where(name: name + '-' + current_user.nickname).first
+  direct_room_exists1 = Room.where(name: name + '-' + current_user.nickname).first
 	direct_room_exists = Room.where(name: current_user.nickname + '-' + name).first
 	if direct_room_exists1.present?
 		direct_room_exists = direct_room_exists1
@@ -45,7 +45,7 @@ class RoomsController < ApplicationController
     if direct_room_exists.present?
       respond_to do |format|
         format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
-		format.json { render json: direct_room_exists }
+		    format.json { render json: direct_room_exists }
       end
     else
 
@@ -64,9 +64,9 @@ class RoomsController < ApplicationController
       @room.owner_id = current_user.id
       respond_to do |format|
         if @room.save
-          ActionCable.server.broadcast('notification_channel', "Room #{@room.name} created")
           if direct_user.present?
             RoomUser.create(room_id: @room.id, user_id: direct_user.id)
+            NotificationChannel.broadcast_to(direct_user, message: "#{current_user.nickname} created direct room with you")
           end
           RoomUser.create(room_id: @room.id, user_id: current_user.id, is_admin: true)
           format.html { redirect_to "/rooms/#{@room.id}" }
@@ -84,7 +84,7 @@ class RoomsController < ApplicationController
   def update
     respond_to do |format|
       if @room.update(params)
-        format.html { redirect_to @room, notice: 'Room was successfully updated.' }
+        format.html { redirect_to @room }
         format.json { render :show, status: :ok, location: @room }
       else
         format.html { render :edit }
@@ -98,7 +98,7 @@ class RoomsController < ApplicationController
   def destroy
     @room.destroy
     respond_to do |format|
-      format.html { redirect_to rooms_url, notice: 'Room was successfully destroyed.' }
+      format.html { redirect_to rooms_url }
       format.json { head :no_content }
     end
   end
@@ -109,10 +109,11 @@ class RoomsController < ApplicationController
     respond_to do |format|
       if room_pass == params[:room][:password]
         RoomUser.create(user_id: current_user.id, room_id: params[:room][:id])
-        format.html { redirect_to "/rooms/#{params[:room][:id]}", notice: 'Pass rigth' }
+        format.html { redirect_to "/rooms/#{params[:room][:id]}" }
         format.json { render :show, status: :ok, location: "/rooms/#{params[:room][:id]}" }
       else
-        format.html { redirect_to "/rooms/#{params[:room][:id]}", notice: 'Pass wrong' }
+        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password wrong")
+        format.html { redirect_to "/rooms/#{params[:room][:id]}" }
         format.json { head :no_content }
       end
     end
@@ -125,13 +126,14 @@ class RoomsController < ApplicationController
       RoomUser.where(room_id: params[:room][:room_id]).destroy_all
       @room.destroy
       respond_to do |format|
-        format.html { redirect_to rooms_url, notice: 'Room was successfully destroyed.' }
+        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} was successfully destroyed")
+        format.html { redirect_to rooms_url }
         format.json { head :no_content }
       end
     else
       RoomUser.where(room_id: params[:room][:room_id], user_id: current_user.id).destroy_all
       respond_to do |format|
-        format.html { redirect_to rooms_url, notice: 'Leaved from room' }
+        format.html { redirect_to rooms_url }
         format.json { head :no_content }
       end
     end
@@ -147,10 +149,12 @@ class RoomsController < ApplicationController
 
     respond_to do |format|
       if @room.save
-        format.html { redirect_to "/rooms/#{@room.id}", notice: 'Password updated' }
+        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password updated")
+        format.html { redirect_to "/rooms/#{@room.id}" }
         format.json { head :no_content }
       else
-        format.html { redirect_to "/rooms/#{@room.id}", notice: 'Password not updated' }
+        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password not updated")
+        format.html { redirect_to "/rooms/#{@room.id}" }
         format.json { head :no_content }
       end
     end
@@ -166,18 +170,21 @@ class RoomsController < ApplicationController
     end
 
     Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
+    NotificationChannel.broadcast_to(current_user, message: "User #{User.find(blocked_user_id)} now in your block list")
   end
 
   def do_admin
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = true
     user.save
+    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now is admin")
   end
 
   def rm_admin
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = false
     user.save
+    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now demoted")
   end
 
   def mute_user
@@ -185,6 +192,7 @@ class RoomsController < ApplicationController
 
     user.is_muted = true
     user.save
+    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now muted")
     sleep(60)
     user.is_muted = false
     user.save

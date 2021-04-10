@@ -6,7 +6,7 @@ consumer.subscriptions.create("NotificationChannel", {
   received(data) {
     if (Notification.permission === 'granted') {
       var title = 'PingPong notification'
-      var body = data
+      var body = data.message
       var options = { body: body }
       new Notification(title, options)
     }

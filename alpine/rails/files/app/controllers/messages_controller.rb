@@ -32,7 +32,7 @@ class MessagesController < ApplicationController
       @message.save
       SendMessageJob.perform_later(@message)
     else
-      flash[:alert] = "UR MUTED"
+      NotificationChannel.broadcast_to(current_user, message: "You muted in this room")
     end
   end
 
