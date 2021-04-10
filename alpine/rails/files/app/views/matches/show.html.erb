@@ -49,6 +49,31 @@
       <%= @match.is_end %>
     </p>
 
+    <p>
+      <strong>Is in progress:</strong>
+      <%= @match.is_inprogress %>
+    </p>
+
+    <p>
+      <strong>Is player1 online:</strong>
+      <%= @match.is_player1_online %>
+    </p>
+
+    <p>
+      <strong>Is player2 online:</strong>
+      <%= @match.is_player2_online %>
+    </p>
+
+    <p>
+      <strong>Is player1 ready:</strong>
+      <%= @match.is_player1_ready %>
+    </p>
+
+    <p>
+      <strong>Is player2 ready:</strong>
+      <%= @match.is_player2_ready %>
+    </p>
+
     <%= link_to 'Edit', edit_match_path(@match) %> |
     <%= link_to 'Back', matches_path %>
 

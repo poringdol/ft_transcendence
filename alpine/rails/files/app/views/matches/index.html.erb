@@ -13,6 +13,12 @@
       <th>Guild 2</th>
       <th>Addons</th>
       <th>Is end</th>
+      <th>Is in progress</th>
+      <th>Is player1 online</th>
+      <th>Is player2 online</th>
+      <th>Is player1 ready</th>
+      <th>Is player2 ready</th>
+      <th>Is end</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -28,6 +34,11 @@
         <td><%= match.guild_2_id %></td>
         <td><%= match.addons_id %></td>
         <td><%= match.is_end %></td>
+        <td><%= match.is_inprogress %></td>
+        <td><%= match.is_player1_online %></td>
+        <td><%= match.is_player2_online %></td>
+        <td><%= match.is_player1_ready %></td>
+        <td><%= match.is_player2_ready %></td>
         <td><%= link_to 'Show', match %></td>
         <td><%= link_to 'Edit', edit_match_path(match) %></td>
         <td><%= link_to 'Destroy', match, method: :delete, data: { confirm: 'Are you sure?' } %></td>
