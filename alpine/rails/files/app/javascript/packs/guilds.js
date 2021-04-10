@@ -145,6 +145,7 @@ $(function () {
 		},
 		render: function () {
 			this.$el.html("")
+			console.log('render')
 			this.collection.each(this.addOne, this);
 			$('#GuildContent').html(this.el);
 			return this;
