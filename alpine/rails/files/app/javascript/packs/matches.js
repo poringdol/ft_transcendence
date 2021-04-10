@@ -24,11 +24,11 @@ $(function () {
 			this.collection.on('sync', this.render, this)
 		},
 		render: function () {
-			console.log(this.collection)
+			// console.log(this.collection)
 		}
 	});
 
-	console.log('aloha')
+	// console.log('aloha')
 	col = new App.Collections.Match()
 	view = new App.Views.Matches({ collection: col })
 

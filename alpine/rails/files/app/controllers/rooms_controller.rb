@@ -64,7 +64,7 @@ class RoomsController < ApplicationController
       @room.owner_id = current_user.id
       respond_to do |format|
         if @room.save
-          ActionCable.server.broadcast('notification_channel', "Room #{@room.name} created")
+          NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} created")
           if direct_user.present?
             RoomUser.create(room_id: @room.id, user_id: direct_user.id)
           end
