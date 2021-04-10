@@ -34,6 +34,7 @@
 			</div>
 		</div>
 	<% if user_signed_in? %>
+		<%= link_to 'send notif', welcome_index_path, remote: true %>
 		<%= render 'layouts/footer' %>
 	<% end %>
 

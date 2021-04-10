@@ -35,6 +35,9 @@ document.addEventListener("turbolinks:before-visit", function () {
 	Turbolinks.clearCache();
 })
 
+
+Notification.requestPermission().then(function (result) {})
+
 // debugger
 
 // Uncomment to copy all static images under ../images to the output folder and reference
