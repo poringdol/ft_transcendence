@@ -28,6 +28,7 @@ class RoomsController < ApplicationController
   # POST /rooms
   # POST /rooms.json
   def create
+
     if params[:room].present?
       pass = params[:room][:password]
       name = params[:room][:name]
@@ -45,7 +46,7 @@ class RoomsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
 		format.json { render json: direct_room_exists }
-      end 
+      end
     else
 
       if pass != ""
@@ -63,6 +64,7 @@ class RoomsController < ApplicationController
       @room.owner_id = current_user.id
       respond_to do |format|
         if @room.save
+          ActionCable.server.broadcast('notification_channel', "Room #{@room.name} created")
           if direct_user.present?
             RoomUser.create(room_id: @room.id, user_id: direct_user.id)
           end
@@ -162,7 +164,7 @@ class RoomsController < ApplicationController
       user_id = params[:user_id]
       blocked_user_id = params[:blocked_user_id]
     end
-    
+
     Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
   end
 
