@@ -35,8 +35,9 @@ document.addEventListener("turbolinks:before-visit", function () {
 	Turbolinks.clearCache();
 })
 
-
 Notification.requestPermission().then(function (result) {})
+
+//$(document).on('turbolinks:load', function(){ $.rails.refreshCSRFTokens(); });
 
 // debugger
 

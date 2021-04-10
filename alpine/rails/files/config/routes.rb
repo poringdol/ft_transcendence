@@ -71,7 +71,7 @@ Rails.application.routes.draw do
   post 'rooms/block_user' => 'users#block_user'
   post 'users/unblock_user' => 'users#unblock_user'
   post 'rooms/unblock_user' => 'users#unblock_user'
-  
+
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
 # ------------------------------------
@@ -110,11 +110,15 @@ Rails.application.routes.draw do
 #    AUTHENTIFICATION
 # --------------------
   # 2 factor
-  post 'users/enable_otp'
-  post 'users/disable_otp'
+  post 'users/enable_otp' => 'users#enable_otp'
+  post 'users/disable_otp' => 'users#disable_otp'
+  post 'users/edit/enable_otp' => 'users#enable_otp'
+  post 'users/edit/disable_otp' => 'users#disable_otp'
+
   # auth
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
+    post '/users/auth/marvin/twofa' => 'users/omniauth_callbacks#twofa'
   end
 end

@@ -192,7 +192,7 @@ class RoomsController < ApplicationController
 
     user.is_muted = true
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now muted")
+    NotificationChannel.broadcast_to(current_user, message: "User with id #{params[:room][:user_id]} now muted")
     sleep(60)
     user.is_muted = false
     user.save
