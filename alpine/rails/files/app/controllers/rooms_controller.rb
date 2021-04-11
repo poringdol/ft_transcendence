@@ -141,7 +141,7 @@ class RoomsController < ApplicationController
 
   def change_pass
     @room = Room.find(params[:room][:room_id])
-    unless @room.password == ""
+    if @room.password.present? && @room.password != ""
       room_pass = BCrypt::Password.new(@room.password)
     else
       room_pass = ""
