@@ -1,138 +1,97 @@
+<div id="MatchID" data-MatchID="<%= @match.id %>"></div>
+<!--
+<p id="notice"><%= notice %></p>
+-->
+
 <div class="row">
 
-  <div class="col-2">
+  <div id="MatchUser1Profile" class="col-2"></div>
 
-    <p id="notice"><%= notice %></p>
-
-    <div id="MatchID" data-MatchID="<%= @match.id %>">
-      <strong>Match ID:</strong>
-      <%= @match.id %>
-    </div>
-
-    <p>
-      <strong>Player 1:</strong>
-      <%= @match.player1_id %>
-    </p>
-
-    <p>
-      <strong>Player 2:</strong>
-      <%= @match.player2_id %>
-    </p>
-
-    <p>
-      <strong>Player 1 score:</strong>
-      <%= @match.player1_score %>
-    </p>
-
-    <p>
-      <strong>Player 2 score:</strong>
-      <%= @match.player2_score %>
-    </p>
-
-    <p>
-      <strong>Guild 1:</strong>
-      <%= @match.guild_1_id %>
-    </p>
-
-    <p>
-      <strong>Guild 2:</strong>
-      <%= @match.guild_2_id %>
-    </p>
-
-    <p>
-      <strong>Addons:</strong>
-      <%= @match.addons_id %>
-    </p>
-
-    <p>
-      <strong>Is end:</strong>
-      <%= @match.is_end %>
-    </p>
-
-    <p>
-      <strong>Is in progress:</strong>
-      <%= @match.is_inprogress %>
-    </p>
-
-    <p>
-      <strong>Is player1 online:</strong>
-      <%= @match.is_player1_online %>
-    </p>
-
-    <p>
-      <strong>Is player2 online:</strong>
-      <%= @match.is_player2_online %>
-    </p>
-
-    <p>
-      <strong>Is player1 ready:</strong>
-      <%= @match.is_player1_ready %>
-    </p>
-
-    <p>
-      <strong>Is player2 ready:</strong>
-      <%= @match.is_player2_ready %>
-    </p>
-
-    <%= link_to 'Edit', edit_match_path(@match) %> |
-    <%= link_to 'Back', matches_path %>
-
-    </div>
-
-    <div class="col-10">
-    
     <%# Игра %>
-
+    
+  <div class="col-8">
     <div class="game__wrapper">
-        <canvas id="pingpong" width="960" height="600"></canvas>
-        <div class="game__description">
-          <dl>
-            <%# <dt>E</dt> <dd>- рестарт шарика</dd>
-            <dt>R</dt> <dd>- рестарт игры</dd><br> %>
-            <dt>W</dt> <dd>- вверх</dd>
-            <dt>S</dt> <dd>- вниз</dd> <br>
-            <dt id="btn-enter">Enter</dt> <dd>- пуск шарика</dd>
-          </dl>
-        </div>
+      <canvas id="pingpong" width="960" height="600"></canvas>
+      <div class="game__description">
+        <dl>
+          <dt>W</dt> <dd>- вверх</dd>
+          <dt>S</dt> <dd>- вниз</dd> <br>
+          <dt id="btn-enter">Enter</dt> <dd>- пуск шарика</dd>
+        </dl>
       </div>
-      <style>
-      body {
-        font-family: 'Arial', sans-serif;
-      }
-        .game__wrapper	{
-          display: block;
-          width: 960px;
-          margin: 0 auto;
-        }
-        .game__description dl > dd {
-          display: inline-block;
-          margin: 0 10px 0 0;
-          margin-bottom: 5px;
-        }
-        .game__description dl > dt {
-          display: inline-block;
-            border: 1px solid #d7d7d7;
-            padding: 4px 6px;
-            font-size: 10px;
-            border-radius: 3px;
-            box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
-            margin-bottom: 5px;
-        }
-      </style>
-      
     </div>
+    <style>
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+      .game__wrapper	{
+        display: block;
+        width: 960px;
+        margin: 0 auto;
+      }
+      .game__description dl > dd {
+        display: inline-block;
+        margin: 0 10px 0 0;
+        margin-bottom: 5px;
+      }
+      .game__description dl > dt {
+        display: inline-block;
+          border: 1px solid #d7d7d7;
+          padding: 4px 6px;
+          font-size: 10px;
+          border-radius: 3px;
+          box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+          margin-bottom: 5px;
+      }
+    </style>
+  </div>
+
+  <div id="MatchUser2Profile" class="col-2"></div>
+
 </div>
 
-<div id="MatchScore"></div>
 
-<script type="text/template" id="MatchScoreTemplate">
-  <div class="row">
-    <div class="col-6">
-      Player 1 score: <%%= player1_score %>  
-    </div>
-    <div class="col-6"></div>
-      Player 2 score: <%%= player2_score %> 
-    </div>
+<%# ШАБЛОНЫ %>
+
+<%# ПОЛЬЗОВАТЕЛЬ 1 %>
+<script type="text/template" id="MatchUser1ProfileTemplate">
+  <ul>
+    <li>
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+    </li>
+    <li>
+      Nickname: <%%= player1.nickname %> 
+    </li>
+    <li>
+      Guild: <%%= guild_1.name %> 
+    </li>
+    <li id="MatchPlayer1Score">
+      Score: <%%= player1_score %> 
+    </li>
+    <li id="MatchPlayer1Online">
+    </li>
+  </ul>
 </script>
+
+<%# ПОЛЬЗОВАТЕЛЬ 2 %>
+<script type="text/template" id="MatchUser2ProfileTemplate">
+  <ul>
+    <li>
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+    </li>
+    <li>
+      Nickname: <%%= player2.nickname %> 
+    </li>
+    <li>
+      Guild: <%%= guild_2.name %> 
+    </li>
+    <li id="MatchPlayer2Score">
+      Score: <%%= player2_score %> 
+    </li>
+    <li id="MatchPlayer2Online">
+    </li>
+  </ul>
+</script>
+
 
 <%= javascript_pack_tag 'pingpong' %>

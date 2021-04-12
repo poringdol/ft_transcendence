@@ -9,6 +9,9 @@ class Match < ApplicationRecord
 
   after_create {
     self.addons = Addon.create()
+    self.guild_1 = self.player1.guild
+    self.guild_2 = self.player2.guild
+    self.save()
   }
 
 end

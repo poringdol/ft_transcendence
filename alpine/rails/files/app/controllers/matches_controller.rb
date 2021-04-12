@@ -6,6 +6,11 @@ class MatchesController < ApplicationController
   # GET /matches or /matches.json
   def index
     @matches = Match.all
+
+    respond_to do |format|
+      format.html { @matches }
+      format.json { render json: @matches}
+    end
   end
 
   # получить матч и игроков

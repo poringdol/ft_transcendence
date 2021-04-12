@@ -13,38 +13,42 @@ document.addEventListener("turbolinks:load", () => {
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 
-		$("a").on("click", function () {
+		$("a").on("click", function (event) {
 			
 			consumer.subscriptions.remove(subscribe);
 
-			if (typeof game !== "undefined" && typeof MATCH !== "undefined"
-				&& MATCH.model.get("is_inprogress") == true					// раскомментить после добавления функционала
-				&& MATCH.role == "p")
-				if (MATCH.model.get("player1").id == MATCH.model.get("current_user").id) {
+			console.log("game")
+			console.log(game)
+			console.log("MATCH")
+			console.log(MATCH)
+			console.log("MATCH.model.get")
+			console.log(MATCH.model.get("is_inprogress"))
+			console.log("MATCH.role")
+			console.log(MATCH.role)
 
-					MATCH.model.set("is_player1_online", false);
+			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.role == "p") {
 
+				let player = (MATCH.model.get("player1").id == MATCH.model.get("current_user").id) ? 1 : 2;
+
+				(player == 1)
+					? MATCH.model.set("is_player1_online", false)
+					: MATCH.model.set("is_player2_online", false);
+
+				if (MATCH.model.get("is_inprogress") == true) {
 					// Если оба игрока покинули страницу с игрой, завершаем игру
-					if (MATCH.model.get("is_player2_online") == false) {
+					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
 						MATCH.model.set("is_inprogress", false);
 						MATCH.model.set("is_end", true);
 					}
-					else
-						game.goal(2);
-				}
-				else {
-
-					MATCH.model.set("is_player2_online", false);
-
-					if (MATCH.model.get("is_player1_online") == false) {
-						MATCH.model.set("is_inprogress", false);
-						MATCH.model.set("is_end", true);
+					// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
+					else {
+						game.goal((player == 1) ? 2 : 1);
 					}
-					else
-						game.goal(1);
-					
 				}
-				
+				MATCH.model.save();
+			}
+			console.log("RETURN")
+			return true;
 		})
 		// window.addEventListener("unload", function() {
 		// 	consumer.subscriptions.remove(subscribe);
@@ -99,48 +103,128 @@ document.addEventListener("turbolinks:load", () => {
 		};
 		
 		//  MATCH              MODEL
-		App.Models.Match = Backbone.Model.extend({
-			urlRoot: `/matches/match_users/${MATCH_ID}`,
-			initialize: function () { this.fetch(); }
-		 })
+		App.Models.Match = Backbone.Model.extend({ urlRoot: `/matches/match_users/${MATCH_ID}` });
 		
 		//  MATCH              VIEW
 		App.Views.Match = Backbone.View.extend({
-			template_score: _.template($("#MatchScoreTemplate").html()),
+			profile1_template: _.template($("#MatchUser1ProfileTemplate").html()),
+			profile2_template: _.template($("#MatchUser2ProfileTemplate").html()),
 		
 			initialize: function (data) {
+
+				var _this = this;
 
 				this.consumer = data.consumer;
 				this.role = 'w';
 		
-				this.model.on("sync", this.start_game, this);
-				// this.model.on("change", this.render_score, this);
+				_.bindAll(this, "init");
+				this.model.fetch({
+					success: this.init
+				})
+				// второй способ
+				// var _thisView = this;
+				// $.when(this.model.fetch())
+				// .done(function () {
+				// 	_thisView.init();
+				// },
+
+				// this.model.on("change", this.render, this);
+				// this.model.on('change:is_player1_online', this.changeOnlineStatus, this.model.get("is_player1_online"), 1, this);
+				// this.model.on('change:is_player2_online', this.changeOnlineStatus, this.model.get("is_player2_online"), 2, this);
+				this.model.on('change', function () {
+					
+					var diff = this.model.changedAttributes();
+
+					for (var att in diff) {
+						switch(att) {
+						case 'is_player1_online':
+							this.changeOnlineStatus(this.model.get("is_player1_online"), 1)
+							break;
+						case 'is_player2_online':
+							this.changeOnlineStatus(this.model.get("is_player2_online"), 1)
+							break;
+						case 'player1_score':
+							this.changeOnlineStatus(this.model.get("player1_score"), 1);
+							break;
+						case 'player2_score':
+							this.changeOnlineStatus(this.model.get("player2_score"), 2);
+							break;
+						}
+					}
+				}, this);
+			},
+
+			
+			init: function () {
+				if (this.model.get("player1").id == this.model.get("current_user").id || this.model.get("player2").id == this.model.get("current_user").id)
+					this.model.role = 'p';
+
+				if (this.model.role == 'p') {
+					this.model.get("player1").id == this.model.get("current_user").id
+						? this.model.set("is_player1_online", true)
+						: this.model.set("is_player2_online", true);
+				}
+
+				if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
+					this.model.set("is_inprogress", true);
+				}
+				this.model.save();
+				this.render();
+			},
+
+			render: function () {
+				this.renderProfile1();
+				this.renderProfile2();
+
+				if (MATCH.model.get("is_inprogress")) {
+					this.renderGame();
+				}
+				else if (MATCH.model.get("is_end")) {
+					this.renderResult();
+				}
+				else {
+					this.renderWaiting();
+				}
 			},
 		
-			start_game: function () {
-				if (typeof game !== "undefined")
-					return;
+			renderGame: function () {
+				console.log("______renderGame______")
 
-				if (MATCH.model.get("player1").id == MATCH.model.get("current_user").id
-					|| MATCH.model.get("player2").id == MATCH.model.get("current_user").id)
-					this.role = 'p';
-
-				if (this.role == 'p') {
-					MATCH.model.get("player1").id == MATCH.model.get("current_user").id
-						? MATCH.model.set("is_player1_online", true)
-						: MATCH.model.set("is_player2_online", true);
-
-					MATCH.model.save();
-				}
 				window.game = new Game(this.model, this.consumer);
 				game.startGame();
-				this.renderScore();
 			},
-		
-			renderScore: function () {
-				var template = this.template_score(this.model.attributes);
-				this.$el.html(template);
-				$("#MatchScore").html(this.el);
+
+			renderProfile1: function () {
+				let template = this.profile1_template(this.model.attributes);
+				$("#MatchUser1Profile").html(template);
+				this.changeOnlineStatus(this.model.get("is_player1_online"), 1);
+			},
+			
+			renderProfile2: function () {
+				let template = this.profile2_template(this.model.attributes);
+				$("#MatchUser2Profile").html(template);
+				this.changeOnlineStatus(this.model.get("is_player2_online"), 2);
+			},
+
+			changeOnlineStatus: function (is_online, player) {
+				if (is_online == true)
+					$(`#MatchPlayer${player}Online`).html('<span style="color: green">Online</span>');
+				else
+					$(`#MatchPlayer${player}Online`).html('<span style="color: red">Offline</span>');
+			},
+			
+			changeScore: function (score, player) {
+				$(`MatchPlayer${player}Score`).html(score);
+			},
+
+			renderWaiting: function () {
+				console.log("______renderWaiting______");
+				$(".game__wrapper").html("СТРАНИЦА ОЖИДАНИЯ НАЧАЛА МАТЧА. НАРИСОВАТЬ СЮДА ПО КНОПКЕ ДЛЯ КАЖДОГО ПОЛЬЗОВАТЕЛЯ ДЛЯ СТАРТА МАТЧА");
+			},
+
+			renderResult: function () {
+				console.log("______renderResult______");
+				$(".game__wrapper").html("ИГРА ЗАКОНЧЕНА. НАРИСОВАТЬ ЗДЕСЬ РЕЗУЛЬТАТЫ ИГРЫ");
 			}
 		})
 		
@@ -227,7 +311,7 @@ document.addEventListener("turbolinks:load", () => {
 		Game.prototype = {
 			//Старт игры
 			startGame: function () {
-		
+
 				var _this = this;
 		
 				//Инициализируем игровые объекты
@@ -238,8 +322,6 @@ document.addEventListener("turbolinks:load", () => {
 				};
 				//Меняем состояние
 				// this.params.state = 'game';
-				console.log(this)
-				console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQqq")
 				this.params.state = 'playerwait';
 		
 				//Расставляем стартовые позиции ракеток
