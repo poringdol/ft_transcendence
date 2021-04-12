@@ -21,6 +21,11 @@ class MatchesController < ApplicationController
     render json: @match
   end
 
+  def get_player
+	player = User.find(params[:id])
+	render json: player
+  end
+
   # обновление модели
   def match_users_update
     respond_to do |format|
@@ -45,6 +50,32 @@ class MatchesController < ApplicationController
 
   # GET /matches/1/edit
   def edit
+  end
+
+  def new_match
+	player2 = User.find_by(nickname: params[:player2])
+	if (player2)
+		player1_id = current_user.id
+		player2_id = player2.id
+		guild_1_id = current_user.guild_id
+		guild_2_id = player2.guild_id
+
+		@match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
+		respond_to do |format|
+			if @match.save
+				format.html { redirect_to @match, notice: "Match was successfully created." }
+        		format.json { render :show, status: :created, location: @match }
+			else
+				format.html { render :new, status: :unprocessable_entity }
+				format.json { render json: @match.errors, status: :unprocessable_entity }
+			end
+		end
+	else
+		respond_to do |format|
+			format.html { render :new, status: :unprocessable_entity }
+			format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity, errorText: "sss" }
+		end
+    end
   end
 
   # POST /matches or /matches.json

@@ -66,3 +66,12 @@ Friend.create(user_id: 3, friend_id: 11)
 
 Friend.create(user_id: 10, friend_id: 1)
 Friend.create(user_id: 11, friend_id: 1)
+
+Match.create(player1_id: 1, player2_id: 2, guild_1_id: 1, guild_2_id: 1, is_inprogress: true)
+Match.create(player1_id: 2, player2_id: 1, guild_1_id: 1, guild_2_id: 1, is_end: true)
+Match.create(player1_id: 2, player2_id: 3, guild_1_id: 1, guild_2_id: 1)
+Match.create(player1_id: 3, player2_id: 4, guild_1_id: 1, guild_2_id: 2, is_end: true)
+Match.create(player1_id: 5, player2_id: 6, guild_1_id: 2, guild_2_id: 2)
+Match.create(player1_id: 4, player2_id: 6, guild_1_id: 2, guild_2_id: 2, is_inprogress: true)
+Match.create(player1_id: 5, player2_id: 4, guild_1_id: 2, guild_2_id: 2, is_end: true)
+Match.create(player1_id: 6, player2_id: 7, guild_1_id: 2, guild_2_id: 2)

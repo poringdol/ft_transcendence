@@ -1,53 +1,156 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Matches</h1>
+<div class='MatchesContent row'>
+<div class='col-1'></div>
+<div class='card col-3' id='MatchCreationForm'>
+	<div class="card-body">
+		<h6 class="card-title">Create new match</h6>
+	</div>
+	<div class="list-group list-group-flush" id="list-tab" role="tablist">
+		<li class="list-group-item">
+			<form class="row formMtaches">
+				<input placeholder="Nickname of your opponent" type="text" class="form-control col formMtachesInput" id="formPlayer2Nickname" value="">
+			</form>
+		</li>
+		<li class="list-group-item">
+			<form class="row formMtaches">
+				<input placeholder="Addons" type="text" class="form-control col formMtachesInput" id="formAddons" value="">
+			</form>
+		</li>
+		<li class="list-group-item">
+			<form class="row formMtaches">
+				<input type="submit" class="btn btn-outline-secondary mb-3 col" value="create">
+			</form>
+		</li>
+	</div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Player 1</th>
-      <th>Player 2</th>
-      <th>Player 1 score</th>
-      <th>Player 2 score</th>
-      <th>Guild 1</th>
-      <th>Guild 2</th>
-      <th>Addons</th>
-      <th>Is end</th>
-      <th>Is in progress</th>
-      <th>Is player1 online</th>
-      <th>Is player2 online</th>
-      <th>Is player1 ready</th>
-      <th>Is player2 ready</th>
-      <th>Is end</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class='col-7'>
+	<div class='card' style='width: 98%'>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Current Matches</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned" type="button" role="tab" aria-controls="planned" aria-selected="false">Planned Matches</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">History Matches</button>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
+				<div class='row' id='CurrentMatches'>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
+				<div class='row' id='PlannedMatches'>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
+				<div class='row' id='HistoryMatches'>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+<div class='col-1'></div>
+</div>
 
-  <tbody>
-    <% @matches.each do |match| %>
-      <tr>
-        <td><%= match.player1_id %></td>
-        <td><%= match.player2_id %></td>
-        <td><%= match.player1_score %></td>
-        <td><%= match.player2_score %></td>
-        <td><%= match.guild_1_id %></td>
-        <td><%= match.guild_2_id %></td>
-        <td><%= match.addons_id %></td>
-        <td><%= match.is_end %></td>
-        <td><%= match.is_inprogress %></td>
-        <td><%= match.is_player1_online %></td>
-        <td><%= match.is_player2_online %></td>
-        <td><%= match.is_player1_ready %></td>
-        <td><%= match.is_player2_ready %></td>
-        <td><%= link_to 'Show', match %></td>
-        <td><%= link_to 'Edit', edit_match_path(match) %></td>
-        <td><%= link_to 'Destroy', match, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<br>
+<!--
+	TABLE TEMPLATE
+-->
+<script type="text/template" id="MatchesTableTemplate">
+	
+		<!--<div>
+			<h4 class='tableHeader'> <%%= type %> matches </h3>
+		</div>
+		<div class="card col-8">-->
+		<table class="table table-striped matchesTable" id='<%%= type %>MatchesTable'>
+			<thead id='MatchesTableThead'>
+				<tr class='tableHeader'>
+				<!--<th colspan="1" class='tableHeader'></th>-->
+				<th scope="col" class='tableHeader'>Player-1</th>
+				<th scope="col" class='tableHeader'>Player-2</th>
+				<th scope="col" class='tableHeader'>Score</th>
+				<th scope="col" class='tableHeader'>Guild-1</th>
+				<th scope="col" class='tableHeader'>Guild-2</th>
+				<th scope="col" class='tableHeader'>Addons</th>
+				<th colspan="3"></th>
+				</tr>
+			</thead>
+		</table>
+	
+</script>
+
+<!--
+	TABLE ROW TEMPLATE
+-->
+<script type="text/template" id="MatchesRowTemplate">
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/profile/<%%= player1.id %>'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= player1.nickname %>
+			</div>
+		</div>
+	</td>
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/profile/<%%= player2.id %>'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= player2.nickname %>
+			</div>
+		</div>
+	</td>
+	<td><%%= player1_score %> - <%%= player2_score %></td>
+	<td>
+		<div class='row justify-content-md-center'>
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/guilds'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= guild_1.logo.url %>> 
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= guild_1.anagram %>
+			</div>
+		</div>
+	</td>
+	<td>
+		<div class='row justify-content-md-center'>
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/guilds'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= guild_2.logo.url %>> 
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= guild_2.anagram %>
+			</div>
+		</div>
+	</td>
+	<td>none</td>
+	<td>
+		<a type='button' class='btn btn-guild' id='ShowMatch' href='/matches/<%%= id %>'>
+			Show
+		</a>
+	</td>
+	<% if current_user.is_admin? %>
+		<td>
+			<button type='button' class='btn btn-guild' id='DeleteMatch'>
+				Delete
+			</button>
+		</td>
+	<% end %>
+</script>
 
 <%= link_to 'New Match', new_match_path %>
 <%= javascript_pack_tag 'matches' %>

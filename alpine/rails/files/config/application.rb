@@ -13,7 +13,6 @@ module Pingpong
 
     config.web_console.whitelisted_ips = '172.18.0.1/16'
     # config.web_console.whiny_requests = false
-
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  #skip_before_action :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
 
   def enable_otp
     current_user.otp_secret = User.generate_otp_secret
@@ -24,11 +24,14 @@ class UsersController < ApplicationController
   end
 
   def update_nickname
+    p "----------------------"
+    p params
+    p "----------------------"
     if current_user.nickname != params[:user][:nickname]
       current_user.nickname = params[:user][:nickname]
       current_user.save!
       NotificationChannel.broadcast_to(current_user, message: "Nickname changed to #{current_user.nickname}")
-      # redirect_to '/profile/0'
+     # redirect_to '/profile/0'
     else
       NotificationChannel.broadcast_to(current_user, message: "Choose other nickname")
     end

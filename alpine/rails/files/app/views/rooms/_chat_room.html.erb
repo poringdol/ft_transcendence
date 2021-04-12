@@ -4,7 +4,6 @@
     <span class = "navbar-brand">
       <b><%= @room.name %></b>
     </span>
-    <small><%= RoomUser.where(room_id: @room.id).size() %> Members</small>
     </nav>
 
     <div class="row">
@@ -26,6 +25,19 @@
             </div>
             <div>
               <%= form.submit "Change pass", class: "btn btn-outline-primary", data: { disable_with: false } %>
+              <script type="text/javascript">
+                $( "#ch_pass" ).submit(function(event) {
+                  event.preventDefault();
+                  fetch(event.target.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(new FormData(event.target)) // event.target - форма
+                  }).then((resp) => {
+                    this.reset();
+                  }).catch((error) => {
+                    alert("Ошибка отправки сообщения!");
+                  });
+                });
+              </script>
             </div>
             <%end %>
         </div>

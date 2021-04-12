@@ -3,7 +3,7 @@ import consumer from "./consumer"
 let subscribe = 0;
 
 document.addEventListener('turbolinks:load', () => {
-  
+
   const room_element = document.getElementById('room-id');
   const room_id = (room_element != null) ? room_element.getAttribute('data-room-id') : -1;
 
