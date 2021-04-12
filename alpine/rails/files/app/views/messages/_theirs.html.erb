@@ -1,25 +1,27 @@
-<div class = "message mb-2">
+<div class = "message mb-2", id="their_msg",> <!-- onclick="addDropdown(<%= message.id %>); this.onclick=null;"> -->
   <div class = "content-container">
     <div class=" nav-item dropdown">
-      <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown" type="button" data-bs-toggle="dropdown">
+      <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown-th" type="button" data-bs-toggle="dropdown">
         <%= message.content %>
       </a>
-      <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
+      <ul class="dropdown-menu append-dropdown" aria-labelledby="MessageDropdown">
           <li><a class="dropdown-item" aria-current="page" href=<%= "/profile/#{message.user_id}" %> >Profile</a></li>
           <li><a class="dropdown-item" aria-current="page" href="#">Invite to game</a></li>
 
           <%= form_with model: @room, url: "create", method: :post do |form| %>
             <%= form.hidden_field :name, value: message.user.nickname %>
-            <%= form.hidden_field :authenticity_token, value: form_authenticity_token %>
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
             <%= form.submit "Direct", class: "dropdown-item" %>
           <%end %>
 
           <li><a class="dropdown-item" aria-current="page" href="#">Block user</a></li>
       </ul>
+
     </div>
     <div class = "author">
       <%= message.user.nickname %> (<%= Guild.all.find(message.user.guild_id).anagram if message.user.guild_id? %>)
     </div>
   </div>
 </div>
+
 

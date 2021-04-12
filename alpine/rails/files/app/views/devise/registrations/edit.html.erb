@@ -1,52 +1,20 @@
 <h2>Edit profile - <%= current_user.nickname %></h2>
 <br>
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-<!--
-  <%= render "devise/shared/error_messages", resource: resource %>
--->
-  <div class="field">
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-    <%= f.label :email, "Email" %><br />
-  </div>
-  <br>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <%= f.password_field :password, placeholder: "Blank if don't need to change it" , autocomplete: "new-password" %>
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-  </div>
-
-  <div class="field">
-    <%= f.password_field :password_confirmation, placeholder: "Blank if don't need to change it" %>
-    <%= f.label :password_confirmation, "New password confirmation" %>
-  </div>
-  <br>
-
-  <div class="field">
-    <%= f.password_field :current_password %>
-    <%= f.label :current_password, "Current password" %><br />
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<br>
-<br>
 
 <h4>Enable 2 factor authentication</h4>
 <% if !current_user.otp_required_for_login %>
-  <%= button_to "Enable 2FA", users_enable_otp_path, method: :post %>
+  <%= form_with model: @user, url: "enable_otp", method: :post do |f| %>
+    <div class="col-3">
+      <%= f.submit "Enable 2FA", class: "btn btn-primary" %>
+    </div>
+  <% end %>
 <% end %>
 <% if current_user.otp_required_for_login %>
-  <%= button_to "Disable 2FA", users_disable_otp_path, method: :post %>
+  <%= form_with model: @user, url: "disable_otp", method: :post do |f| %>
+    <div class="col-3">
+      <%= f.submit "Disable 2FA", class: "btn btn-primary" %>
+    </div>
+  <% end %>
   <div class="col-4 text-center">
     <%= current_user.otp_qr_code.html_safe %>
   </div>
@@ -57,12 +25,24 @@
 <br>
 
 <h4>Change nickname</h4>
-<%= form_with model: @user, url: "update_nickname", method: :post do |f| %>
-<div class="row">
-  <div class="col-9">
-    <%= f.text_field :nickname %>
+<%= form_with model: @user, url: "update_nickname", id: "up_nick", method: :post do |f| %>
+<div class="row input-group">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <div class="col-3">
-    <%= f.submit "Update nickname" %>
+    <%= f.text_field :nickname, class: 'form-control' %>
+  <div class="col-3 input-group-append">
+    <%= f.submit "Update nickname", class: "btn btn-primary" %>
+      <script type="text/javascript">
+        $("#up_nick").submit(function(event) {
+          event.preventDefault();
+          fetch("/users/update_nickname", {
+              method : "POST",
+              body: new FormData(document.getElementById("up_nick")),
+          })
+        });
+      </script>
+    </div>
+  </div>
 </div>
 <% end %>
 
@@ -70,23 +50,30 @@
 <br>
 
 <h4>Change avatar</h4>
-<%= form_with model: @user, url: "update_avatar", method: :post, html: { multipart: true } do |f| %>
-<div class="row">
+<%= form_with model: @user, url: "update_avatar", id: "up_av", method: :post, html: { multipart: true } do |f| %>
+<div class="row input-group">
+
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <div class="col-9">
-    <%= f.file_field :avatar %>
+
+    <label class="btn btn-outline-primary">
+    Choose file
+    <span style="display:none;">
+       <%= f.file_field :avatar %>
+    </span>
+  </label>
   <div class="col-3">
-    <%= f.submit "Update avatar" %>
+    <%= f.submit "Update avatar", class: "btn btn-primary" %>
+      <script type="text/javascript">
+        $("#up_av").submit(function(event) {
+          event.preventDefault();
+          fetch("/users/update_avatar", {
+              method : "POST",
+              body: new FormData(document.getElementById("up_av")),
+          })
+        });
+      </script>
+    </div>
+  </div>
 </div>
 <% end %>
-
-<!--
-<h4>Cancel my account</h4>
-
-<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
--->
-
-<br>
-<br>
-
-<%= link_to "Back", :back %>

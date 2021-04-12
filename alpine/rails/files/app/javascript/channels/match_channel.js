@@ -13,53 +13,38 @@ document.addEventListener("turbolinks:load", () => {
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 
-		$("a").on("click", function (event) {
+		$("a").on("click", function () {
 			
 			consumer.subscriptions.remove(subscribe);
 
-			console.log("game")
-			console.log(game)
-			console.log("MATCH")
-			console.log(MATCH)
-			console.log("MATCH.model.get")
-			console.log(MATCH.model.get("is_inprogress"))
-			console.log("MATCH.role")
-			console.log(MATCH.role)
-
 			if (typeof game !== "undefined" && typeof MATCH !== "undefined"
-				&& MATCH.model.get("is_inprogress") == true
-				&& MATCH.role == "p") {
+				&& MATCH.model.get("is_inprogress") == true					// раскомментить после добавления функционала
+				&& MATCH.role == "p")
 				if (MATCH.model.get("player1").id == MATCH.model.get("current_user").id) {
-					console.log("CASE 1")
-					
+
 					MATCH.model.set("is_player1_online", false);
-					
+
 					// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player2_online") == false) {
 						MATCH.model.set("is_inprogress", false);
 						MATCH.model.set("is_end", true);
-						MATCH.model.save();
 					}
 					else
-					game.goal(2);
+						game.goal(2);
 				}
 				else {
-					console.log("CASE 2")
-					
+
 					MATCH.model.set("is_player2_online", false);
-					
+
 					if (MATCH.model.get("is_player1_online") == false) {
 						MATCH.model.set("is_inprogress", false);
 						MATCH.model.set("is_end", true);
-						MATCH.model.save();
 					}
 					else
 						game.goal(1);
 					
 				}
-			}
-			console.log("RETURN")
-			return true;
+				
 		})
 		// window.addEventListener("unload", function() {
 		// 	consumer.subscriptions.remove(subscribe);
@@ -116,33 +101,7 @@ document.addEventListener("turbolinks:load", () => {
 		//  MATCH              MODEL
 		App.Models.Match = Backbone.Model.extend({
 			urlRoot: `/matches/match_users/${MATCH_ID}`,
-			initialize: function () {
-				
-				this.fetch({async:false});
-				// this.fetch(function () {
-
-				this.set("guild_1", this.get("player1").guild);
-				this.set("guild_2", this.get("player2").guild);
-
-				if (this.get("player1").id == this.get("current_user").id || this.get("player2").id == this.get("current_user").id)
-					this.role = 'p';
-
-				if (this.role == 'p') {
-					this.get("player1").id == this.get("current_user").id
-						? this.set("is_player1_online", true)
-						: this.set("is_player2_online", true);
-				}
-				console.log("IS ONLINE 1")
-				console.log(this.get("is_player1_online"));
-				console.log("IS ONLINE 2")
-				console.log(this.get("is_player2_online"));
-
-				if (this.get("is_player1_online") && this.get("is_player2_online")) {
-					this.set("is_inprogress", true);
-				}
-				this.save();
-				// })
-			}
+			initialize: function () { this.fetch(); }
 		 })
 		
 		//  MATCH              VIEW
@@ -154,32 +113,25 @@ document.addEventListener("turbolinks:load", () => {
 				this.consumer = data.consumer;
 				this.role = 'w';
 		
-				this.model.on("sync", this.render, this);
+				this.model.on("sync", this.start_game, this);
 				// this.model.on("change", this.render_score, this);
 			},
-
-			render: function () {
-				if (MATCH.model.get("is_inprogress")) {
-					this.renderGame();
-				}
-				else if (MATCH.model.get("is_end")) {
-					this.renderResult();
-				}
-				else {
-					this.renderWaiting();
-				}
-			},
 		
-			renderGame: function () {
+			start_game: function () {
 				if (typeof game !== "undefined")
 					return;
 
-				console.log("______renderGame______")
+				if (MATCH.model.get("player1").id == MATCH.model.get("current_user").id
+					|| MATCH.model.get("player2").id == MATCH.model.get("current_user").id)
+					this.role = 'p';
 
-				
-				MATCH.model.set("is_player1_online", false);
-				MATCH.model.set("is_player2_online", false);
+				if (this.role == 'p') {
+					MATCH.model.get("player1").id == MATCH.model.get("current_user").id
+						? MATCH.model.set("is_player1_online", true)
+						: MATCH.model.set("is_player2_online", true);
 
+					MATCH.model.save();
+				}
 				window.game = new Game(this.model, this.consumer);
 				game.startGame();
 				this.renderScore();
@@ -189,16 +141,6 @@ document.addEventListener("turbolinks:load", () => {
 				var template = this.template_score(this.model.attributes);
 				this.$el.html(template);
 				$("#MatchScore").html(this.el);
-			},
-
-			renderWaiting: function () {
-				console.log("______renderWaiting______");
-				$(".game__wrapper").html("СТРАНИЦА ОЖИДАНИЯ НАЧАЛА МАТЧА. НАРИСОВАТЬ СЮДА ПО КНОПКЕ ДЛЯ КАЖДОГО ПОЛЬЗОВАТЕЛЯ ДЛЯ СТАРТА МАТЧА");
-			},
-
-			renderResult: function () {
-				console.log("______renderResult______");
-				$(".game__wrapper").html("ИГРА ЗАКОНЧЕНА. НАРИСОВАТЬ ЗДЕСЬ РЕЗУЛЬТАТЫ ИГРЫ");
 			}
 		})
 		
@@ -285,7 +227,7 @@ document.addEventListener("turbolinks:load", () => {
 		Game.prototype = {
 			//Старт игры
 			startGame: function () {
-
+		
 				var _this = this;
 		
 				//Инициализируем игровые объекты
@@ -296,6 +238,8 @@ document.addEventListener("turbolinks:load", () => {
 				};
 				//Меняем состояние
 				// this.params.state = 'game';
+				console.log(this)
+				console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQqq")
 				this.params.state = 'playerwait';
 		
 				//Расставляем стартовые позиции ракеток

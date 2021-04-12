@@ -104,7 +104,8 @@ class RoomsController < ApplicationController
   end
 
   def pass_check
-    room_pass = BCrypt::Password.new(Room.find(params[:room][:id]).password)
+    @room = Room.find(params[:room][:id])
+    room_pass = BCrypt::Password.new(@room.password)
 
     respond_to do |format|
       if room_pass == params[:room][:password]
@@ -119,7 +120,6 @@ class RoomsController < ApplicationController
     end
   end
 
-  # REFRESH
   def leave
     @room = Room.find(params[:room][:room_id])
     if @room.owner_id == current_user.id
@@ -141,22 +141,25 @@ class RoomsController < ApplicationController
 
   def change_pass
     @room = Room.find(params[:room][:room_id])
-    if params[:room][:password] != ""
-      @room.password = BCrypt::Password.create(params[:room][:password])
+    if @room.password.present? && @room.password != ""
+      room_pass = BCrypt::Password.new(@room.password)
     else
-      @room.password = ""
+      room_pass = ""
     end
 
-    respond_to do |format|
+    unless room_pass == params[:room][:password]
+      if params[:room][:password] != ""
+        @room.password = BCrypt::Password.create(params[:room][:password])
+      else
+        @room.password = ""
+      end
       if @room.save
         NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password updated")
-        format.html { redirect_to "/rooms/#{@room.id}" }
-        format.json { head :no_content }
       else
         NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password not updated")
-        format.html { redirect_to "/rooms/#{@room.id}" }
-        format.json { head :no_content }
       end
+    else
+      NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password is the same")
     end
   end
 
@@ -192,7 +195,7 @@ class RoomsController < ApplicationController
 
     user.is_muted = true
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now muted")
+    NotificationChannel.broadcast_to(current_user, message: "User with id #{params[:room][:user_id]} now muted")
     sleep(60)
     user.is_muted = false
     user.save
