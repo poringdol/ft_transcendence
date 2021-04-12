@@ -459,6 +459,7 @@ $(function () {
 				},
 				body: JSON.stringify(this.model)
 			})
+			// .then(res => res.error ? Promise.reject(res) : res.json())
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(() => {
 				alert('You joined guild ' + this.model.name + '!');

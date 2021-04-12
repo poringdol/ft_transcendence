@@ -334,12 +334,41 @@ body {
 
 
 
+.tableHeader {
+	font-weight: lighter;
+}
 
+.tableHeader {
+	font-weight: lighter;
+	margin-left: 25px;
+	margin-top: 15px;
+}
 
+.matchesTable {
+	margin-bottom: 0px;
+	text-align: center;
+	font-weight: lighter;
+	vertical-align: -moz-middle-with-baseline
 
+}
 
+.matchesTablePhotos {
+	min-width: 35px;
+}
 
+.MatchesContent {
+	text-align: -moz-center;
+}
 
+.formMtaches {
+	padding-right: 0px;
+}
 
+.formMtachesInput {
+	border: 1px solid #fff0;
+}
 
+#MatchCreationForm {
+	height: 250px;
+}
 
