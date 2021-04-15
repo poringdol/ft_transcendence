@@ -27,6 +27,8 @@ document.addEventListener("turbolinks:load", () => {
 			
 			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
 
+				game.params.state = "stop";
+
 				MATCH.model.set(`is_player${MATCH.player}_online`, false);
 				MATCH.model.save();
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
@@ -159,33 +161,17 @@ document.addEventListener("turbolinks:load", () => {
 					this.model.save().done(function () {
 						_this.changeOnlineStatus(true, _this.player);
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: _this.player });
-						console.log("AFTER SAVE__________________")
 					})
-
-					// var _this = this;
-					// setTimeout(function() {
-					// 	_this.changeOnlineStatus(true, _this.player);
-					// 	subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: _this.player });
-					// 	console.log("AFTER SAVE__________________")
-					// 	console.log(_this.model)
-					// 	console.log("is_player1_online " + MATCH.model.get("is_player1_online"))
-					// 	console.log("______")
-					// }, 2000)
-					// this.model.save(`is_player${this.player}_online`);
-						
-					// this.changeOnlineStatus(true, this.player);
-					// subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
-					// console.log("AFTER SAVE__________________")
-					// console.log(this.model)
 				}
 				if (this.model.get("is_inprogress") == true) {
 					this.renderGame(false);
 				}
 				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
 					// this.model.set("is_inprogress", true);
-					this.model.save({ is_inprogress: true }, { wait: true });
+					this.model.save({ is_inprogress: true }).done(function () {
+						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
+					});
 
-					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
 				}
 				else {
 					this.renderWaiting();
@@ -306,8 +292,6 @@ document.addEventListener("turbolinks:load", () => {
 			if (is_newgame == true) {
 				this.params.state = "playerwait";
 				this.params.lastGoalPlayer = 1;
-
-				console("ОПАСНОСТЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: this.params.state, player: this.params.lastGoalPlayer, key_code: KEYS.update_state });
 			}
@@ -447,7 +431,6 @@ document.addEventListener("turbolinks:load", () => {
 
 				//В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
 				if (this.params.state == "playerwait") {
-					// game.resetBall(this.params.lastGoalPlayer);
 					subscribe.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
 				}
 		
@@ -495,6 +478,7 @@ document.addEventListener("turbolinks:load", () => {
 
 			goal: function (lastGoalPlayer) {
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
+
 				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 				MATCH.model.save();
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
