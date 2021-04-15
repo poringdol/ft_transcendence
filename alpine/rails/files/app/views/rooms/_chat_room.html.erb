@@ -20,22 +20,23 @@
           <div class="btn-group col-8">
             <div>
             <%= form_with model: @room, url: "change_pass", id: "ch_pass", method: :post do |form| %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
               <%= form.hidden_field :room_id, value: @room.id %>
               <%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", autocomplete: "new-password" %>
             </div>
             <div>
-              <%= form.submit "Change pass", class: "btn btn-outline-primary", data: { disable_with: false } %>
+              <%= form.submit "Change pass", class: "btn btn-outline-primary", id: "btnChangePass", data: { disable_with: false } %>
               <script type="text/javascript">
-                $( "#ch_pass" ).submit(function(event) {
+                $( "#btnChangePass" ).on("click", function(event) {
+                // $( "#ch_pass" ).submit(function(event) {
                   event.preventDefault();
-                  fetch(event.target.action, {
+
+                  fetch("/change_pass", {
                     method: 'POST',
-                    body: new URLSearchParams(new FormData(event.target)) // event.target - форма
+                    body: new FormData(document.getElementById("ch_pass")),
                   }).then((resp) => {
                     this.reset();
-                  }).catch((error) => {
-                    alert("Ошибка отправки сообщения!");
-                  });
+                  })
                 });
               </script>
             </div>

@@ -35,10 +35,13 @@ class MatchChannel < ApplicationCable::Channel
   end
   
   def save_state(data)
-    p "////////////////////////////////////////////////////////////////"
-    p " *****************************************************************"
     REDIS.set "state:#{data["match_id"]}", data["state"]
     REDIS.set "player:#{data["match_id"]}", data["player"]
+    
+    p "////////////////////////////////////////////////////////////////"
+    p REDIS.get "state:#{data["match_id"]}"
+    p REDIS.get "player:#{data["match_id"]}"
+    p " *****************************************************************"
 
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          key_code: data["key_code"],

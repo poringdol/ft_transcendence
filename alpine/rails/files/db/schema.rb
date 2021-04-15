@@ -86,6 +86,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.boolean "is_inprogress", default: false
     t.boolean "is_player1_online", default: false
     t.boolean "is_player2_online", default: false
+    t.boolean "is_player1_ready", default: false
+    t.boolean "is_player2_ready", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addons_id"], name: "index_matches_on_addons_id"

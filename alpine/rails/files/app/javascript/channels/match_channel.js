@@ -30,7 +30,7 @@ document.addEventListener("turbolinks:load", () => {
 				MATCH.model.set(`is_player${MATCH.player}_online`, false);
 				MATCH.model.save();
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
-
+				
 				if (MATCH.model.get("is_inprogress") == true) {
 					// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
@@ -153,30 +153,47 @@ document.addEventListener("turbolinks:load", () => {
 				this.player = (this.model.get("player1").id == this.model.get("current_user").id) ? 1 :
 							  (this.model.get("player2").id == this.model.get("current_user").id) ? 2 : 0;
 
+				var _this = this;
 				if (this.player != 0) {
-					
 					this.model.set(`is_player${this.player}_online`, true);
-					this.model.save();
+					this.model.save().done(function () {
+						_this.changeOnlineStatus(true, _this.player);
+						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: _this.player });
+						console.log("AFTER SAVE__________________")
+					})
 
-					this.changeOnlineStatus(true, this.player);
-					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
+					// var _this = this;
+					// setTimeout(function() {
+					// 	_this.changeOnlineStatus(true, _this.player);
+					// 	subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: _this.player });
+					// 	console.log("AFTER SAVE__________________")
+					// 	console.log(_this.model)
+					// 	console.log("is_player1_online " + MATCH.model.get("is_player1_online"))
+					// 	console.log("______")
+					// }, 2000)
+					// this.model.save(`is_player${this.player}_online`);
+						
+					// this.changeOnlineStatus(true, this.player);
+					// subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
+					// console.log("AFTER SAVE__________________")
+					// console.log(this.model)
 				}
 				if (this.model.get("is_inprogress") == true) {
 					this.renderGame(false);
 				}
 				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
-					this.model.set("is_inprogress", true);
-					this.model.save();
+					// this.model.set("is_inprogress", true);
+					this.model.save({ is_inprogress: true }, { wait: true });
 
 					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
 				}
 				else {
 					this.renderWaiting();
 				}
-				this.model.save();
 			},
 		
 			renderGame: function (is_newgame) {
+
 				let template = this.start_template();
 				$("#GameWrapper").html(template);
 
@@ -211,6 +228,8 @@ document.addEventListener("turbolinks:load", () => {
 				$("#MatchUser2Profile").html("");
 				let template = this.result_template(this.model.attributes);
 				$("#GameWrapper").html(template);
+
+				this.model.fetch();
 			},
 
 			changeOnlineStatus: function (is_online, player) {
@@ -218,18 +237,16 @@ document.addEventListener("turbolinks:load", () => {
 					$(`#MatchPlayer${player}Online`).html("<span style='color: green'>Online</span>");
 				else
 					$(`#MatchPlayer${player}Online`).html("<span style='color: red'>Offline</span>");
-				
-					this.model.fetch();
+				this.model.fetch();
 			},
 			
 			changeScore: function (score, player) {
 				$(`#MatchPlayer${player}Score`).html(score);
-				this.model.set(`player${player}_score`, score);
 
 				this.model.fetch();
 			},
 		})
-		
+
 		//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 		var Ball = function () {
 			return {
@@ -289,6 +306,8 @@ document.addEventListener("turbolinks:load", () => {
 			if (is_newgame == true) {
 				this.params.state = "playerwait";
 				this.params.lastGoalPlayer = 1;
+
+				console("ОПАСНОСТЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: this.params.state, player: this.params.lastGoalPlayer, key_code: KEYS.update_state });
 			}
@@ -475,7 +494,6 @@ document.addEventListener("turbolinks:load", () => {
 			},
 
 			goal: function (lastGoalPlayer) {
-
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
 				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 				MATCH.model.save();
@@ -489,12 +507,12 @@ document.addEventListener("turbolinks:load", () => {
 				game.objects.ball.yspeed = 0;
 
 				if (player == 1) {
-					game.objects.ball.x  = game.objects.bracket1.x + game.objects.bracket1.w + game.objects.ball.radius + 1;
-					game.objects.ball.y  = game.objects.bracket1.y + game.objects.bracket1.h/2;
+					game.objects.ball.x = game.objects.bracket1.x + game.objects.bracket1.w + game.objects.ball.radius + 1;
+					game.objects.ball.y = game.objects.bracket1.y + game.objects.bracket1.h/2;
 				}
-				if (player == 2) {
-					game.objects.ball.x  = game.objects.bracket2.x - game.objects.ball.radius - 1;
-					game.objects.ball.y  = game.objects.bracket2.y + game.objects.bracket2.h/2;
+				else if (player == 2) {
+					game.objects.ball.x = game.objects.bracket2.x - game.objects.ball.radius - 1;
+					game.objects.ball.y = game.objects.bracket2.y + game.objects.bracket2.h/2;
 				}
 			},
 			
@@ -520,9 +538,9 @@ document.addEventListener("turbolinks:load", () => {
 			stopGame: function () {
 				game.params.state = "stop";
 				
-				MATCH.model.set("is_end", true);
-				MATCH.model.set("is_inprogress", false);
-				MATCH.model.save();
+				// MATCH.model.set("is_end", true);
+				// MATCH.model.set("is_inprogress", false);
+				MATCH.model.save({ is_end: true, is_inprogress: false });
 				
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game })
 			},
