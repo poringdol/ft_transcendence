@@ -104,7 +104,7 @@ Rails.application.routes.draw do
 # ------------------
   # post 'matches/move_bracket/:id' => 'matches#move_bracket'
   get 'matches/match_users/:id' => 'matches#match_users'
-  put 'matches/match_users/:id/:id' => 'matches#match_users_update'
+  put 'matches/match_users/:id' => 'matches#match_users_update'
 
   get 'matches/get_player/:id' => 'matches#get_player'
   post 'matches/new_match' => 'matches#new_match'

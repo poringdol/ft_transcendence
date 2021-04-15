@@ -1,11 +1,9 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
     stream_from "match_channel_#{params[:match_id]}"
-    p "SUUUUUUUUUUUB___________________________________________________________________________"
   end
   
   def unsubscribed
-    p "UN__SUUUUUUUUUUUB______________________________________________________"
   end
 
   def move_bracket(data)
@@ -20,14 +18,42 @@ class MatchChannel < ApplicationCable::Channel
                                                                         player: data["player"],
                                                                         key_code: data["key_code"],
                                                                         bracket1: data["bracket1"],
-                                                                        bracket2: data["bracket2"],
-                                                                        ball_pos: data["ball_pos"]}
+                                                                        bracket2: data["bracket2"]}
   end
   
   def reset_ball(data)
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          player: data["player"],
                                                                          key_code: data["key_code"]}
+  end
+  
+  def command(data)
+    ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
+                                                                         player: data["player"],
+                                                                         key_code: data["key_code"],
+                                                                         score: data["score"]}
+  end
+  
+  def save_state(data)
+    p "////////////////////////////////////////////////////////////////"
+    p " *****************************************************************"
+    REDIS.set "state:#{data["match_id"]}", data["state"]
+    REDIS.set "player:#{data["match_id"]}", data["player"]
+
+    ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
+                                                                         key_code: data["key_code"],
+                                                                         state: data["state"],
+                                                                         player: data["player"]}
+  end
+  
+  def get_state(data)
+    state = REDIS.get "state:#{data["match_id"]}"
+    player = REDIS.get "player:#{data["match_id"]}"
+
+    ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
+                                                                         key_code: data["key_code"],
+                                                                         state: state,
+                                                                         player: player}
   end
 
 end
