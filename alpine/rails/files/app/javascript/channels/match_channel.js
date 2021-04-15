@@ -2,52 +2,47 @@ import consumer from "./consumer"
 
 document.addEventListener("turbolinks:load", () => {
 	
-	const KEYS = {start_ball: 13, up: 87, down: 83, reset_ball: 128};
+	const KEYS = {	start_ball: 13,
+					up: 87,
+					down: 83,
+					reset_ball: 128,
+					visit_page: 129,
+					leave_page: 130,
+					goal: 131,
+					end_game: 132,
+					start_game: 133,
+					update_state: 134, };
+	const MAX_RATE = 7;
+	const BRACKET_SPEED = 50;
+
 	const match_element = $("#MatchID");
 	const MATCH_ID = (match_element != null) ? parseInt(match_element.attr("data-MatchID")) : -1;
-	const BRACKET_SPEED = 50;
-	const THROTTLE = 0;
 	
 	let MATCH;
 	let subscribe = 0;
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 
-		$("a").on("click", function (event) {
+		$("a").on("click", function () {
 			
-			consumer.subscriptions.remove(subscribe);
+			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
 
-			console.log("game")
-			console.log(game)
-			console.log("MATCH")
-			console.log(MATCH)
-			console.log("MATCH.model.get")
-			console.log(MATCH.model.get("is_inprogress"))
-			console.log("MATCH.role")
-			console.log(MATCH.role)
-
-			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.role == "p") {
-
-				let player = (MATCH.model.get("player1").id == MATCH.model.get("current_user").id) ? 1 : 2;
-
-				(player == 1)
-					? MATCH.model.set("is_player1_online", false)
-					: MATCH.model.set("is_player2_online", false);
+				MATCH.model.set(`is_player${MATCH.player}_online`, false);
+				MATCH.model.save();
+				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 
 				if (MATCH.model.get("is_inprogress") == true) {
 					// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
-						MATCH.model.set("is_inprogress", false);
-						MATCH.model.set("is_end", true);
+						game.stopGame();
 					}
 					// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
 					else {
-						game.goal((player == 1) ? 2 : 1);
+						game.goal((MATCH.player == 1) ? 2 : 1);
 					}
 				}
-				MATCH.model.save();
 			}
-			console.log("RETURN")
+			consumer.subscriptions.remove(subscribe);
 			return true;
 		})
 		// window.addEventListener("unload", function() {
@@ -57,14 +52,12 @@ document.addEventListener("turbolinks:load", () => {
 		subscribe = consumer.subscriptions.create({ channel: "MatchChannel", match_id: MATCH_ID}, {
 
 			connected() {
-
-				if (MATCH_ID > 0)
+				if (MATCH_ID > 0) {
 					console.log(`Connected to match ${MATCH_ID}`);
-
-				//При подключении к каналу создаем модель матча (фетчим данные из бд), создаем вью, в которой стартуем игру
-
-				let match_model = new App.Models.Match();
-				MATCH = new App.Views.Match({ model: match_model, consumer: this });
+	
+					//При подключении к каналу создаем модель матча (фетчим данные из бд), создаем вью, в которой стартуем игру
+					MATCH = new App.Views.Match({ model: new App.Models.Match() });
+				}
 			},
 				
 			disconnected() {
@@ -73,21 +66,49 @@ document.addEventListener("turbolinks:load", () => {
 			},
 	
 			received(data) {
+
+				let key_code = data.key_code;
 				
-				if (typeof game !== "undefined") {
-					let key_code = data.key_code;
+				if (key_code == KEYS.start_game) {
+					MATCH.renderGame(true);
+					MATCH.changeOnlineStatus(true, 1);
+					MATCH.changeOnlineStatus(true, 2);
+				}
+				else if (typeof game !== "undefined") {
 
 					if (key_code == KEYS.down || key_code == KEYS.up) {
 						data.player == 1 ? game.objects.bracket1.y = parseInt(data.bracket1)
 										 : game.objects.bracket2.y = parseInt(data.bracket2);
 					}
 					else if (key_code == KEYS.start_ball) {
-						setTimeout(game.kickBall(), 500);
+						game.kickBall();
 					}
 					else if (key_code == KEYS.reset_ball) {
 						game.resetBall(data.player);
 					}
+					else if (key_code == KEYS.leave_page) {
+						MATCH.changeOnlineStatus(false, data.player);
+					}
+					else if (key_code == KEYS.visit_page) {
+						MATCH.changeOnlineStatus(true, data.player);
+					}
+					else if (key_code == KEYS.goal) {
+						this.goal(data.score, data.player);
+					}
+					else if (key_code == KEYS.end_game) {
+						game.params.state = "stop";
+						MATCH.renderResult();
+					}
+					else if (key_code == KEYS.update_state) {
+						game.params.state = data.state;
+						game.params.lastGoalPlayer = data.player;
+					}
 				}
+			},
+
+			goal(score, player) {
+				game.params.lastGoalBracket = (player == 1) ? game.objects.bracket1 : game.objects.bracket2;
+				MATCH.changeScore(score, player);
 			},
 		});
 
@@ -97,100 +118,69 @@ document.addEventListener("turbolinks:load", () => {
 
 		window.App = {
 			Models: {},
-			Views: {},
-			Collections: {},
-			Router: {}
+			Views: {}
 		};
 		
 		//  MATCH              MODEL
-		App.Models.Match = Backbone.Model.extend({ urlRoot: `/matches/match_users/${MATCH_ID}` });
+		App.Models.Match = Backbone.Model.extend({ url: `/matches/match_users/${MATCH_ID}` });
 		
 		//  MATCH              VIEW
 		App.Views.Match = Backbone.View.extend({
+
+			start_template: _.template($("#GameStartTemplate").html()),
 			profile1_template: _.template($("#MatchUser1ProfileTemplate").html()),
 			profile2_template: _.template($("#MatchUser2ProfileTemplate").html()),
+			result_template: _.template($("#MatchResultTemplate").html()),
 		
-			initialize: function (data) {
-
-				var _this = this;
-
-				this.consumer = data.consumer;
-				this.role = 'w';
+			initialize: function () {
+				this.player = 0;
 		
 				_.bindAll(this, "init");
-				this.model.fetch({
-					success: this.init
-				})
-				// второй способ
-				// var _thisView = this;
-				// $.when(this.model.fetch())
-				// .done(function () {
-				// 	_thisView.init();
-				// },
-
-				// this.model.on("change", this.render, this);
-				// this.model.on('change:is_player1_online', this.changeOnlineStatus, this.model.get("is_player1_online"), 1, this);
-				// this.model.on('change:is_player2_online', this.changeOnlineStatus, this.model.get("is_player2_online"), 2, this);
-				this.model.on('change', function () {
-					
-					var diff = this.model.changedAttributes();
-
-					for (var att in diff) {
-						switch(att) {
-						case 'is_player1_online':
-							this.changeOnlineStatus(this.model.get("is_player1_online"), 1)
-							break;
-						case 'is_player2_online':
-							this.changeOnlineStatus(this.model.get("is_player2_online"), 1)
-							break;
-						case 'player1_score':
-							this.changeOnlineStatus(this.model.get("player1_score"), 1);
-							break;
-						case 'player2_score':
-							this.changeOnlineStatus(this.model.get("player2_score"), 2);
-							break;
-						}
-					}
-				}, this);
+				this.model.fetch({ success: this.init })
 			},
 
 			
 			init: function () {
-				if (this.model.get("player1").id == this.model.get("current_user").id || this.model.get("player2").id == this.model.get("current_user").id)
-					this.model.role = 'p';
-
-				if (this.model.role == 'p') {
-					this.model.get("player1").id == this.model.get("current_user").id
-						? this.model.set("is_player1_online", true)
-						: this.model.set("is_player2_online", true);
+				// Если игра завершена - рисуем результаты
+				if (this.model.get("is_end") == true) {
+					this.renderResult();
+					return;
 				}
-
-				if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
-					this.model.set("is_inprogress", true);
-				}
-				this.model.save();
-				this.render();
-			},
-
-			render: function () {
 				this.renderProfile1();
 				this.renderProfile2();
 
-				if (MATCH.model.get("is_inprogress")) {
-					this.renderGame();
+				// 0 - наблюдатель, 1 или 2 - игрок
+				this.player = (this.model.get("player1").id == this.model.get("current_user").id) ? 1 :
+							  (this.model.get("player2").id == this.model.get("current_user").id) ? 2 : 0;
+
+				if (this.player != 0) {
+					
+					this.model.set(`is_player${this.player}_online`, true);
+					this.model.save();
+
+					this.changeOnlineStatus(true, this.player);
+					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
 				}
-				else if (MATCH.model.get("is_end")) {
-					this.renderResult();
+				if (this.model.get("is_inprogress") == true) {
+					this.renderGame(false);
+				}
+				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
+					this.model.set("is_inprogress", true);
+					this.model.save();
+
+					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
 				}
 				else {
 					this.renderWaiting();
 				}
+				this.model.save();
 			},
 		
-			renderGame: function () {
-				console.log("______renderGame______")
+			renderGame: function (is_newgame) {
+				let template = this.start_template();
+				$("#GameWrapper").html(template);
 
-				window.game = new Game(this.model, this.consumer);
+				window.game = new Game(this.player, is_newgame);
 				game.startGame();
 			},
 
@@ -205,38 +195,50 @@ document.addEventListener("turbolinks:load", () => {
 				$("#MatchUser2Profile").html(template);
 				this.changeOnlineStatus(this.model.get("is_player2_online"), 2);
 			},
+			
+			renderWaiting: function () {
+				$("#GameWrapper").html("ОЖИДАЕМ ВТОРОГО ИГРОКА");
+			},
+			
+			renderResult: function () {
+
+				//Останавливаем цикл
+				cancelAnimationFrame(this.requestLoop);
+				//Убираем слушателей событий
+				document.removeEventListener("keydown", this.keyDownEvent);
+
+				$("#MatchUser1Profile").html("");
+				$("#MatchUser2Profile").html("");
+				let template = this.result_template(this.model.attributes);
+				$("#GameWrapper").html(template);
+			},
 
 			changeOnlineStatus: function (is_online, player) {
 				if (is_online == true)
-					$(`#MatchPlayer${player}Online`).html('<span style="color: green">Online</span>');
+					$(`#MatchPlayer${player}Online`).html("<span style='color: green'>Online</span>");
 				else
-					$(`#MatchPlayer${player}Online`).html('<span style="color: red">Offline</span>');
+					$(`#MatchPlayer${player}Online`).html("<span style='color: red'>Offline</span>");
+				
+					this.model.fetch();
 			},
 			
 			changeScore: function (score, player) {
-				$(`MatchPlayer${player}Score`).html(score);
-			},
+				$(`#MatchPlayer${player}Score`).html(score);
+				this.model.set(`player${player}_score`, score);
 
-			renderWaiting: function () {
-				console.log("______renderWaiting______");
-				$(".game__wrapper").html("СТРАНИЦА ОЖИДАНИЯ НАЧАЛА МАТЧА. НАРИСОВАТЬ СЮДА ПО КНОПКЕ ДЛЯ КАЖДОГО ПОЛЬЗОВАТЕЛЯ ДЛЯ СТАРТА МАТЧА");
+				this.model.fetch();
 			},
-
-			renderResult: function () {
-				console.log("______renderResult______");
-				$(".game__wrapper").html("ИГРА ЗАКОНЧЕНА. НАРИСОВАТЬ ЗДЕСЬ РЕЗУЛЬТАТЫ ИГРЫ");
-			}
 		})
 		
 		//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 		var Ball = function () {
 			return {
 				radius: 8,
-				color: '#FFCC00',
+				color: "#FFCC00",
 				x: 0,
 				y: 0,
-				yspeed: 5,
-				xspeed: 7,
+				yspeed: 0,
+				xspeed: 0,
 				bounce: 1.1, //коофицент упругости - для ускорения шарика после отскока
 				render: function (ctx) {
 					ctx.beginPath();
@@ -261,7 +263,7 @@ document.addEventListener("turbolinks:load", () => {
 				x: 0,
 				y: 0,
 				speed: BRACKET_SPEED,
-				color: '#CCFF00',
+				color: "#CCFF00",
 				render: function (ctx) {
 					ctx.fillStyle = this.color;
 					ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -270,39 +272,41 @@ document.addEventListener("turbolinks:load", () => {
 		};
 		
 		//Теперь сама игра
-		var Game = function (curr_match, consumer) {
+		var Game = function (player, is_newgame) {
 		
 			//Сохраним ссылку на контекст
 			//для дальнейшей передачи в ивенты
 			var _this = this;
-			this.consumer = consumer;
 			
 			//Параметры с которыми будет игра
 			this.params = {
 				width: 960,
 				height: 600,
-				state: 'loading', //Состояние игры
-				maxRate: 10 //до скольки будет идти матч.
+				state: "loading", //Состояние игры
+				lastGoalPlayer: 0,
 			};
+
+			if (is_newgame == true) {
+				this.params.state = "playerwait";
+				this.params.lastGoalPlayer = 1;
+
+				subscribe.perform("save_state", { match_id: MATCH_ID, state: this.params.state, player: this.params.lastGoalPlayer, key_code: KEYS.update_state });
+			}
+			else {
+				subscribe.perform("get_state", { match_id: MATCH_ID, key_code: KEYS.update_state });
+			}
 		
 			//Сохраняем ссылки на canvas и контекст для дальнейшего рисования
-			this.canvasBlock = document.getElementById('pingpong');
-			this.ctx = this.canvasBlock.getContext('2d');
+			this.canvasBlock = document.getElementById("gameCanvas");
+			this.ctx = this.canvasBlock.getContext("2d");
 			
 			//Подписываемся на события кнопок, если пользователь участник игры
-			let player = curr_match.get("current_user").id == curr_match.get("player1").id ? 1 :
-						 curr_match.get("current_user").id == curr_match.get("player2").id ? 2 : 0;
-			
-			//Задержка для нажатия клавиш
 			if (player > 0) {
-				if (THROTTLE > 0) {
-					var keeDown = function (event) { _this.keyDownEvent.call(_this, event, player, consumer); }
-					document.addEventListener('keydown', _.throttle(keeDown, THROTTLE));
-				} else {
-					document.addEventListener('keydown', function (event) {
-						_this.keyDownEvent.call(_this, event, player, consumer);
-					});
-				}
+				// var keeDown = function (event) { _this.keyDownEvent.call(_this, event, player); }
+				// document.addEventListener("keydown", _.throttle(keeDown, THROTTLE));
+				document.addEventListener("keydown", function (event) {
+					_this.keyDownEvent.call(_this, event, player);
+				});
 			}
 			return this;
 		};
@@ -313,28 +317,23 @@ document.addEventListener("turbolinks:load", () => {
 			startGame: function () {
 
 				var _this = this;
-		
+
 				//Инициализируем игровые объекты
 				this.objects = {
 					ball: new Ball(),
 					bracket1: new Bracket(),
 					bracket2: new Bracket()
 				};
-				//Меняем состояние
-				// this.params.state = 'game';
-				this.params.state = 'playerwait';
-		
+
 				//Расставляем стартовые позиции ракеток
 				this.objects.bracket1.x = 50;
 				this.objects.bracket1.y = this.params.height / 2 - this.objects.bracket1.h / 2;
 				
 				this.objects.bracket2.x = this.params.width - 50;
 				this.objects.bracket2.y = this.params.height / 2 - this.objects.bracket1.h / 2;
-		
-				this.params.lastGoalPlayer = 1;
-		
+				
 				//Перекрасим второго игрока
-				this.objects.bracket2.color = '#00FFCC';
+				this.objects.bracket2.color = "#00FFCC";
 				
 				//Запускаем игровой цикл
 				this.loop();
@@ -351,6 +350,8 @@ document.addEventListener("turbolinks:load", () => {
 				//Рендер игры
 				this.render();
 		
+				if (this.params.state == "stop")
+					return;
 				//Используем замыкание для передачи контекста
 				this.requestLoop = requestAnimationFrame(function() {
 					_this.loop.call(_this);
@@ -363,7 +364,7 @@ document.addEventListener("turbolinks:load", () => {
 				var ball = game.objects.ball;
 		
 				//Если сейчас идет игра
-				if (this.params.state == 'game') {
+				if (this.params.state == "game") {
 			
 					//И шарик оказался за первым игроком
 					if (ball.x + ball.radius/2 < 0) {
@@ -377,22 +378,21 @@ document.addEventListener("turbolinks:load", () => {
 						this.goal(1);
 					}
 			
-					//Проверяем наличие победителя
-					if (MATCH.model.get("player1_score") === this.params.maxRate) {
-						alert('1 игрок выиграл');
-						this.gameRestart();
-					}
-			
-					if (MATCH.model.get("player1_score") === this.params.maxRate) {
-						alert('2 игрок выиграл');
-						this.gameRestart();
-					}
+				}
+				//Проверяем наличие победителя
+				if (MATCH.model.get("player1_score") >= MAX_RATE && MATCH.player == 1) {
+					this.stopGame();
+				}
+		
+				if (MATCH.model.get("player2_score") >= MAX_RATE && MATCH.player == 2) {
+					this.stopGame();
 				}
 		
 			},
 		
 			//Физика игры
 			physic: function () {
+
 				var ball = game.objects.ball,
 				b1 = game.objects.bracket1,
 				b2 = game.objects.bracket2;
@@ -425,11 +425,11 @@ document.addEventListener("turbolinks:load", () => {
 				//Ускоряем шарик
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
-		
+
 				//В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
-				if (this.params.state === 'playerwait') {
+				if (this.params.state == "playerwait") {
 					// game.resetBall(this.params.lastGoalPlayer);
-					this.consumer.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
+					subscribe.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
 				}
 		
 				//Не позволяем вылезать блокам за canvas и возврщаем их на место
@@ -442,7 +442,7 @@ document.addEventListener("turbolinks:load", () => {
 			//Рендер игры
 			render: function () {
 				//Чистим канвас на каждом кадре
-				game.ctx.fillStyle = '#eeeeee';
+				game.ctx.fillStyle = "#eeeeee";
 				game.ctx.fillRect(0,0, game.params.width, game.params.height);
 		
 				//Рендерим шарик
@@ -452,66 +452,47 @@ document.addEventListener("turbolinks:load", () => {
 			},
 		
 			//Инициализация игровых событий
-			keyDownEvent: function (event, player, consumer) {
+			keyDownEvent: function (event, player) {
 			
 				var kCode = event.keyCode;
-				if (kCode === KEYS.start_ball)
-				{
-					// console.log("_________________________________________________")
-					// console.log("KEYS.start_ball = " + KEYS.start_ball)
-					// console.log("game.params.state = " + game.params.state)
-					// console.log("game.params.lastGoalPlayer = " + game.params.state)
-					// console.log("player = " + player)
-					// console.log("_________________________________________________")
-				}
-				if (kCode === KEYS.start_ball && game.params.state === "playerwait" && game.params.lastGoalPlayer == player) {
-					this.params.state = 'game';
-					consumer.perform("move_bracket", { match_id: MATCH_ID, key_code: kCode });
+
+				if (kCode == KEYS.start_ball && game.params.state == "playerwait" && game.params.lastGoalPlayer == player) {
+					subscribe.perform("move_bracket", { match_id: MATCH_ID, key_code: kCode });
+					return;
 				}
 
 				let br1 = game.objects.bracket1.y;
 				let br2 = game.objects.bracket2.y;
 				
-				if (kCode === KEYS.down) {
+				if (kCode == KEYS.down) {
 					player == 1 ? (br1 += game.objects.bracket1.speed) : (br2 += game.objects.bracket2.speed);
-					consumer.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
+					subscribe.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
 				}
-				if (kCode === KEYS.up) {
+				else if (kCode == KEYS.up) {
 					player == 1 ? (br1 -= game.objects.bracket1.speed) : (br2 -= game.objects.bracket2.speed);
-					consumer.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
+					subscribe.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
 				}
 			},
 
 			goal: function (lastGoalPlayer) {
 
-				if (lastGoalPlayer == 1) {
-					let score = MATCH.model.get("player1_score");
-					MATCH.model.set("player1_score", score + 1);
-					MATCH.model.save()
-					this.params.lastGoalBracket = this.objects.bracket1;
-				}
-				else if (lastGoalPlayer == 2) {
-					let score = MATCH.model.get("player2_score");
-					MATCH.model.set("player2_score", score + 1);
-					MATCH.model.save()
-					this.params.lastGoalBracket = this.objects.bracket2;
-				}
-				
-				this.params.state = 'playerwait';
-				this.params.lastGoalPlayer = lastGoalPlayer;
+				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
+				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+				MATCH.model.save();
+				subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
+				subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 			},
 			
 			//Выставление шарика на ракетку после гола
-			// resetBall: function () {
 			resetBall: function (player) {
 				game.objects.ball.xspeed = 0;
 				game.objects.ball.yspeed = 0;
 
-				if (player === 1) {
+				if (player == 1) {
 					game.objects.ball.x  = game.objects.bracket1.x + game.objects.bracket1.w + game.objects.ball.radius + 1;
 					game.objects.ball.y  = game.objects.bracket1.y + game.objects.bracket1.h/2;
 				}
-				if (player === 2) {
+				if (player == 2) {
 					game.objects.ball.x  = game.objects.bracket2.x - game.objects.ball.radius - 1;
 					game.objects.ball.y  = game.objects.bracket2.y + game.objects.bracket2.h/2;
 				}
@@ -519,35 +500,34 @@ document.addEventListener("turbolinks:load", () => {
 			
 			//Пуск шарика после гола
 			kickBall: function () {
-				this.params.state = 'game';
-				this.objects.ball.xspeed = 3;
-				this.objects.ball.yspeed = 3;
+				this.params.state = "game";
+				subscribe.perform("save_state", { match_id: MATCH_ID, state: this.params.state, player: game.params.lastGoalPlayer, key_code: KEYS.update_state });
+
+				setTimeout(function () {
+					if (game.params.lastGoalPlayer == 1) {
+						game.objects.ball.xspeed = 3;
+						game.objects.ball.yspeed = 3;
+					}
+					else {
+						game.objects.ball.xspeed = -3;
+						game.objects.ball.yspeed = -3;
+					}
+				}, 1000);
 			},
 		
 			
 			//Стоп игра
 			stopGame: function () {
-				//Обновляем состояние
-				this.params.state = 'stop';
-				//Останавливаем цикл
-				cancelAnimationFrame(this.requestLoop);
-		
-				//Убираем слушателей событий
-				document.removeEventListener('keydown', this.keyDownEvent);
+				game.params.state = "stop";
 				
-				//Чистим игровые объекты
-				delete(this.objects);
+				MATCH.model.set("is_end", true);
+				MATCH.model.set("is_inprogress", false);
+				MATCH.model.save();
+				
+				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game })
 			},
-			
-			pauseGame: function () {
-				this.state = 'pause';
-			},
-		
-				//Рестарт игры
-			restartGame: function () {
-				this.stopGame();
-				// this.startGame();
-			}
+
+
 		};
 	}
 })

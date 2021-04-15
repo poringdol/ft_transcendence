@@ -15,8 +15,6 @@ class CreateMatches < ActiveRecord::Migration[6.0]
 
       t.boolean :is_player1_online, default: false
       t.boolean :is_player2_online, default: false
-      t.boolean :is_player1_ready, default: false
-      t.boolean :is_player2_ready, default: false
 
       t.timestamps
     end
