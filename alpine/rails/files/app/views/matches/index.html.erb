@@ -141,7 +141,7 @@
 			Show
 		</a>
 	</td>
-	<% if current_user.is_admin? %>
+	<% if current_user.is_admin? || current_user.is_moderator? %>
 		<td>
 			<button type='button' class='btn btn-guild' id='DeleteMatch'>
 				Delete
