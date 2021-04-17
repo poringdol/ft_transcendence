@@ -12,6 +12,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.string      :encrypted_password, null: false, default: ""
 
       t.boolean     :is_admin, default: false
+      t.boolean     :is_moderator, default: false
       t.boolean     :is_banned, default: false
       t.boolean     :is_officer, default: false
 

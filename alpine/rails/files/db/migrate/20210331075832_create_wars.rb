@@ -11,6 +11,8 @@ class CreateWars < ActiveRecord::Migration[6.0]
       t.integer :guild_1_wins, default: 0
       t.integer :guild_2_wins, default: 0
       t.boolean :is_end, default: false
+      t.boolean :is_accepted, default: false
+      t.boolean :is_ranked, default: false
 
       t.timestamps
     end

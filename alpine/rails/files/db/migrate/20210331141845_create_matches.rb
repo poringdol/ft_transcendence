@@ -12,6 +12,7 @@ class CreateMatches < ActiveRecord::Migration[6.0]
       
       t.boolean :is_end, default: false
       t.boolean :is_inprogress, default: false
+      t.boolean :is_ranked, default: false
 
       t.boolean :is_player1_online, default: false
       t.boolean :is_player2_online, default: false

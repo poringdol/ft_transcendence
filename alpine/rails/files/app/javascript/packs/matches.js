@@ -39,7 +39,7 @@ $(function () {
 				player2: $(e.currentTarget).find('input[id=formPlayer2Nickname]').val(),
 				addons: $(e.currentTarget).find('input[id=formAddons]').val()
 			}
-			console.log(match)
+			// console.log(match)
 			fetch("/matches/new_match", {
 				method: "POST",
 				headers: {

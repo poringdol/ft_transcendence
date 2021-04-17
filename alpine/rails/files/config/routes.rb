@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :guild_invites
   resources :room_users
   resources :blocklists
   resources :war_matches
