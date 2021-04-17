@@ -1,9 +1,9 @@
 class GuildInvite < ApplicationRecord
 
-	belongs_to :user, class_name: 'User', foreign_key: 'user_id'
-  	belongs_to :friend, class_name: 'User', foreign_key: 'friend_id'
-	validates :user_id, presence: true
-	validates :friend_id, presence: true
+	belongs_to :user, class_name: 'User', foreign_key: 'inviter_id'
+  	belongs_to :friend, class_name: 'User', foreign_key: 'invited_id'
+	validates :inviter_id, presence: true
+	validates :invited_id, presence: true
 	validates :guild_id, presence: true
 
 end
