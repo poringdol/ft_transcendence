@@ -39,7 +39,6 @@ $(function () {
 				player2: $(e.currentTarget).find('input[id=formPlayer2Nickname]').val(),
 				addons: $(e.currentTarget).find('input[id=formAddons]').val()
 			}
-			// console.log(match)
 			fetch("/matches/new_match", {
 				method: "POST",
 				headers: {
@@ -89,7 +88,6 @@ $(function () {
 		},
 		render: function () {
 			this.collection.each(this.addOne, this)
-			console.log("#" + this.type + "MatchesTable")
 			$("#" + this.type + "MatchesTable").append(this.el)
 			return this
 		},
@@ -134,10 +132,14 @@ $(function () {
 				fetch('/matches/' + this.model.get('id'), {
 					method: 'DELETE',
 				})
+				.then(res => res.ok ? res : Promise.reject(res))
 				.then(_.bind(() => {
 					alert('Success! Match was removed!')
 					this.$el.remove();
 				}, this))
+				.catch(() => {
+					alert('Error!')
+				})
 			}
 		}
 	});

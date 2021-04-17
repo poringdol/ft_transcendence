@@ -1,5 +1,5 @@
 class MatchesController < ApplicationController
-  before_action :set_match, only: %i[ show edit update destroy match_users_update ]
+  before_action :set_match, only: %i[ show edit update match_users_update ]
 
   skip_before_action :verify_authenticity_token
 
@@ -109,11 +109,16 @@ class MatchesController < ApplicationController
 
   # DELETE /matches/1 or /matches/1.json
   def destroy
-    @match.destroy
-    respond_to do |format|
-      format.html { redirect_to matches_url, notice: "Match was successfully destroyed." }
-      format.json { head :no_content }
-    end
+	@match = Match.find(params[:id])
+	respond_to do |format|
+		if @match
+			if @match.destroy
+				format.json { head :no_content, status: :ok}
+			end
+		else
+			format.json { render json: @match.errors, status: :unprocessable_entity }
+		end
+  	end
   end
 
   private

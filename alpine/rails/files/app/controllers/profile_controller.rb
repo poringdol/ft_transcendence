@@ -47,6 +47,34 @@ class ProfileController < ApplicationController
 	end
   end
 
+  def do_moderator_user
+	user = User.find(params[:id])
+	if (user && current_user.is_admin == true)
+		user.is_moderator = true
+		respond_to do |format|
+			if user.save
+				format.any { render json: 1, status: :created}
+			else
+				format.any { render json: 0, notice: "unprocessable_entity" ,status: :unprocessable_entity }
+			end
+		end
+	end
+  end
+
+  def undo_moderator_user
+	user = User.find(params[:id])
+	if (user && current_user.is_admin == true)
+		user.is_moderator = false
+		respond_to do |format|
+			if user.save
+				format.any { render json: 1, status: :created}
+			else
+				format.any { render json: 0, notice: "unprocessable_entity" ,status: :unprocessable_entity }
+			end
+		end
+	end
+  end
+
   def block_list
 	@block = Blocklist.where(user_id: current_user.id)
 	render json: @block

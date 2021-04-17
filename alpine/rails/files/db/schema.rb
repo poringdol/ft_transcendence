@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_215034) do
+ActiveRecord::Schema.define(version: 2021_04_17_115004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["friend_id"], name: "index_friends_on_friend_id"
     t.index ["user_id"], name: "index_friends_on_user_id"
+  end
+
+  create_table "guild_invites", force: :cascade do |t|
+    t.bigint "inviter_id"
+    t.bigint "invited_id"
+    t.bigint "guild_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["guild_id"], name: "index_guild_invites_on_guild_id"
+    t.index ["invited_id"], name: "index_guild_invites_on_invited_id"
+    t.index ["inviter_id"], name: "index_guild_invites_on_inviter_id"
   end
 
   create_table "guild_members", force: :cascade do |t|
@@ -84,10 +95,9 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.bigint "addons_id"
     t.boolean "is_end", default: false
     t.boolean "is_inprogress", default: false
+    t.boolean "is_ranked", default: false
     t.boolean "is_player1_online", default: false
     t.boolean "is_player2_online", default: false
-    t.boolean "is_player1_ready", default: false
-    t.boolean "is_player2_ready", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addons_id"], name: "index_matches_on_addons_id"
@@ -145,6 +155,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.bigint "guild_id", default: 0
     t.string "encrypted_password", default: "", null: false
     t.boolean "is_admin", default: false
+    t.boolean "is_moderator", default: false
     t.boolean "is_banned", default: false
     t.boolean "is_officer", default: false
     t.string "reset_password_token"
@@ -195,6 +206,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
     t.integer "guild_1_wins", default: 0
     t.integer "guild_2_wins", default: 0
     t.boolean "is_end", default: false
+    t.boolean "is_accepted", default: false
+    t.boolean "is_ranked", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addons_id"], name: "index_wars_on_addons_id"
@@ -206,6 +219,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_215034) do
   add_foreign_key "blocklists", "users", column: "blocked_user_id"
   add_foreign_key "friends", "users"
   add_foreign_key "friends", "users", column: "friend_id"
+  add_foreign_key "guild_invites", "users", column: "invited_id"
+  add_foreign_key "guild_invites", "users", column: "inviter_id"
   add_foreign_key "matches", "addons", column: "addons_id"
   add_foreign_key "matches", "guilds", column: "guild_1_id"
   add_foreign_key "matches", "guilds", column: "guild_2_id"

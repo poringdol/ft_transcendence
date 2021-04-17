@@ -119,7 +119,7 @@ $(function () {
 			if (user.nickname) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if (curr_user.is_admin == true
+				if ((curr_user.is_admin == true || curr_user.is_moderator == true)
 					|| (curr_user.is_officer && this.view.guild_id == curr_user.guild_id)
 					|| curr_user.id == this.view.guild.owner_id) {
 					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
@@ -154,7 +154,7 @@ $(function () {
 			if (user.nickname && user.is_officer) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if (curr_user.is_admin == true
+				if ((curr_user.is_admin == true || curr_user.is_moderator == true)
 					|| curr_user.id == this.view.guild.owner_id) {
 					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
 					this.$el.append(userViewBtn.render().el);
@@ -214,7 +214,7 @@ $(function () {
 			this.$el.html("")
 			this.$el.attr({ 'style': 'text-align: center;' });
 
-			if (curr_user.is_admin == true ||
+			if ((curr_user.is_admin == true || curr_user.is_moderator == true) ||
 				curr_user.id == this.view.guild.owner_id)
 				var role = 'owner-admin'
 			else if (curr_user.is_officer == true && curr_user.guild_id == this.view.guild_id)

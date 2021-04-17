@@ -23,6 +23,7 @@ $(function () {
 			this.score = data.user.score
 			this.is_banned = data.user.is_banned
 			this.is_admin = data.user.is_admin
+			this.is_moderator = data.user.is_moderator
 		}
 	})
 
@@ -123,30 +124,39 @@ $(function () {
 	//  USER        INFO BUTTONS VIEW
 	// -----------------------------------------
 	App.Views.UserBlockBtn = Backbone.View.extend({
-		templateBlockBtn:	_.template($("#UserInfoBlockBtnTemplate").html()),
-		templateUnblockBtn: _.template($("#UserInfoUnblockBtnTemplate").html()),
-		templateBanBtn:		_.template($("#UserInfoBanBtnTemplate").html()),
-		templateUnbanBtn:	_.template($("#UserInfoUnbanBtnTemplate").html()),
+		templateBlockBtn:			_.template($("#UserInfoBlockBtnTemplate").html()),
+		templateUnblockBtn: 		_.template($("#UserInfoUnblockBtnTemplate").html()),
+		templateBanBtn:				_.template($("#UserInfoBanBtnTemplate").html()),
+		templateUnbanBtn:			_.template($("#UserInfoUnbanBtnTemplate").html()),
+		templateDoModeratorBtn:		_.template($("#UserInfoDoModeratorBtnTemplate").html()),
+		templateUndoModeratorBtn:	_.template($("#UserInfoUndoModeratorBtnTemplate").html()),
 		
 		initialize: function (data) {
 			this.model = data.model
 			this.btns = data.btns
 		},
 		events: {
-			'click #UserInfoBlockBtn':		'blockUser',
-			'click #UserInfoUnblockBtn':	'unblockUser',
+			'click #UserInfoBlockBtn':			'blockUser',
+			'click #UserInfoUnblockBtn':		'unblockUser',
 			
-			'click #UserInfoBanBtn': 		'banUser',
-			'click #UserInfoUnbanBtn': 		'unbanUser',
+			'click #UserInfoBanBtn': 			'banUser',
+			'click #UserInfoUnbanBtn': 			'unbanUser',
+			
+			'click #UserInfoDoModeratorBtn': 	'doModeratorUser',
+			'click #UserInfoUndoModeratorBtn': 	'undoModeratorUser',
 		},
 		render: function () {
 			this.$el.html("")
 			if (current_user.id != this.model.id) {
 				if (!this.model.is_admin) {
-					if (current_user.is_admin == true && !this.model.is_banned)
+					if ((current_user.is_admin == true || current_user.is_moderator == true) && !this.model.is_banned)
 						this.$el.html(this.templateBanBtn);
-					else if (current_user.is_admin == true && this.model.is_banned)
+					else if ((current_user.is_admin == true || current_user.is_moderator == true) && this.model.is_banned)
 						this.$el.html(this.templateUnbanBtn);
+					if (current_user.is_admin == true && !this.model.is_moderator)
+						this.$el.append(this.templateDoModeratorBtn);
+					else if (current_user.is_admin == true && this.model.is_moderator)
+						this.$el.append(this.templateUndoModeratorBtn);
 				}
 				fetch(('/blocklists/is_blocked/' + this.model.id))
 					.then(res => res.ok ? res.json() : Promise.reject(res))
@@ -217,6 +227,42 @@ $(function () {
 			else
 				alert("You don't have a permission!")
 		},
+		doModeratorUser: function () {
+			if (current_user.is_admin == true) {
+				fetch(("/profile/do_moderator_user/" + this.model.id))
+					.then(res => res.ok ? res.json() : Promise.reject(res))
+					.then(_.bind((res) => {
+						if (res == 1)
+							alert(this.model.nickname + ' is now a moderator! :)')
+						else
+							alert(res)
+						this.model.is_moderator = true;
+						this.render()
+						this.btns.render()
+					}, this))
+					.catch(() => alert('Some error accured!'));
+			}
+			else
+				alert("You don't have a permission!")
+		},
+		undoModeratorUser: function () {
+			if (current_user.is_admin == true) {
+				fetch(("/profile/undo_moderator_user/" + this.model.id))
+					.then(res => res.ok ? res.json() : Promise.reject(res))
+					.then(_.bind((res) => {
+						if (res == 1)
+							alert(this.model.nickname + ' is not a moderator anymore!')
+						else
+							alert(res)
+						this.model.is_moderator = false;
+						this.render()
+						this.btns.render()
+					}, this))
+					.catch(() => alert('Some error accured!'));
+			}
+			else
+				alert("You don't have a permission!")
+		}
 	})
 
 	App.Views.UserInfoBtn = Backbone.View.extend({
@@ -227,14 +273,8 @@ $(function () {
 		templateDelBtn:			_.template($("#UserInfoDelBtnTemplate").html()),
 		templateUnfollowBtn:	_.template($("#UserInfoUnfollowBtnTemplate").html()),
 		templateFollowBackBtn:  _.template($("#UserInfoFollowBackBtnTemplate").html()),
-		
-		// templateBanBtn:			_.template($("#UserInfoBanBtnTemplate").html()),
-		// templateUnbanBtn:		_.template($("#UserInfoUnbanBtnTemplate").html()),
+
 		templateBannedStatus:	_.template($("#UserInfoBannedStatusTemplate").html()),
-		
-		// templateBlockBtn:		_.template($("#UserInfoBlockBtnTemplate").html()),
-		// templateUnblockBtn:		_.template($("#UserInfoUnblockBtnTemplate").html()),
-		
 		templateSendBtn:		_.template($("#UserInfoSendBtnTemplate").html()),
 		
 		events: {
@@ -242,13 +282,6 @@ $(function () {
 			'click #UserInfoDelBtn':		'deleteFriend',
 			'click #UserInfoUnfollowBtn': 	'unfollowUser',
 			'click #UserInfoFollowBackBtn': 'followBackUser',
-
-			// 'click #UserInfoBanBtn': 		'banUser',
-			// 'click #UserInfoUnbanBtn': 		'unbanUser',
-			
-			// 'click #UserInfoBlockBtn':		'blockUser',
-			// 'click #UserInfoUnblockBtn':	'unblockUser',
-			
 			'click #UserInfoSendBtn':		'sendMessage'
 		},
 		render: function () {
@@ -303,60 +336,6 @@ $(function () {
 			}, this))
 			.catch(() => alert('some error'));
 		},
-		// banUser: function () {
-		// 	if (current_user.is_admin == true) {
-		// 		fetch(("/profile/ban_user/" + this.model.id))
-		// 		.then(res => res.ok ? res.json() : Promise.reject(res))
-		// 		.then(_.bind((res) => {
-		// 			if (res == 1)
-		// 				alert('You banned ' + this.model.nickname + ' :(')
-		// 			else
-		// 				alert(res)
-		// 			this.model.is_banned = true;
-		// 			this.render()
-		// 		}, this))
-		// 		.catch(() => alert('some error'));
-		// 	}
-		// 	else
-		// 		alert("You don't have a permission!")
-		// },
-		// unbanUser: function () {
-		// 	if (current_user.is_admin == true) {
-		// 		fetch(("/profile/unban_user/" + this.model.id))
-		// 		.then(res => res.ok ? res.json() : Promise.reject(res))
-		// 		.then(_.bind((res) => {
-		// 			if (res == 1)
-		// 				alert('You unbanned ' + this.model.nickname + ' :)')
-		// 			else
-		// 				alert(res)
-		// 			this.model.is_banned = false;
-		// 			this.render()
-		// 		}, this))
-		// 		.catch(() => alert('some error'));
-		// 	}
-		// 	else
-		// 		alert("You don't have a permission!")
-		// },
-		// blockUser: function () {
-		// 	fetch(('/blocklists/block_user/' + this.model.id))
-		// 	.then(res => res.ok ? res.json() : Promise.reject(res))
-		// 	.then(_.bind((res) => {
-		// 			if (res == 1)
-		// 				alert('You blocked ' + this.model.nickname + '! Now he/she cannot send you messages!')
-		// 			this.render()
-		// 		}, this))
-		// 	.catch(() => alert('some error'));
-		// },
-		// unblockUser: function () {
-		// 	fetch(('/blocklists/unblock_user_by_id/' + this.model.id))
-		// 	.then(res => res.ok ? res.json() : Promise.reject(res))
-		// 	.then(_.bind((res) => {
-		// 			if (res == 1)
-		// 				alert('You unblocked ' + this.model.nickname + '!')
-		// 			this.render()
-		// 		}, this))
-		// 	.catch(() => alert('some error'));
-		// },
 		sendMessage: function () {
 			fetch("/rooms/create", {
 				method: "POST",
@@ -389,20 +368,6 @@ $(function () {
 						this.$el.append(this.templateUnfollowBtn);
 					else if (!this.model.is_banned)
 						this.$el.append(this.templateFollowBackBtn);
-					// fetch(('/blocklists/is_blocked/' + this.model.id))
-					// 	.then(res => res.ok ? res.json() : Promise.reject(res))
-					// 	.then(_.bind(function (res) {
-					// 		if (res == 0)
-					// 			this.$el.append(this.templateBlockBtn);
-					// 		else if (res == 1)
-					// 			this.$el.append(this.templateUnblockBtn);
-					// 	}, this))
-					// if (!this.model.is_admin) {
-					// 	if (current_user.is_admin == true && !this.model.is_banned)
-					// 		this.$el.append(this.templateBanBtn);
-					// 	else if (current_user.is_admin == true && this.model.is_banned)
-					// 		this.$el.append(this.templateUnbanBtn);
-					// }
 				}, this))
 		}
 	})

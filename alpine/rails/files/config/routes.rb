@@ -52,7 +52,8 @@ Rails.application.routes.draw do
   get 'profile/get_user/:id' => "profile#get_user"
   get 'profile/ban_user/:id' => "profile#ban_user"
   get 'profile/unban_user/:id' => "profile#unban_user"
-
+  get 'profile/undo_moderator_user/:id' => "profile#undo_moderator_user"
+  get 'profile/do_moderator_user/:id' => "profile#do_moderator_user"
 
   get 'block_list' => "profile#block_list"
   get 'profile/block_list_detailed/:id' => "profile#block_list_detailed"
