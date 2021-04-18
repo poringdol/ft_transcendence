@@ -120,6 +120,16 @@ class RoomsController < ApplicationController
     end
   end
 
+  def kick
+    @room = Room.find(params[:room][:room_id])
+    @user = User.find(params[:room][:user_id])
+    p '------------'
+    p @user
+    RoomUser.where(room_id: params[:room][:room_id], user_id: params[:room][:user_id]).destroy_all
+    NotificationChannel.broadcast_to(@user, message: "You will be kicked from #{@room.name}")
+    NotificationChannel.broadcast_to(current_user, message: "You kicked #{@user.nickname} from #{@room.name}")
+  end
+
   def leave
     @room = Room.find(params[:room][:room_id])
     if @room.owner_id == current_user.id
@@ -180,14 +190,14 @@ class RoomsController < ApplicationController
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = true
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now is admin")
+    NotificationChannel.broadcast_to(current_user, message: "User #{params[:room][:nickname]} now is admin")
   end
 
   def rm_admin
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = false
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{user.nickname} now demoted")
+    NotificationChannel.broadcast_to(current_user, message: "User #{params[:room][:nickname]} now demoted")
   end
 
   def mute_user

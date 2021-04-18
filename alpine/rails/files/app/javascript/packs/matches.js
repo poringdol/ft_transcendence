@@ -13,7 +13,7 @@ $(function () {
 	App.Models.Match = Backbone.Model.extend({
 		urlRoot: "/matches.json",
 		initialize: function () {
-			
+
 		}
 	});
 
@@ -28,7 +28,7 @@ $(function () {
 	App.Views.FoemMatches = Backbone.View.extend({
 		el: $('#MatchCreationForm'),
 		initialize: function () {
-			
+
 		},
 		events: {
 			'submit': 'submit'
@@ -39,21 +39,38 @@ $(function () {
 				player2: $(e.currentTarget).find('input[id=formPlayer2Nickname]').val(),
 				addons: $(e.currentTarget).find('input[id=formAddons]').val()
 			}
-			fetch("/matches/new_match", {
-				method: "POST",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(match)
-			})
-			.then(res => res.json())
-			.then(_.bind((res) => {
-				if (res.error)
-					alert(res.error)
-				else
-					window.location.href = "/matches/" + res.id
-			}, this))
+
+			const http = new XMLHttpRequest()
+			http.open('POST', '/matches/new_match')
+			http.setRequestHeader('Content-type', 'application/json')
+			http.send(JSON.stringify(match))
+			http.onload = function() {
+				window.location.assign(http.responseURL)
+				console.log(http.responseText)
+			}
+
+			// fetch("/matches/new_match", {
+			// 	method: "POST",
+			// 	redirect: 'follow',
+			// 	headers: {
+			// 		'Accept': 'application/json',
+			// 		'Content-Type': 'application/json'
+			// 	},
+			// 	body: JSON.stringify(match)
+			// }).then(response => {
+			// 	console.log(response)
+			// 	// if (response.redirected) {
+			// 	// 	window.location.href = response.url;
+			// 	// }
+			// })
+			// .then(res => res.json())
+			// .then(_.bind((res) => {
+			// 	if (res.error)
+			// 		alert(res.error)
+			// 	else
+			// 		// window.location.assign("/matches/" + res.id)
+			// 		console.log(res)
+			// }, this))
 		},
 	})
 

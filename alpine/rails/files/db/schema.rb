@@ -152,7 +152,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.string "avatar"
     t.string "email", default: "", null: false
     t.string "nickname"
-    t.bigint "guild_id"
+    t.bigint "guild_id", default: 0
     t.string "encrypted_password", default: "", null: false
     t.boolean "is_admin", default: false
     t.boolean "is_moderator", default: false

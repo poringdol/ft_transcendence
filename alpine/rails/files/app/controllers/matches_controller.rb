@@ -30,7 +30,7 @@ class MatchesController < ApplicationController
   def match_users_update
     respond_to do |format|
       if @match.update(match_params)
-        format.html { redirect_to @match, notice: "War was successfully updated." }
+        format.html { redirect_to root, notice: "War was successfully updated." }
         format.json { render :show, status: :ok, location: @match }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -53,6 +53,10 @@ class MatchesController < ApplicationController
   end
 
   def new_match
+    # p '-----------------------------------'
+    # p params
+    # p params[:player2]
+    # p '--------------------------------------'
     player2 = User.find_by(nickname: params[:player2])
     if (player2)
       player1_id = current_user.id
@@ -61,11 +65,22 @@ class MatchesController < ApplicationController
       guild_2_id = player2.guild_id
 
       @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
+
+      NotificationChannel.broadcast_to(player2, message: "#{current_user.nickname} started duel with you")
+      # p '+++++++++++++++++++++++++++++++++++++'
+      # p request.xhr?
+      # @match.save
+      # redirect_to "/matches/#{@match.id}" and return
+
+      # p '+++++++++++++++++++++++++++++++++++++'
+      #render :json => {:location => "/matches/#{@match.id}" }
+
+      # render :js => "window.location = '/matches/#{@match.id}'"
       respond_to do |format|
         if @match.save
-          format.html { redirect_to @match, notice: "Match was successfully created." }
-          format.json { render :show, status: :created, location: @match }
-          
+          # p '++++++++++++++++++++++++++++++++++++++++'
+          format.html { redirect_to "/matches/#{@match.id}" }
+          format.json { render :js => "window.location = '/matches/#{@match.id}'" }
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @match.errors, status: :unprocessable_entity }
