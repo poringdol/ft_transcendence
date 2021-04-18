@@ -376,13 +376,10 @@ $(function () {
 			}
 		},
 		drawCollection: function () {
-			console.log('here')
 			if (this.invitesCollection.length != 0) {
 				this.invitesCollection.each(this.addOne, this)
-				console.log('0 length')
 			}
 			else {
-				console.log('not 0 length')
 				$("#accordionFlushGuild").css({ 'display': 'none' })
 				$("#UserGuildCard").css({ 'border-bottom': '0px solid rgba(0, 0, 0, 0.125)' })
 			}
@@ -730,17 +727,73 @@ $(function () {
 //                                                   M A T C H E S
 // ---------------------------------------------------------------------------------------------------------------------------
 	
+	App.Models.UserMatches = Backbone.Model.extend({
+		urlRoot: '/matches/users_matches/',
+		initialize: function () {
+			this.url += usr_id
+		}
+	})
+
+	App.Collections.UserMatches = Backbone.Collection.extend({
+		url: '/matches/users_matches/',
+		initialize: function () {
+			this.url += usr_id
+			this.fetch()
+		}
+	})
+	
 	// -----------------------------------------
 	//  USER      		MATCHES CARD VIEW
 	// -----------------------------------------
 	App.Views.UserMatches = Backbone.View.extend({
 		template: _.template($("#UserMatchesTemplate").html()),
+		initialize: function (data) {
+			this.user = data.user
+			this.collection = data.collection
+
+			this.collection.on('sync', this.render, this)
+		},
 		render: function () {
 			var template = this.template();
-			this.$el.html(template);
-			$("#UserMatches").html(this.el)
+			$("#UserMatches").html(template)
+			
+			this.n = 0
+			if (this.collection.length <= 3) {
+				$("#accordionFlushMatches").css({ 'display': 'none' })
+				$("#MatchesCard").css({ 'border-bottom': '0px' })
+				if (this.collection.length == 0)
+					$("#MacthesList").html("No matches yet")
+			}
+			this.collection.each(this.addOne, this)
+			return this
+		},
+		addOne: function (match) {
+			if (this.n <= 4) {
+				var row = new App.Views.UserMatch({ model: match });
+				$("#MacthesList").append(row.render().el)
+				this.n += 1
+			}
+			else {
+				var row = new App.Views.UserMatch({ model: match });
+				$("#MacthesListAll").append(row.render().el)
+				this.n += 1
+			}
 		}
 	})
+
+	App.Views.UserMatch = Backbone.View.extend({
+		template: _.template($("#MatchesRowTemplate").html()),
+		className: 'row',
+		render: function () {
+			this.model.attributes.status = "future"
+			if (this.model.attributes.is_end)
+				this.model.attributes.status = "end"
+			else if (this.model.attributes.is_inprogress)
+				this.model.attributes.status = "now"
+			this.$el.html(this.template(this.model.attributes))
+			return this;
+		},
+	});
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -786,7 +839,8 @@ $(function () {
 			UserGuildView = new App.Views.UserGuild({ model: user, invitesCollection: InvitesCollection })
 			UserGuildView.render()
 	
-			UserMatchesView = new App.Views.UserMatches({ model: user })
+			UserMatches = new App.Collections.UserMatches
+			UserMatchesView = new App.Views.UserMatches({ user: user, collection: UserMatches })
 			UserMatchesView.render()
 
 			if (user.id == current_user.id) {

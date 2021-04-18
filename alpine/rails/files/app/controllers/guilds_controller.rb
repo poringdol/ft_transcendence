@@ -230,9 +230,7 @@ class GuildsController < ApplicationController
   def exit
     unless current_user.guild_id?
       redirect_and_responce("You not in guild")
-	  puts("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     else
-	  puts("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
       guild_id = current_user.guild_id
       current_user.guild_id = 0
 	  current_user.is_officer = false

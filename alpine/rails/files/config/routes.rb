@@ -49,7 +49,6 @@ Rails.application.routes.draw do
   get 'guild_invites/accept_invitation/:id' => 'guild_invites#accept_invitation'
   get 'guild_invites/decline_invitation/:id' => 'guild_invites#decline_invitation'
   get 'guild_invites/del_all_invites/:id' => 'guild_invites#del_all_invites'
-  
 
 # ------------------
 #    PROFILE PAGE
@@ -83,6 +82,8 @@ Rails.application.routes.draw do
   post 'rooms/block_user' => 'users#block_user'
   post 'users/unblock_user' => 'users#unblock_user'
   post 'rooms/unblock_user' => 'users#unblock_user'
+
+  get 'matches/users_matches/:id' => 'matches#users_matches'
 
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER

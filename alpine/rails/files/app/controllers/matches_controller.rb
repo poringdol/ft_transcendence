@@ -5,9 +5,18 @@ class MatchesController < ApplicationController
 
   # GET /matches or /matches.json
   def index
-    @matches = Match.all
+    @matches = Match.all.order("#{:id} desc")
 
     respond_to do |format|
+      format.html { @matches }
+      format.json { render json: @matches}
+    end
+  end
+
+  def users_matches
+	id = params[:id]
+	@matches = Match.where("CASE WHEN player1_id = #{id} OR player2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:id} desc")
+	respond_to do |format|
       format.html { @matches }
       format.json { render json: @matches}
     end
