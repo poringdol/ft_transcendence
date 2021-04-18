@@ -52,7 +52,8 @@ $(function () {
 				if (res.error)
 					alert(res.error)
 				else
-					window.location.href = "/matches/" + res.id
+					Turbolinks.visit("/matches/" + res.id);
+					// window.location.href = "/matches/" + res.id
 			}, this))
 		},
 	})

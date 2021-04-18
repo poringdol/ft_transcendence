@@ -89,7 +89,7 @@ class GuildsController < ApplicationController
         redirect_and_responce("User not in guild")
       else
         guild_id = user.guild_id
-        user.guild_id = 0
+        user.guild_id = nil
         user.is_officer = false
         user.save
         guild = Guild.all.find(guild_id)
@@ -232,7 +232,7 @@ class GuildsController < ApplicationController
       redirect_and_responce("You not in guild")
     else
       guild_id = current_user.guild_id
-      current_user.guild_id = 0
+      current_user.guild_id = nil
 	  current_user.is_officer = false
       current_user.save
       guild = Guild.all.find(guild_id)
@@ -323,7 +323,7 @@ class GuildsController < ApplicationController
       if officer
         officer.delete
       end
-      member.user.guild_id = 0
+      member.user.guild_id = nil
       member.user.save
       member.delete
       redirect_and_responce("Success")

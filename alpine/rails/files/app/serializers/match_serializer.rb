@@ -4,8 +4,8 @@ class MatchSerializer < ActiveModel::Serializer
              :is_player1_online, :is_player2_online
   has_one :current_user
   has_one :player1
-  has_one :player2
-  has_one :guild_1
-  has_one :guild_2
+  has_one :player2, optional: true
+  has_one :guild_1, optional: true
+  has_one :guild_2, optional: true
   has_one :addons
 end

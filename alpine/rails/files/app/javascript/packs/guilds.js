@@ -449,7 +449,7 @@ $(function () {
 					$('#GuildContent').html("");
 				}, this)
 			);
-			curr_user.guild_id = 0
+			curr_user.guild_id = null
 		},
 		joinGuild: function () {
 			fetch("/guilds/join", {
@@ -484,7 +484,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind((response) => {
 				alert('You left guild ' + this.model.name + '!');
-				curr_user.guild_id = 0;
+				curr_user.guild_id = null;
 				if (response == 0)
 					this.model.destroy();
 				else {
