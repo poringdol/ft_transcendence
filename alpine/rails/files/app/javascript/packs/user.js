@@ -379,8 +379,10 @@ $(function () {
 			console.log('here')
 			if (this.invitesCollection.length != 0) {
 				this.invitesCollection.each(this.addOne, this)
+				console.log('0 length')
 			}
 			else {
+				console.log('not 0 length')
 				$("#accordionFlushGuild").css({ 'display': 'none' })
 				$("#UserGuildCard").css({ 'border-bottom': '0px solid rgba(0, 0, 0, 0.125)' })
 			}
@@ -414,8 +416,19 @@ $(function () {
 		},
 		AcceptInvitation: function () {
 			if (current_user.guild_id) {
-				if (confirm("You are already in guild. Are you sure that you want change the guild?"))
-					this.AcceptInvitationRequest()
+				if (confirm("You are already in guild. Are you sure that you want change the guild?")) {
+					fetch("/guilds/exit", {
+						method: "POST",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(this.model)
+					})
+					.then(_.bind(() => {
+						this.AcceptInvitationRequest()
+					}, this))
+				}
 			}
 			else
 				this.AcceptInvitationRequest()

@@ -2,7 +2,7 @@ class GuildsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_nickname, only: [:add_officer]
   before_action :set_guild, only: [:destroy, :update]
-  before_action :check_guild, only: [:join, :exit, :add_officer, :delete_officer, :delete_member]
+  before_action :check_guild, only: [:join, :add_officer, :delete_officer, :delete_member]
 
 
   def index
@@ -97,6 +97,12 @@ class GuildsController < ApplicationController
       
         unless guild_members
           guild.destroy
+		  
+		  guild_invites = GuildInvite.where(guild_id: guild_id)
+		  for guild_invite in guild_invites
+			guild_invite.destroy
+		  end
+
         else
           if user.id == guild.owner_id
             guild.owner_id = guild_members.id
@@ -224,7 +230,9 @@ class GuildsController < ApplicationController
   def exit
     unless current_user.guild_id?
       redirect_and_responce("You not in guild")
+	  puts("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     else
+	  puts("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
       guild_id = current_user.guild_id
       current_user.guild_id = 0
 	  current_user.is_officer = false
@@ -234,6 +242,12 @@ class GuildsController < ApplicationController
       
       unless guild_members
         guild.destroy
+
+		guild_invites = GuildInvite.where(guild_id: guild_id)
+		for guild_invite in guild_invites
+		  guild_invite.destroy
+		end
+
       else
         if current_user.id == guild.owner_id
           guild.owner_id = guild_members.id

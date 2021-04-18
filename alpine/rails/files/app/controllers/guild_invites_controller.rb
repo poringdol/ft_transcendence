@@ -20,6 +20,13 @@ class GuildInvitesController < ApplicationController
   def edit
   end
   
+  def del_all_invites
+	@guild_invites = GuildInvite.all
+	for invite in @guild_invites
+		invite.destroy
+	end
+  end
+
   def users_invites
 	@guild_invites = GuildInvite.where(invited_id: params[:id])
 	render json: @guild_invites

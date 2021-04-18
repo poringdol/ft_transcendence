@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   post 'guilds/join'
   post 'create_new_guild' => 'guilds#create_new_guild', as: 'create_new_guild'
   post 'guilds/exit'
+  get 'guilds/exit' => 'guilds#exit'
   post 'guilds/add_officer'
   post 'guilds/delete_officer'
   post 'guilds/delete_member'
@@ -47,6 +48,8 @@ Rails.application.routes.draw do
   get 'guild_invites/users_invites/:id' => 'guild_invites#users_invites'
   get 'guild_invites/accept_invitation/:id' => 'guild_invites#accept_invitation'
   get 'guild_invites/decline_invitation/:id' => 'guild_invites#decline_invitation'
+  get 'guild_invites/del_all_invites/:id' => 'guild_invites#del_all_invites'
+  
 
 # ------------------
 #    PROFILE PAGE
