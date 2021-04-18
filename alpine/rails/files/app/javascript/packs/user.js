@@ -414,20 +414,24 @@ $(function () {
 		},
 		AcceptInvitation: function () {
 			if (current_user.guild_id) {
-				if (confirm("You are already in guild. Are you sure that you want change the guild?")) {
-					fetch(('/guild_invites/accept_invitation/' + this.model.get('id')))
-						.then(res => res.ok ? res.json() : Promise.reject(res))
-						.then(_.bind((res) => {
-							alert('You accepted invitation!');
-							this.$el.remove();
-							current_user.guild_id = this.model.attributes.guild.id
-							this.guildView.render()
-						}, this))
-						.catch(function (res) {
-							alert("Error accured! Try again!")
-						})
-				}
+				if (confirm("You are already in guild. Are you sure that you want change the guild?"))
+					this.AcceptInvitationRequest()
 			}
+			else
+				this.AcceptInvitationRequest()
+		},
+		AcceptInvitationRequest: function () {
+			fetch(('/guild_invites/accept_invitation/' + this.model.get('id')))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					alert('You accepted invitation!');
+					this.$el.remove();
+					current_user.guild_id = this.model.attributes.guild.id
+					this.guildView.render()
+				}, this))
+				.catch(function (res) {
+					alert("Error accured! Try again!")
+				})
 		},
 		DeclineInvitation: function () {
 			fetch(('/guild_invites/decline_invitation/' + this.model.get('id')))
