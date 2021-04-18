@@ -3,6 +3,13 @@
     <div class="content-container">
       <div class=" nav-item dropdown">
         <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown" type="button" data-bs-toggle="dropdown">
+          <% if message.user != current_user %>
+              <% if User.online.where(id: message.user.id).present? %>
+                <%= render partial: "rooms/online", collection: User.online.where(id: message.user.id), as: :user %>
+              <% else %>
+                <%= render partial: "rooms/offline", collection: User.where(id: message.user.id), as: :user %>
+              <% end %>
+          <% end %>
           <%= message.content %>
         </a>
         <% if message.user != current_user %>

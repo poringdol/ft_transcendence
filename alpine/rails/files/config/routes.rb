@@ -123,6 +123,7 @@ Rails.application.routes.draw do
   post 'users/disable_otp' => 'users#disable_otp'
   post 'users/edit/enable_otp' => 'users#enable_otp'
   post 'users/edit/disable_otp' => 'users#disable_otp'
+  get 'users/edit/profile/0' => 'profile'
 
   # auth
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }

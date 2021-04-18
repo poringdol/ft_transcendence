@@ -38,6 +38,8 @@
           fetch("/users/update_nickname", {
               method : "POST",
               body: new FormData(document.getElementById("up_nick")),
+          }).then(() => {
+            Turbolinks.visit("/profile/0")
           })
         });
       </script>
@@ -70,6 +72,9 @@
           fetch("/users/update_avatar", {
               method : "POST",
               body: new FormData(document.getElementById("up_av")),
+
+          }).then(() => {
+            Turbolinks.visit("/profile/0")
           })
         });
       </script>

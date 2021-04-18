@@ -2,6 +2,7 @@
   <div class = "content-container">
     <div class=" nav-item dropdown">
       <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown-th" type="button" data-bs-toggle="dropdown">
+        <%= render partial: "rooms/online", collection: User.online.where(id: message.user.id), as: :user %>
         <%= message.content %>
       </a>
       <ul class="dropdown-menu append-dropdown" aria-labelledby="MessageDropdown">
