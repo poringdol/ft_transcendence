@@ -476,8 +476,6 @@ $(function () {
 			this.btns = data.btns
 		},
 		events: {
-			'click #UserInfoInviteBtn': 		'inviteUser',
-
 			'click #UserInfoBlockBtn':			'blockUser',
 			'click #UserInfoUnblockBtn':		'unblockUser',
 			
@@ -500,8 +498,6 @@ $(function () {
 					else if (current_user.is_admin == true && this.model.is_moderator)
 						this.$el.append(this.adm_template({ btn_title: "UndoModerator", btn_text: "Undo moderator" }));
 				}
-				if (current_user.guild_id && current_user.guild_id != this.model.guild_id)
-					this.$el.append(this.template({ btn_title: "Invite", btn_text: "Invite user to my guild" }));
 				fetch(('/blocklists/is_blocked/' + this.model.id))
 					.then(res => res.ok ? res.json() : Promise.reject(res))
 					.then(_.bind(function (res) {
@@ -514,16 +510,6 @@ $(function () {
 			}
 			else
 				$("#LastBlockUserInfo").css({'display': 'none'})
-		},
-		inviteUser: function () {
-			fetch(('/guild_invites/invite_to_guild/' + this.model.id))
-				.then(res => res.ok ? res.json() : Promise.reject(res))
-				.then(_.bind(function (res) {
-					alert('You succesfully invited ' + this.model.nickname + ' to your guild!')
-				}, this))
-				.catch(() => {
-					alert('Some error accured!')
-				})
 		},
 		blockUser: function () {
 			fetch(('/blocklists/block_user/' + this.model.id))
