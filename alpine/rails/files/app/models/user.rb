@@ -45,4 +45,10 @@ class User < ApplicationRecord
       user.nickname = auth.info.nickname
     end
   end
+
+  def self.online
+    ids = ActionCable.server.pubsub.redis_connection_for_subscriptions.smembers "online"
+    where(id: ids)
+  end
+
 end

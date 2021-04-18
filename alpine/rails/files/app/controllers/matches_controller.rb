@@ -74,7 +74,7 @@ class MatchesController < ApplicationController
         if @match.save
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render :show, status: :created, location: @match }
-          
+
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @match.errors, status: :unprocessable_entity }

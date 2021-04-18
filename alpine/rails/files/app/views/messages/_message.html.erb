@@ -3,16 +3,28 @@
     <div class="content-container">
       <div class=" nav-item dropdown">
         <a class="messageContent btn card-link btn-guild dropdown-toggle removecaret" id="MessageDropdown" type="button" data-bs-toggle="dropdown">
+          <% if message.user != current_user %>
+              <% if User.online.where(id: message.user.id).present? %>
+                <%= render partial: "rooms/online", collection: User.online.where(id: message.user.id), as: :user %>
+              <% else %>
+                <%= render partial: "rooms/offline", collection: User.where(id: message.user.id), as: :user %>
+              <% end %>
+          <% end %>
           <%= message.content %>
         </a>
         <% if message.user != current_user %>
           <ul class="dropdown-menu" aria-labelledby="MessageDropdown">
             <li><a class="dropdown-item" aria-current="page" href=<%= "/profile/#{message.user_id}" %> >Profile</a></li>
-            <li><a class="dropdown-item" aria-current="page" href="#">Invite to game</a></li>
+
+            <%= form_with model: @matches, url: "new_match", method: :post do |form| %>
+              <%= form.hidden_field :player2, value: message.user.nickname %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <%= form.submit "Duel", class: "dropdown-item" %>
+            <%end %>
 
             <%= form_with model: @room, url: "create", method: :post do |form| %>
               <%= form.hidden_field :name, value: message.user.nickname %>
-              <%= form.hidden_field :authenticity_token, value: form_authenticity_token %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
               <%= form.submit "Direct", class: "dropdown-item" %>
             <%end %>
 
@@ -22,21 +34,32 @@
               <%= form.submit "Block user", class: "dropdown-item" %>
             <%end %>
 
-            <% chat_admin = RoomUser.where(room_id: message.room.id, user_id: current_user.id).first; if chat_admin && chat_admin.is_admin? || current_user.is_admin? %>
+            <% chat_admin = RoomUser.where(room_id: message.room.id, user_id: current_user.id).first; if chat_admin && chat_admin.is_admin? || current_user.is_admin? || current_user.is_moderator? %>
               <%= form_with model: @room, url: "mute_user", method: :post do |form| %>
                 <%= form.hidden_field :user_id, value: message.user.id %>
                 <%= form.hidden_field :room_id, value: @room.id %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
                 <%= form.submit "Mute user for 1 min", class: "dropdown-item" %>
+              <%end %>
+              <%= form_with model: @room, url: "kick", method: :post do |form| %>
+                <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= form.hidden_field :room_id, value: @room.id %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <%= form.submit "Kick user", class: "dropdown-item" %>
               <%end %>
             <% end %>
 
-            <% if message.room.owner_id == current_user.id || current_user.is_admin? %>
+            <% if message.room.owner_id == current_user.id || current_user.is_admin? || current_user.is_moderator? %>
               <%= form_with model: @room, url: "do_admin", method: :post do |form| %>
                 <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= form.hidden_field :nickname, value: message.user.nickname %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
                 <%= form.submit "Do admin", class: "dropdown-item" %>
               <%end %>
               <%= form_with model: @room, url: "rm_admin", method: :post do |form| %>
+                <%= form.hidden_field :nickname, value: message.user.nickname %>
                 <%= form.hidden_field :user_id, value: message.user.id %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
                 <%= form.submit "RM admin", class: "dropdown-item" %>
               <%end %>
             <% end %>

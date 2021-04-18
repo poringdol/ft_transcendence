@@ -112,6 +112,8 @@ Rails.application.routes.draw do
   post 'rooms/do_admin' => 'rooms#do_admin'
   post 'rooms/rm_admin' => 'rooms#rm_admin'
   post 'rooms/mute_user' => 'rooms#mute_user'
+  post 'rooms/new_match' => 'matches#new_match'
+  post 'rooms/kick' => 'rooms#kick'
 
 # ------------------
 #    GAME PAGE
@@ -122,7 +124,7 @@ Rails.application.routes.draw do
 
   get 'matches/get_player/:id' => 'matches#get_player'
   post 'matches/new_match' => 'matches#new_match'
-  
+
 
 # --------------------
 #    AUTHENTIFICATION
@@ -132,6 +134,7 @@ Rails.application.routes.draw do
   post 'users/disable_otp' => 'users#disable_otp'
   post 'users/edit/enable_otp' => 'users#enable_otp'
   post 'users/edit/disable_otp' => 'users#disable_otp'
+  get 'users/edit/profile/0' => 'profile'
 
   # auth
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }

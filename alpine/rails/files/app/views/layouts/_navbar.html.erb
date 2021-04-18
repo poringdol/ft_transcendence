@@ -1,43 +1,3 @@
-<!-- <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-  <a class="navbar-brand" href="/"> <img src="/assets/logo_big.png" alt="PingPong"> </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="game">Play<span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="ranked">Ranked</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="rooms">Chat</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="guilds">Guild</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Guild wars</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="profile" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= current_user.nickname %></a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="profile">Profile</a>
-          <a class="dropdown-item" href="#">Friends</a>
-          <a class="dropdown-item" href="#">Block list</a>
-          <a class="dropdown-item" href="#">Admin panel</a> -->
-<!-- user_admin? -->
-<!-- <div class="dropdown-divider"></div>
-          <a href="/users/sign_out" class="dropdown-item" data-method="delete" rel="nofollow">Logout</a>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
--->
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light" id="HeaderMenu">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">FT_TRANSCENDENCE</a>
@@ -51,35 +11,32 @@
 					<a class="nav-link" aria-current="page" href="/">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" href="/guilds">Guilds</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" aria-current="page" href="/matches">Game</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" href="/profile/0">Test Page</a>
+					<a class="nav-link" aria-current="page" href="/guilds">Guilds</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" aria-current="page" href="/">Leaderboard</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" aria-current="page" href="/profile/0">Test Page(profile)</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" aria-current="page" href="/rooms">Chat</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
-						<!--<%= current_user.nickname %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.thumb.url %>>-->
 						<%= current_user.nickname + (current_user.is_admin ? "(admin)" : "") %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item" aria-current="page" href="/profile/0">Profile</a></li>
 						<li><a class="dropdown-item" aria-current="page" href="/profile/0">Friends</a></li>
-						<li><a class="dropdown-item" aria-current="page" href="/user">Chat</a></li>
-						<li><a class="dropdown-item" aria-current="page" href="/user">Statistics</a></li>
+						<li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link", :class => "dropdown-item" %></li>
 					</ul>
 				</li>
 			</ul>
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link" %>
-				</li>
-			</ul>
+
 		</div>
 	</div>
 </nav>

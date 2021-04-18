@@ -13,7 +13,7 @@ $(function () {
 	App.Models.Match = Backbone.Model.extend({
 		urlRoot: "/matches.json",
 		initialize: function () {
-			
+
 		}
 	});
 
@@ -28,7 +28,7 @@ $(function () {
 	App.Views.FoemMatches = Backbone.View.extend({
 		el: $('#MatchCreationForm'),
 		initialize: function () {
-			
+
 		},
 		events: {
 			'submit': 'submit'

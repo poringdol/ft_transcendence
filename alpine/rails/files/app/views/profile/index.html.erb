@@ -1,4 +1,4 @@
-<!-- 
+<!--
 	PAGE STRUCTURE
 -->
 <div id="UserProfilePage">
@@ -18,8 +18,8 @@
 </div>
 
 
-<!-- 
-	GUILD CARD TEMPLATE 
+<!--
+	GUILD CARD TEMPLATE
 -->
 <script type="text/template" id="UserGuildTemplate">
 	<div class="card" id="UserGuildCard">
@@ -85,8 +85,8 @@
 	</div>
 </script>
 
-<!-- 
-	NO GUILD CARD TEMPLATE 
+<!--
+	NO GUILD CARD TEMPLATE
 -->
 <script type="text/template" id="UserNoGuildTemplate">
 	<div class="card" id="UserGuildCard">
@@ -127,7 +127,7 @@
 	<td class="col">
 		<div class='matchesTablePhotos'>
 			<a href='/profile/<%%= player1.id %>'>
-				<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+				<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>>
 			</a>
 		</div>
 	</td>
@@ -139,7 +139,7 @@
 	<td class="col">
 		<div class='matchesTablePhotos'>
 			<a href='/profile/<%%= player2.id %>'>
-				<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+				<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
 			</a>
 		</div>
 	</td>
@@ -152,7 +152,7 @@
 	<td class="col">
 		<div class='matchesTablePhotos'>
 			<a href='/guilds'>
-				<img width="30" height="30" class="rounded-circle" src=<%%= guild_1.logo.url %>> 
+				<img width="30" height="30" class="rounded-circle" src=<%%= guild_1.logo.url %>>
 			</a>
 		</div>
 	</td>
@@ -162,7 +162,7 @@
 	<td class="col">
 		<div class='matchesTablePhotos'>
 			<a href='/guilds'>
-				<img width="30" height="30" class="rounded-circle" src=<%%= guild_2.logo.url %>> 
+				<img width="30" height="30" class="rounded-circle" src=<%%= guild_2.logo.url %>>
 			</a>
 		</div>
 	</td>
@@ -179,8 +179,8 @@
 	</td>
 </script>
 
-<!-- 
-	MATCHES CARD TEMPLATE 
+<!--
+	MATCHES CARD TEMPLATE
 -->
 <script type="text/template" id="UserMatchesTemplate">
 	<div class="card" id='MatchesCard'>
@@ -189,7 +189,7 @@
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" id='MacthesList'>
-				
+
 			</li>
 			<div class="accordion accordion-flush" id="accordionFlushMatches">
 				<div class="accordion-item">
@@ -210,8 +210,8 @@
 
 
 
-<!-- 
-	BLOCKLIST CARD TEMPLATE 
+<!--
+	BLOCKLIST CARD TEMPLATE
 -->
 <script type="text/template" id="UserBlocklistTemplate">
 	<div class="card" id='UserBlocklistCard'>
@@ -220,7 +220,7 @@
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" id='UserBlocklistIcons'>
-				
+
 			</li>
 			<div class="accordion accordion-flush" id="accordionFlushExample3">
 				<div class="accordion-item">
@@ -230,8 +230,8 @@
     				</h2>
     				<div id="flush-collapseBlock" class="accordion-collapse collapse" aria-labelledby="flush-matches" data-bs-parent="#accordionFlushExample3">
       					<div class="accordion-body" id='UserBlocklistIconsAll'>
-							
-						</div>  
+
+						</div>
     				</div>
   				</div>
   			</div>
@@ -287,14 +287,15 @@
 		</button>
 </script>
 
-<!-- 
-	INFO CARD TEMPLATE 
+<!--
+	INFO CARD TEMPLATE
 -->
 <script type="text/template" id="UserInfoTemplate">
 	<div class="card">
 		<div class="card-body">
 			<div id="UserInfoPhoto">
 				<img width="90%" class="rounded" src=<%%= avatar.url %>>
+
 			</div>
 			<div class="d-grid gap-2 mx-auto" id="UserInfoBtn">
 				<!-- <a href="/users/edit/" style="text-align: center;">
@@ -375,8 +376,8 @@
 </script>
 <!-- --------------------------------------------------------->
 
-<!-- 
-	FRIENDS CARD TEMPLATE 
+<!--
+	FRIENDS CARD TEMPLATE
 -->
 <script type="text/template" id="UserFriendsTemplate">
 	<div class="card" id="UserFriendsCard">
@@ -389,7 +390,7 @@
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
 				<div class='d-flex justify-content-center' id='UserFriendsIcons'>
-				
+
 				</div>
 			</li>
 			<div class="accordion accordion-flush" id="accordionFlushExample">
@@ -414,8 +415,8 @@
 </script>
 
 
-<!-- 
-	FRIEND REQUESTS CARD TEMPLATE 
+<!--
+	FRIEND REQUESTS CARD TEMPLATE
 -->
 <script type="text/template" id="UserFriendRequestsTemplate">
 	<div class="card" id="UserFriendRequestsCard">
@@ -428,7 +429,7 @@
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
 				<div class='d-flex justify-content-center' id='UserFriendRequestsIcons'>
-				
+
 				</div>
 			</li>
 			<div class="accordion accordion-flush" id="UserFriendRequestsIconsFlash">
@@ -452,13 +453,13 @@
 	</div>
 </script>
 
-<!-- 
-	FRIENDS ICON CARD TEMPLATE 
+<!--
+	FRIENDS ICON CARD TEMPLATE
 -->
 <script type="text/template" id="UserFriendsIconTemplate">
 	<%# <div class='col-2 UserFriendIcon'> %>
 		<div class='col-12'>
-				<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>> 
+				<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>>
 		</div>
 		<div class='col-12'>
 			<%%= nickname %>
