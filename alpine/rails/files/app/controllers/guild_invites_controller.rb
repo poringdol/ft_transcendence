@@ -60,7 +60,10 @@ class GuildInvitesController < ApplicationController
 	invited		= User.find(params[:id])
 	guild		= Guild.find(current_user.guild_id)
 
-	if (guild && invited && (invited.id != inviter_id))
+	guild_invite_cur = GuildInvite.find_by(inviter_id: inviter_id, invited_id: invited.id, guild_id: guild.id)
+	if (guild_invite_cur)
+		render json: guild_invite_cur, status: :created, location: @guild_invite
+	elsif (guild && invited && (invited.id != inviter_id))
 		@guild_invite = GuildInvite.new(inviter_id: inviter_id, invited_id: invited.id, guild_id: guild.id)
 		if @guild_invite.save
 			render json: @guild_invite, status: :created, location: @guild_invite
