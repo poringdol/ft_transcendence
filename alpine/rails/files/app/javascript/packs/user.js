@@ -1,3 +1,5 @@
+const { template } = require("underscore");
+
 $(function () {
 
 	window.App = {
@@ -27,8 +29,13 @@ $(function () {
 		}
 	})
 
+
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                   F R I E N D S
+// ---------------------------------------------------------------------------------------------------------------------------
+	
 	// -----------------------------------------
-	//  USER_FRIENDS       MODEL and COLLECTION
+	//  FRIENDS       MODEL and COLLECTION
 	// -----------------------------------------
 	App.Models.UserFriend = Backbone.Model.extend({
 		urlRoot: "/friends/get_friends/",
@@ -51,9 +58,68 @@ $(function () {
 		}
 	})
 
+	// -----------------------------------------
+	//             FRIENDS CARD VIEW
+	// -----------------------------------------
+	App.Views.UserFriends = Backbone.View.extend({
+		template: _.template($("#UserFriendsTemplate").html()),
+		initialize: function () {
+			this.collection.on('sync', this.renderIcons, this)
+		},
+		render: function () {
+			var template = this.template()
+			this.$el.html(template)
+			$("#UserFriends").html(this.el)
+			$("#accordionFlushExample").css({ 'display': 'none' })
+			$("#UserFriendsCard").css({ 'border-bottom': '0px' })
+			return this
+		},
+		renderIcons: function () {
+			this.n = 0
+			this.collection.each(this.addOne, this)
+			return this
+		},
+		addOne: function (user) {
+			if (this.n < 6) {
+				icon = new App.Views.UserFriendsIcon({ model: user })
+				icon.render()
+				$("#UserFriendsIcons").append(icon.el);
+				this.n += 1
+			}
+			else if (this.n > 5) {
+				$("#accordionFlushExample").css({ 'display': 'block' })
+				$("#UserFriendsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
+				icon = new App.Views.UserFriendsIcon({ model: user })
+				icon.render()
+				$("#UserFriendsIconsAll").append(icon.el);
+				this.n += 1
+			}
+		},
+	})
 
 	// -----------------------------------------
-	//  USER_FOLLOWERS       MODEL and COLLECTION
+	//  FRIENDS      MODEL VIEW (ICON)
+	// -----------------------------------------
+	App.Views.UserFriendsIcon = Backbone.View.extend({
+		template: _.template($("#UserFriendsIconTemplate").html()),
+		tagName: 'a',
+		className: 'col-2 UserFriendIcon SimpleHref',
+		render: function () {
+			var template = this.template(this.model);
+
+			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
+			this.$el.html(template);
+		}
+	})
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                  F O L L O W E R S
+// ---------------------------------------------------------------------------------------------------------------------------
+
+	// -----------------------------------------
+	//  FOLLOWERS       MODEL and COLLECTION
 	// -----------------------------------------
 	App.Models.UserFollower = Backbone.Model.extend({
 		urlRoot: "/friends/get_followers/",
@@ -77,7 +143,54 @@ $(function () {
 	})
 
 	// -----------------------------------------
-	//  USER_BLOCKLIST      MODEL and COLLECTION
+	//  FOLLOWERS     FRIEND REQUESTS CARD VIEW
+	// -----------------------------------------
+	App.Views.UserFriendRequests = Backbone.View.extend({
+		template: _.template($("#UserFriendRequestsTemplate").html()),
+		initialize: function () {
+			this.collection.on('sync', this.render, this)
+		},
+		render: function () {
+			if (this.collection.length != 0) {
+				var template = this.template()
+				this.$el.html(template)
+				$("#UserFriendRequests").html(this.el)
+				$("#UserFriendRequestsIconsFlash").css({ 'display': 'none' })
+				$("#UserFriendRequestsCard").css({ 'border-bottom': '0px' })
+				this.renderIcons()
+			}
+			return this
+		},
+		renderIcons: function () {
+			this.n = 0
+			this.collection.each(this.addOne, this)
+			return this
+		},
+		addOne: function (user) {
+			if (this.n < 6) {
+				icon = new App.Views.UserFriendsIcon({ model: user })
+				icon.render()
+				$("#UserFriendRequestsIcons").append(icon.el);
+				this.n += 1
+			}
+			else if (this.n > 5) {
+				$("#accordionFlushExample").css({ 'display': 'block' })
+				$("#UserFriendRequestsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
+				icon = new App.Views.UserFriendsIcon({ model: user })
+				icon.render()
+				$("#UserFriendRequestsIconsAll").append(icon.el);
+				this.n += 1
+			}
+		},
+	})
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                  B L O C K L I S T
+// ---------------------------------------------------------------------------------------------------------------------------
+
+	// -----------------------------------------
+	//  BLOCKLIST      MODEL and COLLECTION
 	// -----------------------------------------
 	App.Models.Blocklist = Backbone.Model.extend({
 		urlRoot: "/profile/block_list_detailed/",
@@ -102,6 +215,238 @@ $(function () {
 	})
 
 	// -----------------------------------------
+	//  BLOCKLIST    	BLOCKLIST CARD VIEW
+	// -----------------------------------------
+	App.Views.UserBlocklist = Backbone.View.extend({
+		template: _.template($("#UserBlocklistTemplate").html()),
+		initialize: function () {
+			this.collection.on('sync', this.render, this)
+		},
+		render: function () {
+			if (this.collection.length != 0) {
+				this.n = 0
+				var template = this.template();
+				this.$el.html(template);
+				$("#UserBlocklist").html(this.el)
+				$("#accordionFlushExample3").css({ 'display': 'none' })
+				$("#UserBlocklistCard").css({ 'border-bottom': '0px' })
+				this.collection.each(this.addOne, this)
+			}
+			return this;
+		},
+		addOne: function (user) {
+			if (this.n < 3) {
+				icon = new App.Views.UserBlocklistIcon({ model: user })
+				icon.render()
+				$("#UserBlocklistIcons").append(icon.el);
+				$("#BlocklistHref" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				$("#BlocklistHrefName" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				this.n += 1
+			}
+			else if (this.n > 2) {
+				$("#accordionFlushExample3").css({ 'display': 'block' })
+				$("#UserBlocklistCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
+				icon = new App.Views.UserBlocklistIcon({ model: user })
+				icon.render()
+				$("#UserBlocklistIconsAll").append(icon.el);
+				$("#BlocklistHref" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				$("#BlocklistHrefName" + user.id).attr({ 'href': ("/profile/" + user.id) });
+				this.n += 1
+			}
+		},
+	})
+
+	// -----------------------------------------
+	//  BLOCKLIST      MODEL VIEW (ICON)
+	// -----------------------------------------
+
+	App.Views.UserBlocklistIcon = Backbone.View.extend({
+		template_list: _.template($("#BlocklistIconTemplate").html()),
+		tagName: 'div',
+		className: 'row',
+		events: {
+			'click #UserUnblockBtn': 'unblockUser'
+		},
+		render: function () {
+			var template_list = this.template_list(this.model);
+			this.$el.html(template_list);
+		},
+		unblockUser: function () {
+			fetch(('/blocklists/unblock_user/' + this.model.block_id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					alert('You unblocked ' + this.model.nickname + '!');
+					this.$el.remove();
+				}, this))
+				.catch(function (res) {
+					alert("Error accured! Try again!")
+				})
+		}
+	})
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                      G U I L D
+// ---------------------------------------------------------------------------------------------------------------------------
+
+	// -----------------------------------------
+	//  GUILD_INVITES  MODEL and COLLECTION
+	// -----------------------------------------
+	App.Models.GuildInvite = Backbone.Model.extend({
+		urlRoot: "/guild_invites/users_invites/",
+		initialize: function () {
+		}
+	})
+
+	App.Collections.GuildInvites = Backbone.Collection.extend({
+		model: App.Models.GuildInvite,
+		url: "/guild_invites/users_invites/",
+		initialize: function () {
+			this.url += current_user.id
+		}
+	})
+
+	// -----------------------------------------
+	//  GUILD      		GUILD CARD VIEW
+	// -----------------------------------------
+	App.Views.UserGuild = Backbone.View.extend({
+		template: _.template($("#UserGuildTemplate").html()),
+		template_none: _.template($("#UserNoGuildTemplate").html()),
+		initialize: function (data) {
+			this.model = data.model
+			this.invitesCollection = data.invitesCollection
+		},
+		events: {
+			'click #UserInfoInviteBtn': 'inviteUser',
+		},
+		render: function () {
+			if (this.model.guild_id) {
+				fetch(("/guilds/get_guild/" + this.model.guild_id))
+					.then(res => res.ok ? res.json() : Promise.reject(res))
+					.then(_.bind(res => {
+						var template = this.template(res);
+						this.$el.html(template);
+						$("#UserGuild").html(this.el)
+						this.drawInviteBtn()
+						this.drawInvitesList()
+					}, this))
+			}
+			else {
+				var template = this.template_none()
+				this.$el.html(template)
+				$("#UserGuild").html(this.el)
+				if (current_user.id == this.model.id)
+					$("#inviteGuildBtn").css({ "display": "none" })
+				else {
+					$("#guildInfo").css({ "display": "none" })
+					this.drawInviteBtn()
+				}
+				this.drawInvitesList()
+			}
+		},
+		drawInviteBtn: function () {
+			if ((current_user.id != this.model.id) &&
+				(current_user.guild_id) &&
+				(current_user.guild_id != this.model.guild_id)) {
+				$("#inviteGuildBtn").css({ 'display': 'block' })
+			}
+			else
+				$("#inviteGuildBtn").css({ "display": "none" })
+		},
+		inviteUser: function () {
+			fetch(('/guild_invites/invite_to_guild/' + this.model.id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind(function (res) {
+					alert('You succesfully invited ' + this.model.nickname + ' to your guild!')
+				}, this))
+				.catch(() => {
+					alert('Some error accured!')
+				})
+		},
+		drawInvitesList: function () {
+			if (current_user.id != this.model.id) {
+				$("#accordionFlushGuild").css({ "display": "none" })
+				$("#UserGuildCard").css({ 'border-bottom': '0px solid rgba(0, 0, 0, 0.125)' })
+			}
+			else {
+				this.invitesCollection.fetch()
+					.then(_.bind(function () {
+						this.drawCollection()
+					}, this))
+			}
+		},
+		drawCollection: function () {
+			console.log('here')
+			if (this.invitesCollection.length != 0) {
+				this.invitesCollection.each(this.addOne, this)
+			}
+			else {
+				$("#accordionFlushGuild").css({ 'display': 'none' })
+				$("#UserGuildCard").css({ 'border-bottom': '0px solid rgba(0, 0, 0, 0.125)' })
+			}
+		},
+		addOne: function (invite) {
+			icon = new App.Views.UserGuildInvite({ model: invite, guildView: this })
+			icon.render()
+			$("#UserGuildInvites").append(icon.el);
+		}
+	})
+
+	// -----------------------------------------
+	//  GUILD_INVITES      MODEL VIEW
+	// -----------------------------------------
+
+	App.Views.UserGuildInvite = Backbone.View.extend({
+		template_list: _.template($("#GuildInviteTemplate").html()),
+		tagName: 'div',
+		className: 'row GuildInvitesList',
+		initialize: function (data) {
+			this.model = data.model;
+			this.guildView = data.guildView;
+		},
+		events: {
+			'click #AcceptGuildInvitationBtn': 'AcceptInvitation',
+			'click #DeclineGuildInvitationBtn': 'DeclineInvitation'
+		},
+		render: function () {
+			var template_list = this.template_list(this.model.attributes);
+			this.$el.html(template_list);
+		},
+		AcceptInvitation: function () {
+			if (current_user.guild_id) {
+				if (confirm("You are already in guild. Are you sure that you want change the guild?")) {
+					fetch(('/guild_invites/accept_invitation/' + this.model.get('id')))
+						.then(res => res.ok ? res.json() : Promise.reject(res))
+						.then(_.bind((res) => {
+							alert('You accepted invitation!');
+							this.$el.remove();
+							current_user.guild_id = this.model.attributes.guild.id
+							this.guildView.render()
+						}, this))
+						.catch(function (res) {
+							alert("Error accured! Try again!")
+						})
+				}
+			}
+		},
+		DeclineInvitation: function () {
+			fetch(('/guild_invites/decline_invitation/' + this.model.get('id')))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind((res) => {
+					this.$el.remove();
+				}, this))
+				.catch(function (res) {
+					alert("Error accured! Try again!")
+				})
+		}
+	})
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                             P R O F I L E      I N F O 
+// ---------------------------------------------------------------------------------------------------------------------------
+
+	// -----------------------------------------
 	//  USER           INFO CARD VIEW
 	// -----------------------------------------
 	App.Views.UserInfo = Backbone.View.extend({
@@ -124,18 +469,15 @@ $(function () {
 	//  USER        INFO BUTTONS VIEW
 	// -----------------------------------------
 	App.Views.UserBlockBtn = Backbone.View.extend({
-		templateBlockBtn:			_.template($("#UserInfoBlockBtnTemplate").html()),
-		templateUnblockBtn: 		_.template($("#UserInfoUnblockBtnTemplate").html()),
-		templateBanBtn:				_.template($("#UserInfoBanBtnTemplate").html()),
-		templateUnbanBtn:			_.template($("#UserInfoUnbanBtnTemplate").html()),
-		templateDoModeratorBtn:		_.template($("#UserInfoDoModeratorBtnTemplate").html()),
-		templateUndoModeratorBtn:	_.template($("#UserInfoUndoModeratorBtnTemplate").html()),
-		
+		template:		_.template($("#UserInfoBtnTemplate").html()),
+		adm_template:	_.template($("#UserInfoAdminBtnTemplate").html()),
 		initialize: function (data) {
 			this.model = data.model
 			this.btns = data.btns
 		},
 		events: {
+			'click #UserInfoInviteBtn': 		'inviteUser',
+
 			'click #UserInfoBlockBtn':			'blockUser',
 			'click #UserInfoUnblockBtn':		'unblockUser',
 			
@@ -150,26 +492,38 @@ $(function () {
 			if (current_user.id != this.model.id) {
 				if (!this.model.is_admin) {
 					if ((current_user.is_admin == true || current_user.is_moderator == true) && !this.model.is_banned)
-						this.$el.html(this.templateBanBtn);
+						this.$el.html(this.adm_template({ btn_title: "Ban", btn_text: "Ban user" }));
 					else if ((current_user.is_admin == true || current_user.is_moderator == true) && this.model.is_banned)
-						this.$el.html(this.templateUnbanBtn);
+						this.$el.html(this.adm_template({ btn_title: "Unban", btn_text: "Unban user" }));
 					if (current_user.is_admin == true && !this.model.is_moderator)
-						this.$el.append(this.templateDoModeratorBtn);
+						this.$el.append(this.adm_template({ btn_title: "DoModerator", btn_text: "Do moderator" }));
 					else if (current_user.is_admin == true && this.model.is_moderator)
-						this.$el.append(this.templateUndoModeratorBtn);
+						this.$el.append(this.adm_template({ btn_title: "UndoModerator", btn_text: "Undo moderator" }));
 				}
+				if (current_user.guild_id && current_user.guild_id != this.model.guild_id)
+					this.$el.append(this.template({ btn_title: "Invite", btn_text: "Invite user to my guild" }));
 				fetch(('/blocklists/is_blocked/' + this.model.id))
 					.then(res => res.ok ? res.json() : Promise.reject(res))
 					.then(_.bind(function (res) {
 						if (res == 0)
-							this.$el.append(this.templateBlockBtn);
+							this.$el.append(this.template({ btn_title: "Block", btn_text: "Block user" }));
 						else if (res == 1)
-							this.$el.append(this.templateUnblockBtn);
+							this.$el.append(this.template({ btn_title: "Unblock", btn_text: "Unblock user" }));
 					}, this))
 				$('#BlockUnblockUser').html(this.el)
 			}
 			else
 				$("#LastBlockUserInfo").css({'display': 'none'})
+		},
+		inviteUser: function () {
+			fetch(('/guild_invites/invite_to_guild/' + this.model.id))
+				.then(res => res.ok ? res.json() : Promise.reject(res))
+				.then(_.bind(function (res) {
+					alert('You succesfully invited ' + this.model.nickname + ' to your guild!')
+				}, this))
+				.catch(() => {
+					alert('Some error accured!')
+				})
 		},
 		blockUser: function () {
 			fetch(('/blocklists/block_user/' + this.model.id))
@@ -267,15 +621,10 @@ $(function () {
 
 	App.Views.UserInfoBtn = Backbone.View.extend({
 		id: 'UserButtons',
-		templateEditBtn:		_.template($("#UserInfoEditBtnTemplate").html()),
-		
-		templateAddBtn:			_.template($("#UserInfoAddBtnTemplate").html()),
-		templateDelBtn:			_.template($("#UserInfoDelBtnTemplate").html()),
-		templateUnfollowBtn:	_.template($("#UserInfoUnfollowBtnTemplate").html()),
-		templateFollowBackBtn:  _.template($("#UserInfoFollowBackBtnTemplate").html()),
 
+		template:				_.template($("#UserInfoBtnTemplate").html()),
+		templateEditBtn:		_.template($("#UserInfoEditBtnTemplate").html()),
 		templateBannedStatus:	_.template($("#UserInfoBannedStatusTemplate").html()),
-		templateSendBtn:		_.template($("#UserInfoSendBtnTemplate").html()),
 		
 		events: {
 			'click #UserInfoAddBtn':		'addFriend',
@@ -359,147 +708,25 @@ $(function () {
 						this.$el.html(this.templateBannedStatus);
 					else
 						this.$el.html("");
-					this.$el.append(this.templateSendBtn);
+					this.$el.append(this.template({ btn_title: "Send", btn_text: "SEND MESSAGE" }));
 					if (res == 0 && !this.model.is_banned)
-						this.$el.append(this.templateAddBtn);
+						this.$el.append(this.template({ btn_title: "Add", btn_text: "ADD TO FRIENDS" }))
 					else if (res == 1)
-						this.$el.append(this.templateDelBtn);
+						this.$el.append(this.template({ btn_title: "Del", btn_text: "REMOVE FROM FRIENDS" }))
 					else if (res == 2)
-						this.$el.append(this.templateUnfollowBtn);
+						this.$el.append(this.template({ btn_title: "Unfollow", btn_text: "UNFOLLOW" }))
 					else if (!this.model.is_banned)
-						this.$el.append(this.templateFollowBackBtn);
+						this.$el.append(this.template({ btn_title: "FollowBack", btn_text: "FOLLOW BACK" }))
 				}, this))
 		}
 	})
 
 
-	// -----------------------------------------
-	//  USER           FRIENDS CARD VIEW
-	// -----------------------------------------
-	App.Views.UserFriends = Backbone.View.extend({
-		template: _.template($("#UserFriendsTemplate").html()),
-		initialize: function () {
-			this.collection.on('sync', this.renderIcons, this)
-		},
-		render: function () {
-			var template = this.template()
-			this.$el.html(template)
-			$("#UserFriends").html(this.el)
-			$("#accordionFlushExample").css({ 'display': 'none' })
-			$("#UserFriendsCard").css({ 'border-bottom': '0px' })
-			return this
-		},
-		renderIcons: function () {
-			this.n = 0
-			this.collection.each(this.addOne, this)
-			return this
-		},
-		addOne: function (user) {
-			if (this.n < 6) {
-				icon = new App.Views.UserFriendsIcon({ model: user })
-				icon.render()
-				$("#UserFriendsIcons").append(icon.el);
-				this.n += 1
-			}
-			else if (this.n > 5) {
-				$("#accordionFlushExample").css({ 'display': 'block' })
-				$("#UserFriendsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
-				icon = new App.Views.UserFriendsIcon({ model: user })
-				icon.render()
-				$("#UserFriendsIconsAll").append(icon.el);
-				this.n += 1
-			}
-		},
-	})
 
-
-	// -----------------------------------------
-	//  USER       FRIEND REQUESTS CARD VIEW
-	// -----------------------------------------
-	App.Views.UserFriendRequests = Backbone.View.extend({
-		template: _.template($("#UserFriendRequestsTemplate").html()),
-		initialize: function () {
-			this.collection.on('sync', this.render, this)
-		},
-		render: function () {
-			if (this.collection.length != 0) {
-				var template = this.template()
-				this.$el.html(template)
-				$("#UserFriendRequests").html(this.el)
-				$("#UserFriendRequestsIconsFlash").css({ 'display': 'none' })
-				$("#UserFriendRequestsCard").css({ 'border-bottom': '0px' })
-				this.renderIcons()
-			}
-			return this
-		},
-		renderIcons: function () {
-			this.n = 0
-			this.collection.each(this.addOne, this)
-			return this
-		},
-		addOne: function (user) {
-			if (this.n < 6) {
-				icon = new App.Views.UserFriendsIcon({ model: user })
-				icon.render()
-				$("#UserFriendRequestsIcons").append(icon.el);
-				this.n += 1
-			}
-			else if (this.n > 5) {
-				$("#accordionFlushExample").css({ 'display': 'block' })
-				$("#UserFriendRequestsCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
-				icon = new App.Views.UserFriendsIcon({ model: user })
-				icon.render()
-				$("#UserFriendRequestsIconsAll").append(icon.el);
-				this.n += 1
-			}
-		},
-	})
-
-
-	// -----------------------------------------
-	//  USER_FRIENDS      MODEL VIEW (ICON)
-	// -----------------------------------------
-	App.Views.UserFriendsIcon = Backbone.View.extend({
-		template: _.template($("#UserFriendsIconTemplate").html()),
-		tagName: 'a',
-		className: 'col-2 UserFriendIcon SimpleHref',
-		render: function () {
-			var template = this.template(this.model);
-		
-			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
-			this.$el.html(template);
-		}
-	})
-
-
-	// -----------------------------------------
-	//  USER      		GUILD CARD VIEW
-	// -----------------------------------------
-	App.Views.UserGuild = Backbone.View.extend({
-		template: _.template($("#UserGuildTemplate").html()),
-		template_none: _.template($("#UserNoGuildTemplate").html()),
-		render: function () {
-			$("#UserGuild").css({ "display": "block" })
-			if (this.model.guild_id) {
-				fetch(("/guilds/get_guild/" + this.model.guild_id))
-				.then(res => res.ok ? res.json() : Promise.reject(res))
-				.then(_.bind(res => {
-					var template = this.template(res);
-					this.$el.html(template);
-					$("#UserGuild").html(this.el)
-				}, this))
-			}
-			else if (current_user.id == this.model.id) {
-				var template = this.template_none();
-				this.$el.html(template);
-				$("#UserGuild").html(this.el)
-			}
-			else
-				$("#UserGuild").css({ "display": "none" })
-		}
-	})
-
-
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                   M A T C H E S
+// ---------------------------------------------------------------------------------------------------------------------------
+	
 	// -----------------------------------------
 	//  USER      		MATCHES CARD VIEW
 	// -----------------------------------------
@@ -513,82 +740,10 @@ $(function () {
 	})
 
 
-	// -----------------------------------------
-	//  USER_BLOCKLIST    	BLOCKLIST CARD VIEW
-	// -----------------------------------------
-	App.Views.UserBlocklist = Backbone.View.extend({
-		template: _.template($("#UserBlocklistTemplate").html()),
-		initialize: function () {
-			this.collection.on('sync', this.render, this)
-		},
-		render: function () {
-			if (this.collection.length != 0) {
-				this.n = 0
-				var template = this.template();
-				this.$el.html(template);
-				$("#UserBlocklist").html(this.el)
-				$("#accordionFlushExample3").css({ 'display': 'none' })
-				$("#UserBlocklistCard").css({ 'border-bottom': '0px' })
-				this.collection.each(this.addOne, this)
-			}
-			return this;
-		},
-		addOne: function (user) {
-			if (this.n < 3) {
-				icon = new App.Views.UserBlocklistIcon({ model: user })
-				icon.render()
-				$("#UserBlocklistIcons").append(icon.el);
-				$("#BlocklistHref" + user.id).attr({ 'href': ("/profile/" + user.id) });
-				$("#BlocklistHrefName" + user.id).attr({ 'href': ("/profile/" + user.id) });
-				this.n += 1
-			}
-			else if (this.n > 2) {
-				$("#accordionFlushExample3").css({ 'display': 'block' })
-				$("#UserBlocklistCard").css({ 'border-bottom': '1px solid rgba(0, 0, 0, 0.125)' })
-				icon = new App.Views.UserBlocklistIcon({ model: user })
-				icon.render()
-				$("#UserBlocklistIconsAll").append(icon.el);
-				$("#BlocklistHref" + user.id).attr({ 'href': ("/profile/" + user.id) });
-				$("#BlocklistHrefName" + user.id).attr({ 'href': ("/profile/" + user.id) });
-				this.n += 1
-			}
-		},
-	})
-
-	// -----------------------------------------
-	//  USER_BLOCKLIST      MODEL VIEW (ICON)
-	// -----------------------------------------
-
-	App.Views.UserBlocklistIcon = Backbone.View.extend({
-		template_list: _.template($("#BlocklistIconTemplate").html()),
-		tagName: 'div',
-		className: 'row',
-		events: {
-			'click #UserUnblockBtn': 'unblockUser'
-		},
-		render: function () {
-			var template_list = this.template_list(this.model);
-			this.$el.html(template_list);
-		},
-		unblockUser: function () {
-			fetch(('/blocklists/unblock_user/' + this.model.block_id))
-				.then(res => res.ok ? res.json() : Promise.reject(res))
-				.then(_.bind((res) => {
-					alert('You unblocked ' + this.model.nickname + '!');
-					this.$el.remove();
-				}, this))
-				.catch(function (res) {
-					alert("Error accured! Try again!")
-				})
-		}
-	})
-
+// ---------------------------------------------------------------------------------------------------------------------------
+//                                                    M A I N
+// ---------------------------------------------------------------------------------------------------------------------------
 	
-
-
-	// -----------------------------------------
-	//           		MAIN
-	// -----------------------------------------
 	const urlArray = window.jQuery.ajaxSettings.url.split('/')
 	const user_id = urlArray[urlArray.length - 1]
 	fetch("/profile/get_curr_user")
@@ -624,16 +779,17 @@ $(function () {
 				UserFriendRequestsView = new App.Views.UserFriendRequests({ collection: UserFriendRequests })
 			}
 	
-			UserGuildView = new App.Views.UserGuild({ model: user })
+			InvitesCollection = new App.Collections.GuildInvites()
+			UserGuildView = new App.Views.UserGuild({ model: user, invitesCollection: InvitesCollection })
 			UserGuildView.render()
 	
 			UserMatchesView = new App.Views.UserMatches({ model: user })
 			UserMatchesView.render()
 
-			// if (user.id == current_user.id) {
+			if (user.id == current_user.id) {
 				UserBlocklist = new App.Collections.Blocklist()
 				UserBlocklistView = new App.Views.UserBlocklist({ collection: UserBlocklist })
-			// }
+			}
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")

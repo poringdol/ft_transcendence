@@ -40,6 +40,13 @@ Rails.application.routes.draw do
   get 'guilds/do_officer/:id' => 'guilds#do_officer'
   get 'guilds/undo_officer/:id' => 'guilds#undo_officer'
 
+# ------------------
+#   GUILDS INVITES
+# ------------------
+  get 'guild_invites/invite_to_guild/:id' => 'guild_invites#invite_to_guild'
+  get 'guild_invites/users_invites/:id' => 'guild_invites#users_invites'
+  get 'guild_invites/accept_invitation/:id' => 'guild_invites#accept_invitation'
+  get 'guild_invites/decline_invitation/:id' => 'guild_invites#decline_invitation'
 
 # ------------------
 #    PROFILE PAGE

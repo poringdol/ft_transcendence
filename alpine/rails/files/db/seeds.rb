@@ -75,3 +75,8 @@ Match.create(player1_id: 5, player2_id: 6, guild_1_id: 2, guild_2_id: 2)
 Match.create(player1_id: 4, player2_id: 6, guild_1_id: 2, guild_2_id: 2, is_inprogress: true)
 Match.create(player1_id: 5, player2_id: 4, guild_1_id: 2, guild_2_id: 2, is_end: true)
 Match.create(player1_id: 6, player2_id: 7, guild_1_id: 2, guild_2_id: 2)
+
+GuildInvite.create(inviter_id: 2, invited_id: 1, guild_id: 1)
+GuildInvite.create(inviter_id: 7, invited_id: 1, guild_id: 2)
+GuildInvite.create(inviter_id: 1, invited_id: 6, guild_id: 1)
+GuildInvite.create(inviter_id: 1, invited_id: 4, guild_id: 1)
