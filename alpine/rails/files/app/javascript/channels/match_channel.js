@@ -14,6 +14,7 @@ document.addEventListener("turbolinks:load", () => {
 					update_state: 134, };
 	const MAX_RATE = 7;
 	const BRACKET_SPEED = 50;
+	const RADIUS = 8
 
 	const match_element = $("#MatchID");
 	const MATCH_ID = (match_element != null) ? parseInt(match_element.attr("data-MatchID")) : -1;
@@ -27,13 +28,14 @@ document.addEventListener("turbolinks:load", () => {
 			
 			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
 
-				game.params.state = "stop";
+				game.params.state = "leave";
 
 				MATCH.model.set(`is_player${MATCH.player}_online`, false);
 				MATCH.model.save();
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 				
 				if (MATCH.model.get("is_inprogress") == true) {
+					debugger
 					// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
 						game.stopGame();
@@ -99,7 +101,7 @@ document.addEventListener("turbolinks:load", () => {
 					}
 					else if (key_code == KEYS.end_game) {
 						game.params.state = "stop";
-						MATCH.renderResult();
+						MATCH.model.fetch({ success: MATCH.renderResult })
 					}
 					else if (key_code == KEYS.update_state) {
 						game.params.state = data.state;
@@ -109,8 +111,12 @@ document.addEventListener("turbolinks:load", () => {
 			},
 
 			goal(score, player) {
-				game.params.lastGoalBracket = (player == 1) ? game.objects.bracket1 : game.objects.bracket2;
-				MATCH.changeScore(score, player);
+				MATCH.model.fetch({
+					success: function() {
+						game.params.lastGoalBracket = (player == 1) ? game.objects.bracket1 : game.objects.bracket2;
+						MATCH.changeScore(score, player);
+					}
+				})
 			},
 		});
 
@@ -206,16 +212,16 @@ document.addEventListener("turbolinks:load", () => {
 			renderResult: function () {
 
 				//Останавливаем цикл
-				cancelAnimationFrame(this.requestLoop);
+				cancelAnimationFrame(game.requestLoop);
 				//Убираем слушателей событий
-				document.removeEventListener("keydown", this.keyDownEvent);
+				document.removeEventListener("keydown", game.keyDownEvent);
 
 				$("#MatchUser1Profile").html("");
 				$("#MatchUser2Profile").html("");
-				let template = this.result_template(this.model.attributes);
+				let template = MATCH.result_template(MATCH.model.attributes);
 				$("#GameWrapper").html(template);
 
-				this.model.fetch();
+				MATCH.model.fetch();
 			},
 
 			changeOnlineStatus: function (is_online, player) {
@@ -227,16 +233,16 @@ document.addEventListener("turbolinks:load", () => {
 			},
 			
 			changeScore: function (score, player) {
-				$(`#MatchPlayer${player}Score`).html(score);
+				this.model.fetch({ success: () => { $(`#MatchPlayer${player}Score`).html(score); } })
+				
 
-				this.model.fetch();
 			},
 		})
 
 		//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 		var Ball = function () {
 			return {
-				radius: 8,
+				radius: RADIUS,
 				color: "#FFCC00",
 				x: 0,
 				y: 0,
@@ -353,7 +359,7 @@ document.addEventListener("turbolinks:load", () => {
 				//Рендер игры
 				this.render();
 		
-				if (this.params.state == "stop")
+				if (this.params.state == "stop" || this.params.state == "leave")
 					return;
 				//Используем замыкание для передачи контекста
 				this.requestLoop = requestAnimationFrame(function() {
@@ -370,13 +376,15 @@ document.addEventListener("turbolinks:load", () => {
 				if (this.params.state == "game") {
 			
 					//И шарик оказался за первым игроком
-					if (ball.x + ball.radius/2 < 0) {
+					if (ball.x + ball.radius/2 <= RADIUS * 2) {
+						this.params.state == "palyerwait";
 						//Засчтитаем гол
 						this.goal(2);
 					}
-			
+					
 					//Шарик оказался за вторым игроком
-					if (ball.x + ball.radius/2 > game.params.width) {
+					if (ball.x + ball.radius/2 >= game.params.width - (RADIUS * 2)) {
+						this.params.state == "palyerwait";
 						//Засчтитаем гол
 						this.goal(1);
 					}
@@ -478,11 +486,13 @@ document.addEventListener("turbolinks:load", () => {
 
 			goal: function (lastGoalPlayer) {
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
-
-				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
-				MATCH.model.save();
-				subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
-				subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
+				debugger
+				if (MATCH.player > 0 && MATCH.player != lastGoalPlayer) {
+					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+					MATCH.model.save();
+					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
+					subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
+				}
 			},
 			
 			//Выставление шарика на ракетку после гола
