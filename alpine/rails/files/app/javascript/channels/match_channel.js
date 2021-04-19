@@ -25,7 +25,6 @@ document.addEventListener("turbolinks:load", () => {
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 
 		function leave_page() {
-			debugger
 			
 			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
 

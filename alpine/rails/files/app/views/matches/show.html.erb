@@ -35,7 +35,8 @@
     Nickname: <%%= player1.nickname %> 
   </p>
   <p>
-    Guild: <%%= guild_1.name %> 
+    Guild:
+    <%%= (guild_1 == null) ? "none" : guild_1.name %>
   </p>
   <p>
     Score: <span id="MatchPlayer1Score"><%%= player1_score %></span>
@@ -53,7 +54,7 @@
     Nickname: <%%= player2.nickname %> 
   </p>
   <p>
-    Guild: <%%= guild_2.name %> 
+    Guild: <%%= (guild_2 == null) ? "none" : guild_2.name %> 
   </p>
   <p>
     Score: <span id="MatchPlayer2Score"><%%= player2_score %></span>
@@ -76,7 +77,7 @@
         Nickname: <%%= player1.nickname %> 
       </p>
       <p>
-        Guild: <%%= guild_1.name %> 
+        Guild: <%%= (guild_1 == null) ? "none" : guild_1.name %>
       </p>
       <p>
         <h4><%%= player1_score %></h4>
@@ -91,7 +92,7 @@
         Nickname: <%%= player2.nickname %> 
       </p>
       <p>
-        Guild: <%%= guild_2.name %> 
+        Guild: <%%= (guild_2 == null) ? "none" : guild_2.name %> 
       </p>
       <p>
         <h4><%%= player2_score %></h4>

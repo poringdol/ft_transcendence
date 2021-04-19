@@ -115,11 +115,11 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= guild_1.logo.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_1 == null) ? "/assets/default-avatar.jpg" : guild_1.logo.url %>> 
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= guild_1.anagram %>
+				<%%= (guild_1 == null) ? "none" : guild_1.anagram %>
 			</div>
 		</div>
 	</td>
@@ -127,11 +127,11 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= guild_2.logo.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_2 == null) ? "/assets/default-avatar.jpg" : guild_2.logo.url %>> 
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= guild_2.anagram %>
+				<%%= (guild_2 == null) ? "none" : guild_2.anagram %>
 			</div>
 		</div>
 	</td>
