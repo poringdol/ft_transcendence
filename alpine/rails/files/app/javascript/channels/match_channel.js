@@ -24,7 +24,8 @@ document.addEventListener("turbolinks:load", () => {
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 
-		$("a").on("click", function () {
+		function leave_page() {
+			debugger
 			
 			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
 
@@ -35,7 +36,6 @@ document.addEventListener("turbolinks:load", () => {
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 				
 				if (MATCH.model.get("is_inprogress") == true) {
-					debugger
 					// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
 						game.stopGame();
@@ -48,10 +48,11 @@ document.addEventListener("turbolinks:load", () => {
 			}
 			consumer.subscriptions.remove(subscribe);
 			return true;
-		})
-		// window.addEventListener("unload", function() {
-		// 	consumer.subscriptions.remove(subscribe);
-		// });
+		}
+
+		$("a").on("click", leave_page);
+		window.addEventListener("beforeunload", leave_page);
+	
 
 		subscribe = consumer.subscriptions.create({ channel: "MatchChannel", match_id: MATCH_ID}, {
 
@@ -117,7 +118,7 @@ document.addEventListener("turbolinks:load", () => {
 						MATCH.changeScore(score, player);
 					}
 				})
-			},
+			}
 		});
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -486,7 +487,7 @@ document.addEventListener("turbolinks:load", () => {
 
 			goal: function (lastGoalPlayer) {
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
-				debugger
+
 				if (MATCH.player > 0 && MATCH.player != lastGoalPlayer) {
 					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 					MATCH.model.save();
