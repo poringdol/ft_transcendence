@@ -12,6 +12,9 @@ class Guild < ApplicationRecord
   has_many :guild_officers
   has_many :members, :through => :guild_members, :source => :user
   has_many :officers, :through => :guild_officers, :source => :user
+  
+  has_many :guild_1, class_name: 'Match', foreign_key: 'guild_1_id', dependent: :nullify
+  has_many :guild_2, class_name: 'Match', foreign_key: 'guild_2_id', dependent: :nullify
 
   after_create {
     # назначаем владельца гильдии

@@ -133,7 +133,7 @@
 	</td>
 	<td class="col" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<a href='/profile/<%%= player1.id %>' class='SimpleHref'>
-			<%%= player1.nickname %>
+			<span class="OnlineStatus<%%= player1.id %>"><%%= player1.nickname %></span>
 		</a>
 	</td>
 	<td class="col">
@@ -145,7 +145,7 @@
 	</td>
 	<td class="col" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<a href='/profile/<%%= player2.id %>' class='SimpleHref'>
-			<%%= player2.nickname %>
+			<span class="OnlineStatus<%%= player2.id %>"><%%= player2.nickname %></span>
 		</a>
 	</td>
 	<td class="col"><%%= player1_score %> - <%%= player2_score %></td>
@@ -247,7 +247,7 @@
 		</a>
 		<a class='col SimpleHref' style="margin-top: 22px; width: 30%;" id='BlocklistHrefName<%%= id %>'>
 			<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= nickname %>
+				<span class="OnlineStatus<%%= id %>"><%%= nickname %></span>
 			</div>
 		</a>
 		<button id="UserUnblockBtn" type="button" class="col btn card-link btn-guild mx-auto UserInfoBtns" style="margin-top: 10px; margin-bottom: 10px">
@@ -262,7 +262,7 @@
 					<img width="70px" height="70px" class="rounded-circle" style="margin-top: 10px;" src=<%%= inviter.avatar.url %>>
 				</div>
 				<div class='col-12'>
-					<%%= inviter.nickname %>
+					<span class="OnlineStatus<%%= inviter.id %>"><%%= inviter.nickname %></span>
 				</div>
 			</div>
 		</a>
@@ -307,7 +307,7 @@
 			<li class="list-group-item">
 				<div class='row'>
 					<div class='col-4 UserInfoField InfoFieldText'>Nickname:</div>
-					<div class='col'><%%= nickname %></div>
+					<div class='col class="OnlineStatus<%%= id %>'><%%= nickname %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
@@ -461,7 +461,7 @@
 		<div class='col-12'>
 				<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>>
 		</div>
-		<div class='col-12'>
+		<div class='col-12 OnlineStatus<%%= id %>'>
 			<%%= nickname %>
 		</div>
 	<%# </div> %>
