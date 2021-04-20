@@ -10,15 +10,6 @@ consumer.subscriptions.create("OnlineChannel", {
   },
 
   received(data) {
-    // Called when there's incoming data on the websocket for this channel
-    console.log(data)
-
-    // console.log("-----------------------------")
-    let online2 = $(`.OnlineStatus${data.id}`);
-    if (data.status === "online")
-      online2.prepend("online" )
-    else
-      online2.prepend("offline ")
     
     let online = document.querySelectorAll("#online")
     let el
@@ -40,7 +31,13 @@ consumer.subscriptions.create("OnlineChannel", {
           }
         }
       }
-      // console.log("++++++++++++++++++++++++++++++")
     }
+
+    let online2 = $(`.OnlineStatus${data.id}`);
+    if (data.status === "online")
+      online2.css('background', '#0ec82d' )
+    else
+      online2.css('background', '#d10d0d' )
+
   }
 });

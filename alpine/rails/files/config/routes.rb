@@ -85,6 +85,8 @@ Rails.application.routes.draw do
 
   get 'matches/users_matches/:id' => 'matches#users_matches'
 
+  get 'users/online' => 'users#online'
+
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
 # ------------------------------------

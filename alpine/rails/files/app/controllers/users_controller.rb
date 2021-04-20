@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.all.find(params[:id])
+    @user = User.all.find(params[:id, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt])
     return render json: @user
   end
 
@@ -77,6 +77,11 @@ class UsersController < ApplicationController
 
     Blocklist.where(user_id: user_id, blocked_user_id: blocked_user_id).destroy_all
     NotificationChannel.broadcast_to(current_user, message: "User #{User.find(blocked_user_id)} removed from block list")
+  end
+
+  def online
+    online_users = User.all.online().select(:id, :encrypted_otp_secret)
+    return render json: online_users
   end
 
 end

@@ -795,6 +795,27 @@ $(function () {
 		},
 	});
 
+//------------------------------------------------------------------------
+//	CHANGE ONLINE STATUS
+//------------------------------------------------------------------------
+	var OnlineUsersModel = Backbone.Model.extend({ urlRoot: "/users/online" });
+	var OnlineUsersCollection = Backbone.Collection.extend({
+		url: "/users/online",
+		model: OnlineUsersModel,
+		initialize: function() {
+			_.bindAll(this, 'online');
+			this.fetch({ 
+				success: () => { this.online(); }
+			})
+		},
+		online: function() {
+			this.each((friend) => {
+				var i = $(`.OnlineStatus${friend.get("id")}`).css("background", "#0ec82d")
+				// var i = document.getElementsByClassName(`OnlineStatus${friend.get("id")}`)
+				console.log(i);
+			})
+		}
+	});
 
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                                    M A I N
@@ -847,6 +868,7 @@ $(function () {
 				UserBlocklist = new App.Collections.Blocklist()
 				UserBlocklistView = new App.Views.UserBlocklist({ collection: UserBlocklist })
 			}
+			new OnlineUsersCollection();
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")

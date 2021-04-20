@@ -27,9 +27,7 @@ $(function () {
 
 	App.Views.FoemMatches = Backbone.View.extend({
 		el: $('#MatchCreationForm'),
-		initialize: function () {
-
-		},
+		initialize: function () {},
 		events: {
 			'submit': 'submit'
 		},
