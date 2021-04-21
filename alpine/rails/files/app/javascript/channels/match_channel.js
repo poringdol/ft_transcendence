@@ -159,7 +159,8 @@ document.addEventListener("turbolinks:load", () => {
 
 				// 0 - наблюдатель, 1 или 2 - игрок
 				this.player = (this.model.get("player1").id == this.model.get("current_user").id) ? 1 :
-							  (this.model.get("player2").id == this.model.get("current_user").id) ? 2 : 0;
+								(this.model.get("player2") != null &&
+								 this.model.get("player2").id == this.model.get("current_user").id) ? 2 : 0;
 
 				var _this = this;
 				if (this.player != 0) {
@@ -185,12 +186,16 @@ document.addEventListener("turbolinks:load", () => {
 			},
 		
 			renderGame: function (is_newgame) {
-
-				let template = this.start_template();
-				$("#GameWrapper").html(template);
-
-				window.game = new Game(this.player, is_newgame);
-				game.startGame();
+				MATCH.model.fetch({
+					success: () => {
+						this.renderProfile2();
+						let template = this.start_template();
+						$("#GameWrapper").html(template);
+		
+						window.game = new Game(this.player, is_newgame);
+						game.startGame();
+					}
+				})
 			},
 
 			renderProfile1: function () {
@@ -202,7 +207,8 @@ document.addEventListener("turbolinks:load", () => {
 			renderProfile2: function () {
 				let template = this.profile2_template(this.model.attributes);
 				$("#MatchUser2Profile").html(template);
-				this.changeOnlineStatus(this.model.get("is_player2_online"), 2);
+				if (this.model.get("player2_id" != null))
+					this.changeOnlineStatus(this.model.get("is_player2_online"), 2);
 			},
 			
 			renderWaiting: function () {

@@ -48,10 +48,10 @@
 <%# ПОЛЬЗОВАТЕЛЬ 2 %>
 <script type="text/template" id="MatchUser2ProfileTemplate">
   <p>
-    <img width="50px" height="50px" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+    <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
   </p>
   <p>
-    Nickname: <%%= player2.nickname %> 
+    <%%= (player2 == null) ? "Waiting for the second player " : ("Nickname: " + player2.nickname) %>
   </p>
   <p>
     Guild: <%%= (guild_2 == null) ? "none" : guild_2.name %> 

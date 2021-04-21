@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
   create_table "matches", force: :cascade do |t|
     t.bigint "current_user_id"
     t.bigint "player1_id", null: false
-    t.bigint "player2_id", null: false
+    t.bigint "player2_id"
     t.integer "player1_score", default: 0
     t.integer "player2_score", default: 0
     t.bigint "guild_1_id"
