@@ -1,0 +1,13 @@
+<div class="col-9" id="Leaderboard"></div>
+<script type="text/template" id="LeaderboardListElTemplate">
+	<div id="LeaderboardNameList" style="padding: 10px">
+		<a style="margin-right: 5px">
+			<%%= position %>.
+		</a>
+		<img width="30" height="30" class="rounded-circle" src=<%%= avatar.url %>>
+		<%%= nickname %>
+		<%%= score %>
+</script>
+
+
+<%= javascript_pack_tag 'leaderboard' %>

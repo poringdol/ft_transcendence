@@ -5,7 +5,7 @@ class MatchesController < ApplicationController
 
   # GET /matches or /matches.json
   def index
-    @matches = Match.all.order("#{:id} desc")
+    @matches = Match.where("player2_id IS NOT NULL").order("#{:id} desc")
 
     respond_to do |format|
       format.html { @matches }
@@ -14,9 +14,9 @@ class MatchesController < ApplicationController
   end
 
   def users_matches
-	id = params[:id]
-	@matches = Match.where("CASE WHEN player1_id = #{id} OR player2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:id} desc")
-	respond_to do |format|
+    id = params[:id]
+    @matches = Match.where("CASE WHEN player1_id = #{id} OR player2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:id} desc")
+    respond_to do |format|
       format.html { @matches }
       format.json { render json: @matches}
     end
@@ -31,8 +31,8 @@ class MatchesController < ApplicationController
   end
 
   def get_player
-	player = User.find(params[:id])
-	render json: player
+    player = User.find(params[:id])
+    render json: player
   end
 
   # обновление модели
@@ -40,7 +40,7 @@ class MatchesController < ApplicationController
     respond_to do |format|
       if @match.update(match_params)
         format.html { redirect_to @match, notice: "War was successfully updated." }
-        format.json { render :show, status: :ok, location: @match }
+        format.json { render json: @match}
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @match.errors, status: :unprocessable_entity }
@@ -88,6 +88,33 @@ class MatchesController < ApplicationController
     end
   end
 
+  def new_match_profile
+    player2 = User.find_by(id: params[:id])
+    if (player2)
+      player1_id = current_user.id
+      player2_id = player2.id
+      guild_1_id = current_user.guild_id
+      guild_2_id = player2.guild_id
+
+      @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
+      respond_to do |format|
+        if @match.save
+          NotificationChannel.broadcast_to(player2, message: "You will be invited to game with #{current_user.nickname}")
+          format.html { redirect_to @match, notice: "Match was successfully created." }
+          format.json { render json: @match}
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @match.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity, errorText: "sss" }
+      end
+    end
+  end
+
   # POST /matches or /matches.json
   def create
     @match = Match.new(match_params)
@@ -118,16 +145,60 @@ class MatchesController < ApplicationController
 
   # DELETE /matches/1 or /matches/1.json
   def destroy
-	@match = Match.find(params[:id])
-	respond_to do |format|
-		if @match
-			if @match.destroy
-				format.json { head :no_content, status: :ok}
-			end
-		else
-			format.json { render json: @match.errors, status: :unprocessable_entity }
-		end
+    @match = Match.find(params[:id])
+    respond_to do |format|
+      if @match
+        if @match.destroy
+          format.json { head :no_content, status: :ok}
+        end
+      else
+        format.json { render json: @match.errors, status: :unprocessable_entity }
+      end
   	end
+  end
+
+  def create_random_match
+    existing_match = Match.where(player2_id: nil).first
+    if existing_match
+      if existing_match.player1_id != current_user.id
+        existing_match.player2_id = current_user.id
+        existing_match.guild_2_id = current_user.guild_id
+        respond_to do |format|
+          if existing_match.save
+            format.html { existing_match }
+            format.json { render json: existing_match}
+          else
+            format.html { render :new, status: :unprocessable_entity }
+            format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
+          end
+        end
+      else
+        respond_to do |format|
+          format.html { existing_match }
+          format.json { render json: existing_match}
+        end
+      end
+    else
+      new_match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id)
+      respond_to do |format|
+        if new_match.save
+          format.html { new_match }
+          format.json { render json: new_match}
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
+        end
+      end
+    end
+  end
+
+  def random_matches
+    @random_matches = Match.where(player2_id: nil).order("#{:id}")
+
+    respond_to do |format|
+      format.html { @random_matches }
+      format.json { render json: @random_matches}
+    end
   end
 
   private

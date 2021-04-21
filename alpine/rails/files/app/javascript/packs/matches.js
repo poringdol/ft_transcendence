@@ -25,7 +25,25 @@ $(function () {
 	});
 
 
-	App.Views.FoemMatches = Backbone.View.extend({
+	App.Views.RandomMatches = Backbone.View.extend({
+		el: $('#RandomMatchCreationForm'),
+		initialize: function () {},
+		events: {
+			'click #RandomMatchCreationButton': 'create'
+		},
+		create: function () {
+			fetch("/create_random_match.json")
+			.then(res => res.ok ? res.json() : Promise.reject(res))
+			.then(_.bind((res) => {
+				if (res.error)
+					alert(res.error)
+				else
+					Turbolinks.visit("/matches/" + res.id);
+			}, this))
+		},
+	})
+
+	App.Views.FormMatches = Backbone.View.extend({
 		el: $('#MatchCreationForm'),
 		initialize: function () {},
 		events: {
@@ -51,7 +69,6 @@ $(function () {
 					alert(res.error)
 				else
 					Turbolinks.visit("/matches/" + res.id);
-					// window.location.href = "/matches/" + res.id
 			}, this))
 		},
 	})
@@ -148,7 +165,8 @@ $(function () {
 ** MAIN
 */
 	col = new App.Collections.Match()
-	new App.Views.FoemMatches
+	new App.Views.FormMatches
+	new App.Views.RandomMatches
 	currentTable = new App.Views.TableMatches({ collection: col, type: 'Current' })
 	plannedTable = new App.Views.TableMatches({ collection: col, type: 'Planned' })
 	historyTable = new App.Views.TableMatches({ collection: col, type: 'History' })

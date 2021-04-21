@@ -31,7 +31,7 @@
 			<div class="list-group list-group-flush" id="list-tab" role="tablist">
 				<li class="list-group-item">
 					<div class="row formMatches">
-						<span class="btn btn-outline-secondary col">create</span>
+						<span id="RandomMatchCreationButton" class="btn btn-outline-secondary col">create</span>
 					</div>
 				</li>
 			</div>
@@ -77,7 +77,7 @@
 	TABLE TEMPLATE
 -->
 <script type="text/template" id="MatchesTableTemplate">
-	
+
 		<!--<div>
 			<h4 class='tableHeader'> <%%= type %> matches </h3>
 		</div>
@@ -96,7 +96,7 @@
 				</tr>
 			</thead>
 		</table>
-	
+
 </script>
 
 <!--
@@ -107,7 +107,7 @@
 		<div class="row justify-content-md-center">
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/profile/<%%= player1.id %>'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
@@ -119,7 +119,7 @@
 		<div class="row justify-content-md-center">
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/profile/<%%= player2.id %>'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
@@ -132,7 +132,7 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_1 == null) ? "/assets/default-avatar.jpg" : guild_1.logo.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_1 == null) ? "/assets/default-avatar.jpg" : guild_1.logo.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
@@ -144,7 +144,7 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_2 == null) ? "/assets/default-avatar.jpg" : guild_2.logo.url %>> 
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_2 == null) ? "/assets/default-avatar.jpg" : guild_2.logo.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">

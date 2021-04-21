@@ -54,6 +54,7 @@ Rails.application.routes.draw do
 #    PROFILE PAGE
 # ------------------
 
+  get '/leaderboard' => 'users#index'
   get '/user' => "profile#index"
   get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
   get 'profile/get_curr_user' => "profile#get_curr_user"
@@ -82,8 +83,6 @@ Rails.application.routes.draw do
   post 'rooms/block_user' => 'users#block_user'
   post 'users/unblock_user' => 'users#unblock_user'
   post 'rooms/unblock_user' => 'users#unblock_user'
-
-  get 'matches/users_matches/:id' => 'matches#users_matches'
 
   get 'users/online' => 'users#online'
 
@@ -127,18 +126,21 @@ Rails.application.routes.draw do
   get 'matches/get_player/:id' => 'matches#get_player'
   post 'matches/new_match' => 'matches#new_match'
 
+  get 'matches/users_matches/:id' => 'matches#users_matches'
+  get 'create_random_match' => 'matches#create_random_match'
+  get 'random_matches' => 'matches#random_matches'
+  get 'new_match_profile/:id' => 'matches#new_match_profile'
+
 
 # --------------------
 #    AUTHENTIFICATION
 # --------------------
-  # 2 factor
   post 'users/enable_otp' => 'users#enable_otp'
   post 'users/disable_otp' => 'users#disable_otp'
   post 'users/edit/enable_otp' => 'users#enable_otp'
   post 'users/edit/disable_otp' => 'users#disable_otp'
   get 'users/edit/profile/0' => 'profile'
 
-  # auth
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path

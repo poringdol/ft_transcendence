@@ -14,9 +14,17 @@ class UsersController < ApplicationController
     redirect_to '/users/edit'
   end
 
+  def index
+    @user = User.order(:score).reverse
+    respond_to do |format|
+      format.html { @user }
+      format.json { render json: @user }
+    end
+  end
+
   def show
     @user = User.all.find(params[:id, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt])
-    return render json: @user
+    render json: @user
   end
 
   def edit

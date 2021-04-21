@@ -33,7 +33,7 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                                   F R I E N D S
 // ---------------------------------------------------------------------------------------------------------------------------
-	
+
 	// -----------------------------------------
 	//  FRIENDS       MODEL and COLLECTION
 	// -----------------------------------------
@@ -457,7 +457,7 @@ $(function () {
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
-//                                             P R O F I L E      I N F O 
+//                                             P R O F I L E      I N F O
 // ---------------------------------------------------------------------------------------------------------------------------
 
 	// -----------------------------------------
@@ -492,10 +492,10 @@ $(function () {
 		events: {
 			'click #UserInfoBlockBtn':			'blockUser',
 			'click #UserInfoUnblockBtn':		'unblockUser',
-			
+
 			'click #UserInfoBanBtn': 			'banUser',
 			'click #UserInfoUnbanBtn': 			'unbanUser',
-			
+
 			'click #UserInfoDoModeratorBtn': 	'doModeratorUser',
 			'click #UserInfoUndoModeratorBtn': 	'undoModeratorUser',
 		},
@@ -625,13 +625,14 @@ $(function () {
 		template:				_.template($("#UserInfoBtnTemplate").html()),
 		templateEditBtn:		_.template($("#UserInfoEditBtnTemplate").html()),
 		templateBannedStatus:	_.template($("#UserInfoBannedStatusTemplate").html()),
-		
+
 		events: {
 			'click #UserInfoAddBtn':		'addFriend',
 			'click #UserInfoDelBtn':		'deleteFriend',
 			'click #UserInfoUnfollowBtn': 	'unfollowUser',
 			'click #UserInfoFollowBackBtn': 'followBackUser',
-			'click #UserInfoSendBtn':		'sendMessage'
+			'click #UserInfoSendBtn':		'sendMessage',
+			'click #UserInfoInviteBtn':		'inviteToGame'
 		},
 		render: function () {
 			if (current_user.id == this.model.id)
@@ -700,6 +701,17 @@ $(function () {
 				}, this))
 				.catch(() => alert('some error'));
 		},
+		inviteToGame: function () {
+			let match = { player2: usr_id }
+			fetch("/new_match_profile/" + usr_id + ".json")
+			.then(res => res.json())
+			.then(_.bind((res) => {
+				if (res.error)
+					alert(res.error)
+				else
+					Turbolinks.visit("/matches/" + res.id);
+			}, this))
+		},
 		drawBtn: function () {
 			fetch(("/friends/is_friend/" + this.model.id))
 				.then(res => res.ok ? res.json() : Promise.reject(res))
@@ -709,6 +721,7 @@ $(function () {
 					else
 						this.$el.html("");
 					this.$el.append(this.template({ btn_title: "Send", btn_text: "SEND MESSAGE" }));
+					this.$el.append(this.template({ btn_title: "Invite", btn_text: "INVITE TO GAME" }));
 					if (res == 0 && !this.model.is_banned)
 						this.$el.append(this.template({ btn_title: "Add", btn_text: "ADD TO FRIENDS" }))
 					else if (res == 1)
@@ -726,7 +739,7 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                                   M A T C H E S
 // ---------------------------------------------------------------------------------------------------------------------------
-	
+
 	App.Models.UserMatches = Backbone.Model.extend({
 		urlRoot: '/matches/users_matches/',
 		initialize: function () {
@@ -741,7 +754,7 @@ $(function () {
 			this.fetch()
 		}
 	})
-	
+
 	// -----------------------------------------
 	//  USER      		MATCHES CARD VIEW
 	// -----------------------------------------
@@ -756,7 +769,7 @@ $(function () {
 		render: function () {
 			var template = this.template();
 			$("#UserMatches").html(template)
-			
+
 			this.n = 0
 			if (this.collection.length <= 3) {
 				$("#accordionFlushMatches").css({ 'display': 'none' })
@@ -804,7 +817,7 @@ $(function () {
 		model: OnlineUsersModel,
 		initialize: function() {
 			_.bindAll(this, 'online');
-			this.fetch({ 
+			this.fetch({
 				success: () => { this.online(); }
 			})
 		},
@@ -819,7 +832,7 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                                    M A I N
 // ---------------------------------------------------------------------------------------------------------------------------
-	
+
 	const urlArray = window.jQuery.ajaxSettings.url.split('/')
 	const user_id = urlArray[urlArray.length - 1]
 	fetch("/profile/get_curr_user")
@@ -842,23 +855,23 @@ $(function () {
 	function renderPage(user) {
 		if (!current_user.is_banned) {
 			window.usr_id = user.id
-	
+
 			userInfoView = new App.Views.UserInfo({ model: user })
 			userInfoView.render()
-	
+
 			UserFriends = new App.Collections.UserFriends()
 			UserFriendsView = new App.Views.UserFriends({ collection: UserFriends })
 			UserFriendsView.render()
-	
+
 			if (user.id == current_user.id) {
 				UserFriendRequests = new App.Collections.UserFollowers()
 				UserFriendRequestsView = new App.Views.UserFriendRequests({ collection: UserFriendRequests })
 			}
-	
+
 			InvitesCollection = new App.Collections.GuildInvites()
 			UserGuildView = new App.Views.UserGuild({ model: user, invitesCollection: InvitesCollection })
 			UserGuildView.render()
-	
+
 			UserMatches = new App.Collections.UserMatches
 			UserMatchesView = new App.Views.UserMatches({ user: user, collection: UserMatches })
 			UserMatchesView.render()

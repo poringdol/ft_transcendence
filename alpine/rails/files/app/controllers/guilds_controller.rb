@@ -16,7 +16,7 @@ class GuildsController < ApplicationController
   end
 
   def get_owner_nick
-	guild = Guild.find(params[:id])
+	  guild = Guild.find(params[:id])
     owner = User.find(guild.owner_id)
     render json: owner
   end
@@ -28,8 +28,8 @@ class GuildsController < ApplicationController
 
 
   def get_guild
-	guild = Guild.find(params[:id])
-	render json: guild
+	  guild = Guild.find(params[:id])
+	  render json: guild
   end
 
   def get_guild_users
@@ -81,44 +81,44 @@ class GuildsController < ApplicationController
 
   def exit_user
 
-    # if ((current_user.is_admin == true) || 
+    # if ((current_user.is_admin == true) ||
 	# 	(current_user.is_officer == true))
-      user = User.find(params[:id])
+    user = User.find(params[:id])
 
-      unless user.guild_id?
-        redirect_and_responce("User not in guild")
+    unless user.guild_id?
+      redirect_and_responce("User not in guild")
+    else
+      guild_id = user.guild_id
+      user.guild_id = nil
+      user.is_officer = false
+      user.save
+      guild = Guild.all.find(guild_id)
+      guild_members = User.all.find_by(guild_id: guild_id)
+
+      unless guild_members
+        guild.destroy
+
+    guild_invites = GuildInvite.where(guild_id: guild_id)
+    for guild_invite in guild_invites
+    guild_invite.destroy
+    end
+
       else
-        guild_id = user.guild_id
-        user.guild_id = nil
-        user.is_officer = false
-        user.save
-        guild = Guild.all.find(guild_id)
-        guild_members = User.all.find_by(guild_id: guild_id)
-      
-        unless guild_members
-          guild.destroy
-		  
-		  guild_invites = GuildInvite.where(guild_id: guild_id)
-		  for guild_invite in guild_invites
-			guild_invite.destroy
-		  end
+        if user.id == guild.owner_id
+          guild.owner_id = guild_members.id
+          guild.save
+        end
+      end
 
-        else
-          if user.id == guild.owner_id
-            guild.owner_id = guild_members.id
-            guild.save
-          end
-        end
-      
-        if guild_members
-          new_owner = User.all.find(guild.owner_id)
-          render json: new_owner
-        #   redirect_to '/guilds'
-        else
-          render json: 0
-        #   redirect_to '/guilds'
-        end
-    #   end
+      if guild_members
+        new_owner = User.all.find(guild.owner_id)
+        render json: new_owner
+      #   redirect_to '/guilds'
+      else
+        render json: 0
+      #   redirect_to '/guilds'
+      end
+  #   end
     end
   end
 
@@ -143,7 +143,7 @@ class GuildsController < ApplicationController
 
   def do_owner
 	# if current_user.is_admin != true
-	user = User.find(params[:id])
+	  user = User.find(params[:id])
     unless user.guild_id?
 		redirect_and_responce("User not in guild")
     else
@@ -237,7 +237,7 @@ class GuildsController < ApplicationController
       current_user.save
       guild = Guild.all.find(guild_id)
       guild_members = User.all.find_by(guild_id: guild_id)
-      
+
       unless guild_members
         guild.destroy
 
@@ -252,7 +252,7 @@ class GuildsController < ApplicationController
           guild.save
         end
       end
-      
+
       if guild_members
         new_owner = User.all.find(guild.owner_id)
         render json: new_owner
