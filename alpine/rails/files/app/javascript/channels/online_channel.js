@@ -37,7 +37,7 @@ consumer.subscriptions.create("OnlineChannel", {
     if (data.status === "online")
       online2.css('background', '#0ec82d' )
     else
-      online2.css('background', '#d10d0d' )
+      online2.css('background', '#d10d0d    ' )
 
   }
 });

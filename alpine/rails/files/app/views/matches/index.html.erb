@@ -1,80 +1,75 @@
 <div class='MatchesContent row'>
-<div class='col-1'></div>
-<div class='card col-3' id='MatchCreationForm'>
-	<div class="card-body">
-		<h6 class="card-title">New friendly match</h6>
-	</div>
-	<div class="list-group list-group-flush" id="list-tab" role="tablist">
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input placeholder="Nickname of your opponent" type="text" class="form-control col formMtachesInput" id="formPlayer2Nickname" value="">
-			</form>
-		</li>
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input placeholder="Addons" type="text" class="form-control col formMtachesInput" id="formAddons" value="">
-			</form>
-		</li>
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input type="submit" class="btn btn-outline-secondary mb-3 col" value="create">
-			</form>
-		</li>
-	</div>
-
-	<div class="card-body">
-		<h6 class="card-title">New rating match</h6>
-	</div>
-	<div class="list-group list-group-flush" id="list-tab" role="tablist">
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input placeholder="Nickname of your opponent" type="text" class="form-control col formMtachesInput" id="formPlayer2Nickname" value="">
-			</form>
-		</li>
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input placeholder="Addons" type="text" class="form-control col formMtachesInput" id="formAddons" value="">
-			</form>
-		</li>
-		<li class="list-group-item">
-			<form class="row formMtaches">
-				<input type="submit" class="btn btn-outline-secondary mb-3 col" value="create">
-			</form>
-		</li>
-	</div>
-</div>
-
-
-<div class='col-7'>
-	<div class='card' style='width: 98%'>
-		<ul class="nav nav-tabs" id="myTab" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Current Matches</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned" type="button" role="tab" aria-controls="planned" aria-selected="false">Planned Matches</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">History Matches</button>
-			</li>
-		</ul>
-		<div class="tab-content" id="myTabContent">
-			<div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
-				<div class='row' id='CurrentMatches'>
-				</div>
+	<div class='col-1'></div>
+	<div class="col-3">
+		<div class='card col mb-3' id='MatchCreationForm'>
+			<div class="card-body">
+				<h6 class="card-title">New friendly match</h6>
 			</div>
-			<div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
-				<div class='row' id='PlannedMatches'>
-				</div>
+			<div class="list-group list-group-flush" id="list-tab" role="tablist">
+				<li class="list-group-item">
+					<form class="row formMatches">
+						<input placeholder="Nickname of your opponent" type="text" class="form-control col formMatchesInput" id="formPlayer2Nickname" value="">
+					</form>
+				</li>
+				<li class="list-group-item">
+					<form class="row formMatches">
+						<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
+					</form>
+				</li>
+				<li class="list-group-item">
+					<form class="row formMatches">
+						<input type="submit" class="btn btn-outline-secondary col" value="create">
+					</form>
+				</li>
 			</div>
-			<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
-				<div class='row' id='HistoryMatches'>
+		</div>
+
+		<div class='card col mb-3' id='RandomMatchCreationForm'>
+			<div class="card-body">
+				<h6 class="card-title">New rating match</h6>
+			</div>
+			<div class="list-group list-group-flush" id="list-tab" role="tablist">
+				<li class="list-group-item">
+					<div class="row formMatches">
+						<span class="btn btn-outline-secondary col">create</span>
+					</div>
+				</li>
+			</div>
+		</div>
+	<div id='TournamentCreationForm'></div>
+	<%# class='card col %>
+	</div>
+
+	<div class='col-7'>
+		<div class='card' style='width: 98%'>
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Current Matches</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned" type="button" role="tab" aria-controls="planned" aria-selected="false">Planned Matches</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">History Matches</button>
+				</li>
+			</ul>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
+					<div class='row' id='CurrentMatches'>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
+					<div class='row' id='PlannedMatches'>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
+					<div class='row' id='HistoryMatches'>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class='col-1'></div>
+	<div class='col-1'></div>
 </div>
 
 
