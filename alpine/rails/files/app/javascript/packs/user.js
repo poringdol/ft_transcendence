@@ -811,7 +811,6 @@ $(function () {
 		online: function() {
 			this.each((friend) => {
 				var i = $(`.OnlineStatus${friend.get("id")}`).css("background", "#0ec82d")
-				// var i = document.getElementsByClassName(`OnlineStatus${friend.get("id")}`)
 				console.log(i);
 			})
 		}
@@ -868,7 +867,7 @@ $(function () {
 				UserBlocklist = new App.Collections.Blocklist()
 				UserBlocklistView = new App.Views.UserBlocklist({ collection: UserBlocklist })
 			}
-			new OnlineUsersCollection();
+			setTimeout( () => { new OnlineUsersCollection()}, 1500);
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")
