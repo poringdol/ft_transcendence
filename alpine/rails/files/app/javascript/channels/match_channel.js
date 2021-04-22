@@ -433,12 +433,16 @@ document.addEventListener("turbolinks:load", () => {
 				//Отскок шарика от 1 блока
 				if (ball.x <= 60 && ball.y >= b1.y && ball.y <= b1.y+b1.h) {
 					ball.xspeed = -ball.xspeed;
+					if (MATCH.model.get("addons").addon1 == true)
+						this.disco();
 				//Ускоряем шарик
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
 				//Отскок шарика от 2 блока
 				if (ball.x >= this.params.width-50 && ball.y >= b2.y && ball.y <= b2.y+b2.h) {
 					ball.xspeed = -ball.xspeed;
+					if (MATCH.model.get("addons").addon1 == true)
+						this.disco();
 				//Ускоряем шарик
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
@@ -545,7 +549,18 @@ document.addEventListener("turbolinks:load", () => {
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game })
 			},
 
+			disco: function () {
+				game.objects.bracket1.color = this.randomColor();
+				game.objects.bracket2.color = this.randomColor();
+				game.objects.ball.color = this.randomColor();
+			},
 
+			randomColor: function () {
+				let r = Math.floor(Math.random() * (256));
+				let g = Math.floor(Math.random() * (256));
+				let b = Math.floor(Math.random() * (256));
+				return `rgb(${r}, ${g}, ${b})`;
+			}
 		};
 	}
 })

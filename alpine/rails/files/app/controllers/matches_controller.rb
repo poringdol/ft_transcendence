@@ -72,6 +72,12 @@ class MatchesController < ApplicationController
       @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
       respond_to do |format|
         if @match.save
+
+          if (params[:addons] == "disco")
+            @match.addons.addon1 = true
+            @match.addons.save
+          end 
+
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render :show, status: :created, location: @match }
 
@@ -89,7 +95,9 @@ class MatchesController < ApplicationController
   end
 
   def new_match_profile
+
     player2 = User.find_by(id: params[:id])
+    
     if (player2)
       player1_id = current_user.id
       player2_id = player2.id
@@ -102,10 +110,12 @@ class MatchesController < ApplicationController
           NotificationChannel.broadcast_to(player2, message: "You will be invited to game with #{current_user.nickname}")
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render json: @match}
+
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @match.errors, status: :unprocessable_entity }
         end
+
       end
     else
       respond_to do |format|
