@@ -32,7 +32,11 @@ class MessagesController < ApplicationController
       @message.save
       SendMessageJob.perform_later(@message)
     else
-      NotificationChannel.broadcast_to(current_user, message: "You muted in this room")
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "You muted in this room",
+        link: ""
+      })
     end
   end
 

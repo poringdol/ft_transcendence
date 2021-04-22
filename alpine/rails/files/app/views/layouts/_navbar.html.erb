@@ -35,8 +35,16 @@
 						<li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link", :class => "dropdown-item" %></li>
 					</ul>
 				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="N-Notify" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+						Notifications
+					</a>
+					<ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
+						<div id="Notify">
+						</div>
+					</ul>
+				</li>
 			</ul>
-
 		</div>
 	</div>
 </nav>

@@ -29,19 +29,19 @@ class RoomsController < ApplicationController
   # POST /rooms.json
   def create
 
-  if params[:room].present?
-    pass = params[:room][:password]
-    name = params[:room][:name]
-  else
-    pass = params[:password]
-    name = params[:name]
-  end
+    if params[:room].present?
+      pass = params[:room][:password]
+      name = params[:room][:name]
+    else
+      pass = params[:password]
+      name = params[:name]
+    end
 
-  direct_room_exists1 = Room.where(name: name + '-' + current_user.nickname).first
-	direct_room_exists = Room.where(name: current_user.nickname + '-' + name).first
-	if direct_room_exists1.present?
-		direct_room_exists = direct_room_exists1
-	end
+    direct_room_exists1 = Room.where(name: name + '-' + current_user.nickname).first
+    direct_room_exists = Room.where(name: current_user.nickname + '-' + name).first
+    if direct_room_exists1.present?
+      direct_room_exists = direct_room_exists1
+    end
     if direct_room_exists.present?
       respond_to do |format|
         format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
@@ -66,7 +66,11 @@ class RoomsController < ApplicationController
         if @room.save
           if direct_user.present?
             RoomUser.create(room_id: @room.id, user_id: direct_user.id)
-            NotificationChannel.broadcast_to(direct_user, message: "#{current_user.nickname} created direct room with you")
+            NotificationJob.perform_later({
+              user: direct_user,
+              message: "#{current_user.nickname} created direct room with you",
+              link: "/rooms/#{@room.id}"
+            })
           end
           RoomUser.create(room_id: @room.id, user_id: current_user.id, is_admin: true)
           format.html { redirect_to "/rooms/#{@room.id}" }
@@ -113,7 +117,11 @@ class RoomsController < ApplicationController
         format.html { redirect_to "/rooms/#{params[:room][:id]}" }
         format.json { render :show, status: :ok, location: "/rooms/#{params[:room][:id]}" }
       else
-        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password wrong")
+        NotificationJob.perform_later({
+          user: current_user,
+          message: "Room #{@room.name} password wrong",
+          link: ""
+        })
         format.html { redirect_to "/rooms/#{params[:room][:id]}" }
         format.json { head :no_content }
       end
@@ -123,11 +131,18 @@ class RoomsController < ApplicationController
   def kick
     @room = Room.find(params[:room][:room_id])
     @user = User.find(params[:room][:user_id])
-    p '------------'
     p @user
     RoomUser.where(room_id: params[:room][:room_id], user_id: params[:room][:user_id]).destroy_all
-    NotificationChannel.broadcast_to(@user, message: "You will be kicked from #{@room.name}")
-    NotificationChannel.broadcast_to(current_user, message: "You kicked #{@user.nickname} from #{@room.name}")
+    NotificationJob.perform_later({
+      user: @user,
+      message: "You will be kicked from #{@room.name}",
+      link: ""
+    })
+    NotificationJob.perform_later({
+      user: current_user,
+      message: "You kicked #{@user.nickname} from #{@room.name}",
+      link: ""
+    })
   end
 
   def leave
@@ -136,7 +151,11 @@ class RoomsController < ApplicationController
       RoomUser.where(room_id: params[:room][:room_id]).destroy_all
       @room.destroy
       respond_to do |format|
-        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} was successfully destroyed")
+        NotificationJob.perform_later({
+          user: current_user,
+          message: "Room #{@room.name} was successfully destroyed",
+          link: ""
+        })
         format.html { redirect_to rooms_url }
         format.json { head :no_content }
       end
@@ -164,12 +183,24 @@ class RoomsController < ApplicationController
         @room.password = ""
       end
       if @room.save
-        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password updated")
+        NotificationJob.perform_later({
+          user: current_user,
+          message: "Room #{@room.name} password updated",
+          link: ""
+        })
       else
-        NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password not updated")
+        NotificationJob.perform_later({
+          user: current_user,
+          message: "Room #{@room.name} password not updated",
+          link: ""
+        })
       end
     else
-      NotificationChannel.broadcast_to(current_user, message: "Room #{@room.name} password is the same")
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "Room #{@room.name} password is the same",
+        link: ""
+      })
     end
   end
 
@@ -183,21 +214,33 @@ class RoomsController < ApplicationController
     end
 
     Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
-    NotificationChannel.broadcast_to(current_user, message: "User #{User.find(blocked_user_id)} now in your block list")
+    NotificationJob.perform_later({
+      user: current_user,
+      message: "User #{User.find(blocked_user_id)} now in your block list",
+      link: ""
+    })
   end
 
   def do_admin
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = true
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{params[:room][:nickname]} now is admin")
+    NotificationJob.perform_later({
+      user: user,
+      message: "Now you is room #{params[:room]} admin",
+      link: ""
+    })
   end
 
   def rm_admin
     user = RoomUser.where(user_id: params[:room][:user_id]).first
     user.is_admin = false
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User #{params[:room][:nickname]} now demoted")
+    NotificationJob.perform_later({
+      user: cuser,
+      message: "Now you is not room #{params[:room]} admin",
+      link: ""
+    })
   end
 
   def mute_user
@@ -205,7 +248,11 @@ class RoomsController < ApplicationController
 
     user.is_muted = true
     user.save
-    NotificationChannel.broadcast_to(current_user, message: "User with id #{params[:room][:user_id]} now muted")
+    NotificationJob.perform_later({
+      user: user,
+      message: "You muted for 1 min in room #{params[:room]}",
+      link: ""
+    })
     sleep(60)
     user.is_muted = false
     user.save

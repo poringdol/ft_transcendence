@@ -4,11 +4,21 @@ consumer.subscriptions.create("NotificationChannel", {
   connected() {},
   disconnected() {},
   received(data) {
-    if (Notification.permission === 'granted') {
-      var title = 'PingPong notification'
-      var body = data.message
-      var options = { body: body }
-      new Notification(title, options)
+    let notify = document.querySelector("#Notify")
+    // console.log("---------------------")
+    // console.log(data)
+    // console.log(notify)
+    // console.log("---------------------")
+    if (notify) {
+      notify.insertAdjacentHTML('beforeend', data.html)
+    }
+    // let count = document.querySelector('#N-Notify')
+    // if (count) {
+    //   count.innerHTML = data.html2
+    // }
+    let count = $(`#N-Notify`);
+    if (count) {
+      count.css("color", "#2fff2f");
     }
   }
 });

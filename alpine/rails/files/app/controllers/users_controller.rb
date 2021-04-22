@@ -38,10 +38,17 @@ class UsersController < ApplicationController
     if current_user.nickname != params[:user][:nickname]
       current_user.nickname = params[:user][:nickname]
       current_user.save!
-      NotificationChannel.broadcast_to(current_user, message: "Nickname changed to #{current_user.nickname}")
-     # redirect_to '/profile/0'
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "Nickname changed to #{current_user.nickname}",
+        link: ""
+      })
     else
-      NotificationChannel.broadcast_to(current_user, message: "Choose other nickname")
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "Choose other nickname",
+        link: ""
+      })
     end
   end
 
@@ -51,10 +58,17 @@ class UsersController < ApplicationController
         current_user.avatar = f
       end
       current_user.save!
-      NotificationChannel.broadcast_to(current_user, message: "Avatar updated")
-      # redirect_to '/users/edit'
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "Avatar updated",
+        link: ""
+      })
     else
-      NotificationChannel.broadcast_to(current_user, message: "Choose file")
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "Choose file",
+        link: ""
+      })
     end
   end
 
@@ -70,7 +84,11 @@ class UsersController < ApplicationController
     blocked = Blocklist.find_by(user_id: user_id, blocked_user_id: blocked_user_id)
     unless blocked
         Blocklist.create(user_id: user_id, blocked_user_id: blocked_user_id)
-        NotificationChannel.broadcast_to(current_user, message: "User #{User.find(blocked_user_id).nickname} now in your block list")
+        NotificationJob.perform_later({
+          user: current_user,
+          message: "User #{User.find(blocked_user_id).nickname} now in your block list",
+          link: ""
+        })
     end
   end
 
@@ -84,7 +102,11 @@ class UsersController < ApplicationController
     end
 
     Blocklist.where(user_id: user_id, blocked_user_id: blocked_user_id).destroy_all
-    NotificationChannel.broadcast_to(current_user, message: "User #{User.find(blocked_user_id)} removed from block list")
+    NotificationJob.perform_later({
+      user: current_user,
+      message: "User #{User.find(blocked_user_id)} removed from block list",
+      link: ""
+    })
   end
 
   def online
