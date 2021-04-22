@@ -815,16 +815,25 @@ $(function () {
 	var OnlineUsersCollection = Backbone.Collection.extend({
 		url: "/users/online",
 		model: OnlineUsersModel,
-		initialize: function() {
+		initialize: function(current_user_id, profile_id) {
 			_.bindAll(this, 'online');
+			this.profile_id = profile_id;
+			this.current_user_id = current_user_id;
 			this.fetch({
 				success: () => { this.online(); }
 			})
 		},
 		online: function() {
 			this.each((friend) => {
-				var i = $(`.OnlineStatus${friend.get("id")}`).css("background", "#0ec82d")
-				console.log(i);
+				$(`#ProfileOnlineStatus${this.current_user_id}`).css("color", "#0ec82d");
+				$(`#ProfileOnlineStatus${this.current_user_id}`).html("online");
+				
+				$(`#FriendOnlineStatus${friend.get("id")}`).css("background", "#0ec82d")
+				
+				if (friend.get("id") == this.profile_id) {
+					$(`#ProfileOnlineStatus${this.profile_id}`).css("color", "#0ec82d");
+					$(`#ProfileOnlineStatus${this.profile_id}`).html("online");
+				}
 			})
 		}
 	});
@@ -880,7 +889,7 @@ $(function () {
 				UserBlocklist = new App.Collections.Blocklist()
 				UserBlocklistView = new App.Views.UserBlocklist({ collection: UserBlocklist })
 			}
-			setTimeout( () => { new OnlineUsersCollection()}, 1500);
+			setTimeout( () => { new OnlineUsersCollection(current_user.id, user_id)}, 1500);
 		}
 		else
 			$(".content").html("<h3>You account was blocked by administrator</h3>")

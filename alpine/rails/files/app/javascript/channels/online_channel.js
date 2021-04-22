@@ -33,11 +33,17 @@ consumer.subscriptions.create("OnlineChannel", {
       }
     }
 
-    let online2 = $(`.OnlineStatus${data.id}`);
-    if (data.status === "online")
-      online2.css('background', '#0ec82d' )
-    else
-      online2.css('background', '#d10d0d    ' )
-
+    let online_friend = $(`#FriendOnlineStatus${data.id}`);
+    let online_profile = $(`#ProfileOnlineStatus${data.id}`);
+    if (data.status === "online") {
+      online_friend.css("background", "#0ec82d");
+      online_profile.css("color", "#0ec82d");
+      online_profile.html("online");
+    }
+    else {
+      online_friend.css("background", "#d10d0d");
+      online_profile.css("color", "#d10d0d");
+      online_profile.html("offline");
+    }
   }
 });

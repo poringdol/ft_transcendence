@@ -307,7 +307,7 @@
 			<li class="list-group-item">
 				<div class='row'>
 					<div class='col-4 UserInfoField InfoFieldText'>Nickname:</div>
-					<div class='col'><%%= nickname %></div>
+					<div class='col'><%%= nickname %> <span id="ProfileOnlineStatus<%%= id %>" style="color: #d10d0d">offline</span></div>
 				</div>
 			</li>
 			<li class="list-group-item">
@@ -468,7 +468,7 @@
 				<img width="70px" height="70px" class="rounded-circle" src=<%%= avatar.url %>>
 		</div>
 		<div class='col-12'>
-			<span class='col-12 OnlineStatus OnlineStatus<%%= id %>'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <span><%%= nickname %></span>
+			<span class='col-12 OnlineStatus' id='FriendOnlineStatus<%%= id %>'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <span><%%= nickname %></span>
 		</div>
 	<%# </div> %>
 </script>
