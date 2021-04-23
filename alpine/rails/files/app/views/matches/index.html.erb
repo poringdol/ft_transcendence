@@ -37,7 +37,9 @@
 			</div>
 		</div>
 		<div id='TournamentCreationForm'></div>
-		<div id='WarCreationForm'></div>
+		<% if current_user.guild_id? && (current_user.guild.owner_id == current_user.id || current_user.is_officer) %>
+			<div id='WarCreationForm'></div>
+		<% end %>
 	<%# class='card col %>
 	</div>
 
