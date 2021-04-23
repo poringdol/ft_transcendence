@@ -161,6 +161,43 @@ $(function () {
 	});
 
 
+	App.Views.FormWar = Backbone.View.extend({
+		template: _.template($("#WarCreateTemplate").html()),
+		initialize: function () {
+			this.$el.html(this.template())
+			$("#WarCreationForm").html(this.el)
+		},
+		events: {
+			'submit': 'submit'
+		},
+		submit: function (e) {
+			e.preventDefault();
+			let war = {
+				guild_2: 	$(e.currentTarget).find('input[id=formGuild2Name]').val(),
+				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
+				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
+				date_end: 	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
+				time_end: 	$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
+				addons:		$(e.currentTarget).find('input[id=formAddons]').val(),
+				prize: 		$(e.currentTarget).find('input[id=formPrize]').val(),
+			}
+			fetch("/wars", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(war)
+			})
+				.then(res => res.json())
+				.then(_.bind((res) => {
+					if (res.error)
+						alert(res.error)
+				}, this))
+		},
+	})
+
+
 /*
 ** MAIN
 */
@@ -170,5 +207,6 @@ $(function () {
 	currentTable = new App.Views.TableMatches({ collection: col, type: 'Current' })
 	plannedTable = new App.Views.TableMatches({ collection: col, type: 'Planned' })
 	historyTable = new App.Views.TableMatches({ collection: col, type: 'History' })
+	new App.Views.FormWar()
 
 }());

@@ -27,7 +27,7 @@ $(function () {
     // Leaderboard          COLLECTION VIEW
     // -----------------------------------------
     App.Views.Leaderboard = Backbone.View.extend({
-        className: 'list-group',
+        // className: 'list-group',
 		initialize: function() {
 			this.collection.on('sync', this.render, this)
 		},
@@ -48,7 +48,7 @@ $(function () {
     // Leaderboard          MODEL LIST VIEW
     // -----------------------------------------
     App.Views.LeaderboardListEl = Backbone.View.extend({
-        tagName: 'a',
+        tagName: 'div',
         className: 'list-group-item list-group-item-action',
         templateList: _.template($("#LeaderboardListElTemplate").html()),
 		initialize: function(data) {
@@ -56,7 +56,7 @@ $(function () {
 			this.model.attributes.position = data.position;
 		},
         render: function () {
-            this.$el.attr({'data-bs-toggle': "list"});
+            // this.$el.attr({'data-bs-toggle': "list"});
             this.$el.css({ "padding": "0px" })
             var template = this.templateList(this.model.attributes);
             this.$el.append(template);
