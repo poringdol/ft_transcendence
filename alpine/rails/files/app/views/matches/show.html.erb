@@ -29,7 +29,9 @@
 <%# ПОЛЬЗОВАТЕЛЬ 1 %>
 <script type="text/template" id="MatchUser1ProfileTemplate">
   <p>
-    <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+    <a href='/profile/<%%= player1.id %>'>
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+    </a>
   </p>
   <p>
     Nickname: <%%= player1.nickname %> 
@@ -48,7 +50,9 @@
 <%# ПОЛЬЗОВАТЕЛЬ 2 %>
 <script type="text/template" id="MatchUser2ProfileTemplate">
   <p>
-    <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
+    <a href='/profile/<%%= player2.id %>'>
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
+    </a>
   </p>
   <p>
     <%%= (player2 == null) ? "Waiting for the second player " : ("Nickname: " + player2.nickname) %>
@@ -71,7 +75,9 @@
   <div class="row">
     <div class="col-6">
       <p>
-        <img width="150px" height="150px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+        <a href='/profile/<%%= player1.id %>'>
+          <img width="150px" height="150px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+        </a>
       </p>
       <p>
         Nickname: <%%= player1.nickname %> 
@@ -86,7 +92,9 @@
    
     <div class="col-6">
       <p>
-        <img width="150px" height="150px" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+        <a href='/profile/<%%= player2.id %>'>
+          <img width="150px" height="150px" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+        </a>
       </p>
       <p>
         Nickname: <%%= player2.nickname %> 

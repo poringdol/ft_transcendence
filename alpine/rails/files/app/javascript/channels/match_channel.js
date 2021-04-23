@@ -217,9 +217,11 @@ document.addEventListener("turbolinks:load", () => {
 			renderResult: function () {
 
 				//Останавливаем цикл
-				cancelAnimationFrame(game.requestLoop);
-				//Убираем слушателей событий
-				document.removeEventListener("keydown", game.keyDownEvent);
+				if (typeof game !== "undefined") {
+					cancelAnimationFrame(game.requestLoop);
+					//Убираем слушателей событий
+					document.removeEventListener("keydown", game.keyDownEvent);
+				}
 
 				$("#MatchUser1Profile").html("");
 				$("#MatchUser2Profile").html("");
