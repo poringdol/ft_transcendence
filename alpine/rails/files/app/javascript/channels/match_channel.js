@@ -174,7 +174,6 @@ document.addEventListener("turbolinks:load", () => {
 					this.renderGame(false);
 				}
 				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
-					// this.model.set("is_inprogress", true);
 					this.model.save({ is_inprogress: true }).done(function () {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
 					});
@@ -207,7 +206,7 @@ document.addEventListener("turbolinks:load", () => {
 			renderProfile2: function () {
 				let template = this.profile2_template(this.model.attributes);
 				$("#MatchUser2Profile").html(template);
-				if (this.model.get("player2_id" != null))
+				if (this.model.get("player2") != null)
 					this.changeOnlineStatus(this.model.get("is_player2_online"), 2);
 			},
 			
@@ -382,14 +381,14 @@ document.addEventListener("turbolinks:load", () => {
 				if (this.params.state == "game") {
 			
 					//И шарик оказался за первым игроком
-					if (ball.x + ball.radius/2 <= RADIUS * 2) {
+					if (ball.x + ball.radius/2 <= RADIUS * 3) {
 						this.params.state == "palyerwait";
 						//Засчтитаем гол
 						this.goal(2);
 					}
 					
 					//Шарик оказался за вторым игроком
-					if (ball.x + ball.radius/2 >= game.params.width - (RADIUS * 2)) {
+					if (ball.x + ball.radius/2 >= game.params.width - (RADIUS * 3)) {
 						this.params.state == "palyerwait";
 						//Засчтитаем гол
 						this.goal(1);
