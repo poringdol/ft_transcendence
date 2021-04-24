@@ -41,7 +41,13 @@ document.addEventListener("turbolinks:load", () => {
 					}
 					// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
 					else {
-						game.goal((MATCH.player == 1) ? 2 : 1);
+						let lastGoalPlayer = (MATCH.player == 1) ? 2 : 1;
+						let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
+
+						MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+						MATCH.model.save();
+						subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
+						subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 					}
 				}
 			}
@@ -231,8 +237,6 @@ document.addEventListener("turbolinks:load", () => {
 				MATCH.model.fetch({
 					success: () => {
 						
-						console.log(MATCH.model.get("is_ranked"))
-						
 						if (MATCH.model.get("is_ranked") == true) {
 							let rating = MATCH.model.get("rating");
 
@@ -259,8 +263,6 @@ document.addEventListener("turbolinks:load", () => {
 			
 			changeScore: function (score, player) {
 				this.model.fetch({ success: () => { $(`#MatchPlayer${player}Score`).html(score); } })
-				
-
 			},
 		})
 
@@ -404,22 +406,20 @@ document.addEventListener("turbolinks:load", () => {
 
 						// И шарик оказался за первым игроком
 						if (ball.x + ball.radius/2 <= RADIUS * 3) {
-							console.log("1__1 " + this.params.state)
-							this.params.state == "playerwait";
-							console.log("2__2 " + this.params.state)
+							this.params.state = "playerwait";
 							// Засчтитаем гол
 							this.goal(2);
 						}
 						
 						// Шарик оказался за вторым игроком
 						else if (ball.x + ball.radius/2 >= game.params.width - (RADIUS * 3)) {
-							this.params.state == "playerwait";
+							this.params.state = "playerwait";
 							// Засчтитаем гол
 							this.goal(1);
 						}
 					}
 
-					// Проверяем наличие победителя
+				// Проверяем наличие победителя
 				if (MATCH.model.get("player1_score") >= MAX_RATE && MATCH.player == 1) {
 					this.stopGame();
 				}
@@ -520,10 +520,7 @@ document.addEventListener("turbolinks:load", () => {
 			goal: function (lastGoalPlayer) {
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
 
-				// if (this.params.state == "playerwait")
-				// 	score += 1;
-				console.log("3__3 " + this.params.state)
-				if (MATCH.player > 0 && MATCH.player != lastGoalPlayer) {
+				if (MATCH.player > 0 && MATCH.player == lastGoalPlayer) {
 					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 					MATCH.model.save();
 					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
