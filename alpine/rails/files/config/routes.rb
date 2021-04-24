@@ -131,6 +131,10 @@ Rails.application.routes.draw do
   get 'random_matches' => 'matches#random_matches'
   get 'new_match_profile/:id' => 'matches#new_match_profile'
 
+# ------------------
+# WARS
+# ------------------
+  get 'wars/guild_wars/:id' => 'wars#guild_wars'
 
 # --------------------
 #    AUTHENTIFICATION

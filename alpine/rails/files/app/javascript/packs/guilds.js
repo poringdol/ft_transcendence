@@ -38,14 +38,36 @@ $(function () {
 			this.GuildCardBtn = new App.Views.GuildCardBtn({ model: data.model, view: this });
 		},
 		newGuildMemberList: function (data) {
-			this.MemberCol = new App.Collections.GuildMember({ guild: data.model.id })
+			if (!this.MemberCol)
+				this.MemberCol = new App.Collections.GuildMember({ guild: data.model.id })
 			this.GuildMemberList = new App.Views.GuildMembers({ collection: this.MemberCol, view: this })
 		},
 		newGuildOfficerList: function (data) {
-			col = new App.Collections.GuildMember({ guild: data.model.id })
-			this.GuildOfficerList = new App.Views.GuildOfficers({ collection: col, view: this })
+			if (!this.MemberCol)
+				this.MemberCol = new App.Collections.GuildMember({ guild: data.model.id })
+			this.GuildOfficerList = new App.Views.GuildOfficers({ collection: this.MemberCol, view: this })
+		},
+		newGuildWarList: function (data) {
+			this.WarCol = new App.Collections.GuildWar({ guild: data.model.id })
+			this.GuildWarList = new App.Views.GuildWars({ collection: this.WarCol, view: this, guild: data.model.id })
 		}
 	})
+
+	// ------------------------------------
+	// WAR      MODEL and COLLECTION
+	// ------------------------------------
+	App.Models.GuildWar = Backbone.Model.extend({
+		urlRoot: "/wars/guild_wars/",
+	});
+
+	App.Collections.GuildWar = Backbone.Collection.extend({
+		model: App.Models.GuildWar,
+		url: "/wars/guild_wars/",
+		initialize: function (data) {
+			this.url += data.guild
+			this.fetch();
+		}
+	});
 
 	// ------------------------------------
 	// GUILD      MODEL and COLLECTION
@@ -129,6 +151,128 @@ $(function () {
 		}
 	})
 
+	// -----------------------------------------
+	// GUILD_WARS         COLLECTION VIEW
+	// -----------------------------------------
+	App.Views.GuildWars = Backbone.View.extend({
+		template: _.template($("#GuildWarListHeaderTemplate").html()),
+		className: 'list-group',
+		initialize: function (data) {
+			this.collection = data.collection;
+			this.view = data.view;
+			this.guild_id = data.guild
+
+			this.collection.on('sync', this.render, this);
+		},
+		render: function () {
+			this.$el.html(this.template())
+			this.collection.each(this.addOne, this);
+			$('#GuildContent').html(this.el);
+			return this;
+		},
+		addOne: function (war) {
+			var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
+			this.$el.append(warView.render().el);
+			if (curr_user.attributes.id == this.view.guild.owner_id ||
+				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)) {
+				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
+				this.$el.append(warViewBtn.render().el);
+			}
+		}
+	})
+
+	// -----------------------------------------
+	// GUILD_WARS          MODEL VIEW
+	// -----------------------------------------
+	App.Views.GuildWar = Backbone.View.extend({
+		tagName: 'a',
+		className: 'list-group-item',
+		templateList: _.template($("#GuildWarListTemplate").html()),
+		initialize: function (data) {
+			this.model = data.model
+			this.guild_id = data.guild_id
+		},
+		render: function () {
+			// this.model.start_date = new Date(this.model.start).toUTCString()
+			this.model.start_date = new Date(this.model.start)
+			this.model.end_date = new Date(this.model.end)
+			// console.log(this.model.start_date.day)
+			if (this.model.guild_1.id != this.guild_id)
+				this.model.enemy = this.model.guild_1
+			else
+				this.model.enemy = this.model.guild_2
+			this.$el.attr({ 'href': ("/wars/" + this.model.id) });
+			var template = this.templateList(this.model);
+			this.$el.append(template);
+
+			return this;
+		}
+	})
+
+	App.Views.GuildWarBtn = Backbone.View.extend({
+		tagName: 'div',
+		className: 'list-group-item',
+
+		template_accept:	_.template($("#AcceptWarBtnTemplate").html()),
+		template_decline:	_.template($("#DeclineWarBtnTemplate").html()),
+
+		initialize: function (data) {
+			this.model = data.model
+			this.view = data.view
+			this.parent = data.parent
+
+			this.model.on('destroy', this.remove, this);
+			this.model.on('sync', this.render, this);
+		},
+		events: {
+			'click #AcceptWarBtn':	'acceptWar',
+			'click #DeclineWarBtn':	'declineWar',
+		},
+		render: function () {
+			this.$el.html("")
+			this.$el.attr({ 'style': 'text-align: center;' });
+
+			if (curr_user.attributes.id == this.view.guild.owner_id)
+				var role = 'owner'
+			else if (curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)
+				var role = 'officer'
+
+			if (role == 'owner' || role == 'officer') {
+				this.$el.append(this.template_accept);
+				this.$el.append(this.template_decline);
+			}
+
+			return this;
+		},
+		declineWar: function () {
+			alert('decline')
+			// fetch("/wars/decline/" + this.model.id)
+			// 	.then(res => res.json())
+			// 	.then(_.bind((res) => {
+			// 		if (res.error)
+			// 			alert(res.error)
+			// 		else
+			// 			alert('You successfully declined the war!')
+			// 	}, this))
+		},
+		acceptWar: function () {
+			alert('accept')
+			// fetch("/wars/accept/" + this.model.id)
+			// .then(res => res.ok ? res.json() : Promise.reject(res))
+			// .then(_.bind(res => {
+			// 	alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
+			// 	curr_user.fetch()
+			// 	this.model.is_officer = false
+			// 	// this.view.GuildCard.render()
+			// 	this.render()
+			// 	// window.location.reload()
+			// }, this))
+			// .catch(() => alert("You are not able to do that"))
+		},
+		remove: function () {
+			this.$el.remove();
+		}
+	})
 
 	// -----------------------------------------
 	// GUILD_OFFICERS         COLLECTION VIEW
@@ -279,6 +423,7 @@ $(function () {
 				alert('Success! User ' + this.model.nickname + ' became an officer!')
 				curr_user.fetch()
 				this.model.is_officer = true
+				this.model.save()
 				// this.view.GuildCard.render()
 				this.render()
 				// window.location.reload()
@@ -384,7 +529,7 @@ $(function () {
 		renderMemberList: function () {
 			if (!this.view.GuildMemberList) {
 				this.view.newGuildMemberList({ model: this.model })
-				this.view.GuildMemberList.render();
+				// this.view.GuildMemberList.render();
 			}
 			else {
 				this.view.GuildMemberList.collection.fetch()
@@ -394,7 +539,7 @@ $(function () {
 		renderOfficerList: function () {
 			if (!this.view.GuildOfficerList) {
 				this.view.newGuildOfficerList({ model: this.model })
-				this.view.GuildOfficerList.render();
+				// this.view.GuildOfficerList.render();
 			}
 			else {
 				this.view.GuildOfficerList.collection.fetch()
@@ -402,7 +547,11 @@ $(function () {
 			}
 		},
 		renderWarList: function () {
-			$('#GuildContent').html("");
+			if (!this.view.GuildWarList)
+				this.view.newGuildWarList({ model: this.model })
+			else
+				this.view.GuildWarList.collection.fetch()
+				.then(() => this.view.GuildWarList.render())
 		}
 	})
 
@@ -551,7 +700,6 @@ $(function () {
 			})
 				.then(res => res.json())
 				.then(_.bind((res) => {
-					// curr_user.attributes.
 					if (res.error)
 						alert(res.error)
 					else
@@ -637,6 +785,7 @@ $(function () {
 			this.curr_user.on('sync', this.render(), this)
 		},
 		render: function () {
+			window.curr_user = this.curr_user
 			if (!this.curr_user.get("is_banned")) {
 				col = new App.Collections.Guild();
 				form = new App.Views.NewGuild({ collection: col });
@@ -651,6 +800,6 @@ $(function () {
 	// -----------------------------------------
 	// MAIN
 	// -----------------------------------------
-	window.curr_user = new App.Models.CurrentUser()
+	curr_user = new App.Models.CurrentUser()
 	page = new App.Views.Page({ curr_user: curr_user })
 }());

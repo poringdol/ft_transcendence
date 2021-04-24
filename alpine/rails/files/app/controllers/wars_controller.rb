@@ -20,6 +20,12 @@ class WarsController < ApplicationController
   def edit
   end
 
+  def guild_wars
+	id = params[:id]
+	wars = War.where("CASE WHEN guild_1_id = #{id} OR guild_2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:start} desc")#.where(is_accepted: true)
+	render json: wars
+  end
+
   # POST /wars or /wars.json
   def create
     guild_2 = Guild.where(name: params[:guild_2]).first

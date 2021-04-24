@@ -22,7 +22,7 @@
 	<div class="col-4"></div>
 	<div class="col-4"></div>
 </div>
-<div class="row justify-content-center PageBody">
+<div class="row justify-content-center PageBody" style="min-width: 1050px">
 	<div class="col-3" id="GuildList"></div>
 	<div class="col-4" id="GuildCard"></div>
 	<div class="col-4" id="GuildContent"></div>
@@ -52,10 +52,51 @@
 	</div>
 </script>
 
-
-<script type="text/template" id="GuildMemberListBtnTemplate">
-	<div class='row' id='AdminGuildMemberBtn' style="padding-left: 10px;padding-right: 10px;">
+<!-- 
+	WAR LIST ELEMENT TEMPLATE
+-->
+<script type="text/template" id="GuildWarListTemplate">
+	<div id="GuildWarList" class='row' style='text-align: center'>
+		<div class='col-1 MiddleVerticalAlign'>
+			<img width="30" height="30" class="rounded-circle" src=<%%= enemy.logo.url %>> 
+		</div>
+		<div class='col-2 MiddleVerticalAlign'>
+			<%%= enemy.anagram %>
+		</div>
+		<div class='col-2 MiddleVerticalAlign'>
+			<%%= prize %>
+		</div>
+		<div class='col' style='text-align: center'>
+			<div class='col-12' style='text-align: center'>
+				<%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %> <%%= start_date.toLocaleTimeString('default', {hour: '2-digit', minute:'2-digit'}) %> 
+			</div>
+			<div class='col-12' style='text-align: center'>
+				<%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %> <%%= end_date.toLocaleTimeString('default', {hour: '2-digit', minute:'2-digit'}) %> 
+			</div>
+		</div>
+		<div class='col-2 MiddleVerticalAlign'>
+			none
+		</div>
 	</div>
+</script>
+
+<script type="text/template" id="GuildWarListHeaderTemplate">
+	<a class='list-group-item' style='text-align: center'>
+	<div id="GuildWarList" class='row'>
+		<div class='col-3'>
+			Enemy
+		</div>
+		<div class='col-2'>
+			Prize
+		</div>
+		<div class='col'>
+			Sart/End Date
+		</div>
+		<div class='col-2'>
+			Addons
+		</div>
+	</div>
+	</a>
 </script>
 
 <!-- 
@@ -135,6 +176,21 @@
 	</button>
 </script>
 
+<!-- 
+	WAR LIST BUTTONS TEMPLATE
+-->
+
+<script type="text/template" id="AcceptWarBtnTemplate">
+	<button id='AcceptWarBtn' type="button" class="btn card-link btn-guild" style='width: 40%'>
+		Accept
+	</button>
+</script>
+
+<script type="text/template" id="DeclineWarBtnTemplate">
+	<button id='DeclineWarBtn' type="button" class="btn card-link btn-guild" style='width: 40%'>
+		Decline
+	</button>
+</script>
 
 <!-- 
 	EDIT BUTTON TEMPLATE
