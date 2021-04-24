@@ -158,6 +158,13 @@
 </script>
 
 <!-- 
+	WAR BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildWarBtnTemplate">
+	<button type="button" class="btn card-link btn-guild" id="WarGuildBtn">Declare a war</a>
+</script>
+
+<!-- 
 	JOIN BUTTON TEMPLATE
 -->
 <script type="text/template" id="GuildJoinBtnTemplate">
@@ -183,6 +190,83 @@
 		</form>
 	</div>
 </script>
+
+<!-- 
+	WAR CREATION FORM
+-->
+<script type="text/template" id="WarCreateTemplate">
+	<div class='card col mb-3'>
+		<div class="card-body">
+			<h6 class="card-title">New guild war</h6>
+		</div>
+		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+			<li class="list-group-item">
+				<div class="row">
+					<div class="col-4 FormDateTitle">
+						Date start
+					</div>
+					<div class="col">
+						<form class="row formMatches">
+							<input type="date" class="form-control col formMatchesInput" id="formWarDateStart" value="">
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 FormDateTitle">
+						Time start
+					</div>
+					<div class="col">
+						<form class="row formMatches">
+							<input type="time" class="form-control col formMatchesInput" id="formWarTimeStart" value="">
+						</form>
+					</div>
+				</div>
+			</li>
+
+			<li class="list-group-item">
+				<div class="row">
+					<div class="col-4 FormDateTitle">
+						Date start
+					</div>
+					<div class="col">
+						<form class="row formMatches">
+							<input type="date" class="form-control col formMatchesInput" id="formWarDateEnd" value="">
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 FormDateTitle">
+						Time start
+					</div>
+					<div class="col">
+						<form class="row formMatches">
+							<input type="time" class="form-control col formMatchesInput" id="formWarTimeEnd" value="">
+						</form>
+					</div>
+				</div>
+			</li>
+
+			<li class="list-group-item">
+				<form class="row formMatches">
+					<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
+				</form>
+			</li>
+			<li class="list-group-item">
+				<form class="row formMatches">
+					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
+				</form>
+			</li>
+			<li class="list-group-item">
+				<form class="row formMatches">
+					<input type="submit" class="btn btn-outline-secondary col" value="create">
+				</form>
+			</li>
+		</div>
+	</div>
+</script>
+
+
+
 
 <!-- 
 	EDIT GUILD CARD TEMPLATE
@@ -261,7 +345,6 @@
 					event.target.id.value = current_guild_id;
 					return true;
 				})
-
 			</script>
 		
 		</div>

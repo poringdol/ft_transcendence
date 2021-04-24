@@ -96,7 +96,6 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.boolean "is_end", default: false
     t.boolean "is_inprogress", default: false
     t.boolean "is_ranked", default: false
-    t.integer "rating", default: 10
     t.boolean "is_player1_online", default: false
     t.boolean "is_player2_online", default: false
     t.datetime "created_at", precision: 6, null: false
@@ -172,7 +171,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.boolean "is_online", default: false
     t.integer "loses", default: 0
     t.integer "wins", default: 0
-    t.integer "score", default: 10
+    t.integer "score", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "encrypted_otp_secret"

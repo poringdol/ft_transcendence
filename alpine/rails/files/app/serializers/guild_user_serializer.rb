@@ -1,3 +1,3 @@
 class GuildUserSerializer < ActiveModel::Serializer
-  attributes :id, :nickname, :avatar, :is_officer, :guild
+  attributes :id, :nickname, :avatar, :is_officer, :is_admin, :guild, :guild_id
 end

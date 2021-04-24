@@ -23,7 +23,7 @@ class GuildsController < ApplicationController
 
 
   def get_curr_user
-    render json: current_user
+    render json: current_user, serializer: GuildUserSerializer
   end
 
 

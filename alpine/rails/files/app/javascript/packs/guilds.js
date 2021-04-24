@@ -119,9 +119,9 @@ $(function () {
 			if (user.nickname) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if ((curr_user.is_admin == true || curr_user.is_moderator == true)
-					|| (curr_user.is_officer && this.view.guild_id == curr_user.guild_id)
-					|| curr_user.id == this.view.guild.owner_id) {
+				if ((curr_user.attributes.is_admin == true || curr_user.attributes.is_moderator == true)
+					|| (curr_user.attributes.is_officer && this.view.guild_id == curr_user.attributes.guild_id)
+					|| curr_user.attributes.id == this.view.guild.owner_id) {
 					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
 					this.$el.append(userViewBtn.render().el);
 				}
@@ -145,7 +145,6 @@ $(function () {
 		},
 		render: function () {
 			this.$el.html("")
-			console.log('render')
 			this.collection.each(this.addOne, this);
 			$('#GuildContent').html(this.el);
 			return this;
@@ -154,8 +153,8 @@ $(function () {
 			if (user.nickname && user.is_officer) {
 				var userView = new App.Views.GuildMember({ model: user });
 				this.$el.append(userView.render().el);
-				if ((curr_user.is_admin == true || curr_user.is_moderator == true)
-					|| curr_user.id == this.view.guild.owner_id) {
+				if ((curr_user.attributes.is_admin == true || curr_user.attributes.is_moderator == true)
+					|| curr_user.attributes.id == this.view.guild.owner_id) {
 					var userViewBtn = new App.Views.GuildMemberBtn({ model: user, view: this.view, parent: this});
 					this.$el.append(userViewBtn.render().el);
 				}
@@ -214,15 +213,15 @@ $(function () {
 			this.$el.html("")
 			this.$el.attr({ 'style': 'text-align: center;' });
 
-			if ((curr_user.is_admin == true || curr_user.is_moderator == true) ||
-				curr_user.id == this.view.guild.owner_id)
+			if ((curr_user.attributes.is_admin == true || curr_user.attributes.is_moderator == true) ||
+				curr_user.attributes.id == this.view.guild.owner_id)
 				var role = 'owner-admin'
-			else if (curr_user.is_officer == true && curr_user.guild_id == this.view.guild_id)
+			else if (curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)
 				var role = 'officer'
 
 			if ((role == 'owner-admin'
 				|| (role == 'officer' && this.model.is_officer == false && this.model.id != this.model.attributes.guild.owner_id))
-				&& this.model.id != curr_user.id) {
+				&& this.model.id != curr_user.attributes.id) {
 				var template_exit = this.template_exit(this.model);
 				this.$el.append(template_exit);
 			}
@@ -232,7 +231,7 @@ $(function () {
 				this.$el.append(template_officer);
 			}
 			else if (role == 'owner-admin'
-					|| (role == 'officer' && this.model.id == curr_user.id)) {
+					|| (role == 'officer' && this.model.id == curr_user.attributes.id)) {
 				var template_unofficer = this.template_unofficer(this.model);
 				this.$el.append(template_unofficer);
 			}
@@ -265,6 +264,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
+				curr_user.fetch()
 				this.model.is_officer = false
 				// this.view.GuildCard.render()
 				this.render()
@@ -277,6 +277,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an officer!')
+				curr_user.fetch()
 				this.model.is_officer = true
 				// this.view.GuildCard.render()
 				this.render()
@@ -289,6 +290,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(res => {
 				alert('Success! User ' + this.model.nickname + ' became an owner!')
+				curr_user.fetch()
 				this.model.attributes.guild.owner_id = this.model.id
 				this.view.GuildCard.render()
 				this.parent.collection.fetch()
@@ -323,7 +325,7 @@ $(function () {
 		render: function () {
 			this.$el.attr({'data-bs-toggle': "list"});
 			this.$el.css({ "padding": "0px" })
-			if (curr_user.guild_id == this.model.id)
+			if (curr_user.attributes.guild_id == this.model.id)
 				this.$el.attr({ 'id': "usersguild" });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
@@ -414,20 +416,25 @@ $(function () {
 		templateLeaveBtn:  _.template($("#GuildLeaveBtnTemplate").html()),
 		templateEditeBtn:  _.template($("#GuildEditBtnTemplate").html()),
 		templateEdite:     _.template($("#GuildEditTemplate").html()),
+		templateWarBtn:    _.template($("#GuildWarBtnTemplate").html()),
 		initialize: function (data) {
 			this.model = data.model;
 			this.view = data.view;
 		},
 		render: function () {
-			if (curr_user.id == this.model.owner_id) {
+			if (curr_user.attributes.id == this.model.owner_id) {
 				this.$el.html(this.templateEditeBtn)
 				this.$el.append(this.templateLeaveBtn)
 				this.$el.append(this.templateDeleteBtn)
 			}
-			else if (!curr_user.guild_id)
+			else if (!curr_user.attributes.guild_id)
 				this.$el.html(this.templateJoinBtn)
-			else if (curr_user.guild_id == this.model.id)
+			else if (curr_user.attributes.guild_id == this.model.id)
 				this.$el.html(this.templateLeaveBtn)
+			else if (curr_user.attributes.guild_id != this.model.id &&
+					(curr_user.attributes.is_officer ||
+					 curr_user.attributes.guild.owner_id == curr_user.attributes.id))
+				this.$el.html(this.templateWarBtn)
 			else
 				this.$el.html("")
 			$('#GuildCardBtn').html(this.el);
@@ -437,6 +444,7 @@ $(function () {
 			'click #JoinGuildBtn':  'joinGuild',
 			'click #LeaveGuildBtn': 'leaveGuild',
 			'click #EditGuildBtn':  'editGuild',
+			'click #WarGuildBtn':   'warGuild',
 		},
 		deleteGuild: function () {
 			alert("DELETE");
@@ -449,7 +457,8 @@ $(function () {
 					$('#GuildContent').html("");
 				}, this)
 			);
-			curr_user.guild_id = null
+			curr_user.fetch()
+			// curr_user.attributes.guild_id = null
 		},
 		joinGuild: function () {
 			fetch("/guilds/join", {
@@ -464,11 +473,12 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind(() => {
 				alert('You joined guild ' + this.model.name + '!');
-				curr_user.guild_id = this.model.id;
+				curr_user.attributes.guild_id = this.model.id;
 				this.render();
 				$('#GuildForm').css({ "display": "none" });
 				$('#GuildContent').html("");
 				this.view.GuildListEl.$el.attr({ 'id': "usersguild" });
+				curr_user.fetch()
 			}, this))
 			return this;
 		},
@@ -484,7 +494,7 @@ $(function () {
 			.then(res => res.ok ? res.json() : Promise.reject(res))
 			.then(_.bind((response) => {
 				alert('You left guild ' + this.model.name + '!');
-				curr_user.guild_id = null;
+				curr_user.attributes.guild_id = null;
 				if (response == 0)
 					this.model.destroy();
 				else {
@@ -495,16 +505,60 @@ $(function () {
 				}
 				$('#GuildForm').css({ "display": "block" });
 				$('#GuildContent').html("");
+				curr_user.fetch()
 			}, this))
 			return this;
 		},
 		editGuild: function () {
 			this.$el.html(this.templateEdite);
 			$('#GuildContent').html(this.el);
-			
+		},
+		warGuild: function () {
+			warView = new App.Views.FormWar({ guild_2: this.model.name })
+			warView.render()
 		}
 	})
 
+
+	App.Views.FormWar = Backbone.View.extend({
+		template: _.template($("#WarCreateTemplate").html()),
+		initialize: function (data) {
+			this.guild_2 = data.guild_2
+			this.$el.html(this.template())
+			$("#GuildContent").html(this.el)
+		},
+		events: {
+			'submit': 'submit'
+		},
+		submit: function (e) {
+			e.preventDefault();
+			let war = {
+				guild_2:	this.guild_2,
+				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
+				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
+				date_end:	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
+				time_end:	$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
+				addons:		$(e.currentTarget).find('input[id=formAddons]').val(),
+				prize:		$(e.currentTarget).find('input[id=formPrize]').val(),
+			}
+			fetch("/wars", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(war)
+			})
+				.then(res => res.json())
+				.then(_.bind((res) => {
+					// curr_user.attributes.
+					if (res.error)
+						alert(res.error)
+					else
+						alert('You successfully sent an invitation to a war!')
+				}, this))
+		},
+	})
 
 	// -----------------------------------------
 	// GUILD          COLLECTION VIEW
@@ -559,7 +613,7 @@ $(function () {
 					$('#GuildForm').css({ "display": "none" });
 					$('#GuildCard').html("");
 					$('#GuildContent').html("");
-					curr_user.guild_id = new_guild.id
+					curr_user.attributes.guild_id = new_guild.id
 				}, this)
 			);
 
@@ -568,23 +622,35 @@ $(function () {
 			});
 		},
 
+	});
+
+	App.Models.CurrentUser = Backbone.Model.extend({
+		url: "/get_curr_user",
+		initialize: function () {
+			this.fetch()
+		}
 	})
 
+	App.Views.Page = Backbone.View.extend({
+		initialize: function (data) {
+			this.curr_user = data.curr_user
+			this.curr_user.on('sync', this.render(), this)
+		},
+		render: function () {
+			if (!this.curr_user.get("is_banned")) {
+				col = new App.Collections.Guild();
+				form = new App.Views.NewGuild({ collection: col });
+				form.render();
+				guilds_view = new App.Views.Guilds({ collection: col });
+			}
+			else
+				$(".content").html("<h3>You account was blocked by administrator</h3>")
+		}
+	})
 
 	// -----------------------------------------
 	// MAIN
 	// -----------------------------------------
-	fetch("/get_curr_user")
-	.then(res => res.ok ? res.json() : Promise.reject(res))
-	.then(function(curr_user) {
-		if (!curr_user.is_banned) {
-			window.curr_user = curr_user;
-			col = new App.Collections.Guild();
-			form = new App.Views.NewGuild({ collection: col });
-			form.render();
-			guilds_view = new App.Views.Guilds({ collection: col });
-		}
-		else
-			$(".content").html("<h3>You account was blocked by administrator</h3>")
-	})	
+	window.curr_user = new App.Models.CurrentUser()
+	page = new App.Views.Page({ curr_user: curr_user })
 }());

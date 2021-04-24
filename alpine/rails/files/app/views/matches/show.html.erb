@@ -43,13 +43,14 @@
   <p>
     Score: <span id="MatchPlayer1Score"><%%= player1_score %></span>
   </p>
-  <p id="MatchPlayer1Online"></p>
+  <p id="MatchPlayer1Online">
+  </p>
 </script>
 
 <%# ПОЛЬЗОВАТЕЛЬ 2 %>
 <script type="text/template" id="MatchUser2ProfileTemplate">
   <p>
-    <a href=<%%= (player2 == null) ? `#` : `/profile/#{player2.id}` %>>
+    <a href='/profile/<%%= player2.id %>'>
       <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
     </a>
   </p>
@@ -62,7 +63,8 @@
   <p>
     Score: <span id="MatchPlayer2Score"><%%= player2_score %></span>
   </p>
-  <p id="MatchPlayer2Online"></p>
+  <p id="MatchPlayer2Online">
+  </p>
 </script>
 
 <%# РЕЗУЛЬТАТ ПОСЛЕ ОКОНЧАНИЯ ИГРЫ %>
@@ -86,7 +88,6 @@
       <p>
         <h4><%%= player1_score %></h4>
       </p>
-      <p id="Player1Rating"></p>
     </div>
    
     <div class="col-6">
@@ -104,7 +105,6 @@
       <p>
         <h4><%%= player2_score %></h4>
       </p>
-      <p id="Player2Rating"></p>
     </div>
   </div>
 </script>
