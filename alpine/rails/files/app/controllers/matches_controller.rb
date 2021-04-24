@@ -172,11 +172,16 @@ class MatchesController < ApplicationController
   end
 
   def create_random_match
+
     existing_match = Match.where(player2_id: nil).first
+    
     if existing_match
+    
       if existing_match.player1_id != current_user.id
+        
         existing_match.player2_id = current_user.id
         existing_match.guild_2_id = current_user.guild_id
+        
         respond_to do |format|
           if existing_match.save
             format.html { existing_match }
@@ -186,14 +191,16 @@ class MatchesController < ApplicationController
             format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
           end
         end
+
       else
         respond_to do |format|
           format.html { existing_match }
           format.json { render json: existing_match}
         end
       end
+
     else
-      new_match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id)
+      new_match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id, is_ranked: true)
       respond_to do |format|
         if new_match.save
           format.html { new_match }
@@ -203,6 +210,7 @@ class MatchesController < ApplicationController
           format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
         end
       end
+
     end
   end
 
@@ -215,6 +223,16 @@ class MatchesController < ApplicationController
     end
   end
 
+  def end_game
+    match = Match.find(params[:id])
+
+    if match.is_ranked?
+      set_rating(match)
+    end
+
+    match.update(is_end: true, is_inprogress: false)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_match
@@ -223,6 +241,20 @@ class MatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_params
-      params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :created_at, :updated_at)
+      params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :rating, :created_at, :updated_at)
+    end
+
+    def set_rating(match)
+      winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
+      loser  = (winner == match.player1) ? match.player2 : match.player1
+     
+      rating = (match.player1_score - match.player2_score).abs
+      match.rating = (rating <= loser.score) ? rating : loser.score
+      match.save()
+      
+      if match.rating != 0
+        winner.update(score: (winner.score + match.rating))
+        loser.update(score: (loser.score - match.rating))
+      end
     end
 end

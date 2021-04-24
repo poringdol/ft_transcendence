@@ -47,7 +47,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.boolean      :is_online, default: false
       t.integer      :loses, default: 0
       t.integer      :wins, default: 0
-      t.integer      :score, default: 0
+      t.integer      :score, default: 10
 
 
       t.timestamps null: false

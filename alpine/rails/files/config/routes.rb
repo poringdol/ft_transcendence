@@ -131,6 +131,7 @@ Rails.application.routes.draw do
   get 'random_matches' => 'matches#random_matches'
   get 'new_match_profile/:id' => 'matches#new_match_profile'
 
+  post 'matches/end_game' => 'matches#end_game'
 
 # --------------------
 #    AUTHENTIFICATION
