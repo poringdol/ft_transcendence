@@ -230,9 +230,12 @@ document.addEventListener("turbolinks:load", () => {
 
 				MATCH.model.fetch({
 					success: () => {
-						let rating = MATCH.model.get("rating");
 						
-						if (rating > 0) {
+						console.log(MATCH.model.get("is_ranked"))
+						
+						if (MATCH.model.get("is_ranked") == true) {
+							let rating = MATCH.model.get("rating");
+
 							if (MATCH.model.get("player1_score") > MATCH.model.get("player2_score")) {
 								$("#Player1Rating").html(`Rating:  <span style='color: green'>+${rating}</span>`)
 								$("#Player2Rating").html(`Rating:  <span style='color: red'>-${rating}</span>`)
@@ -401,7 +404,9 @@ document.addEventListener("turbolinks:load", () => {
 
 						// И шарик оказался за первым игроком
 						if (ball.x + ball.radius/2 <= RADIUS * 3) {
+							console.log("1__1 " + this.params.state)
 							this.params.state == "playerwait";
+							console.log("2__2 " + this.params.state)
 							// Засчтитаем гол
 							this.goal(2);
 						}
@@ -517,7 +522,7 @@ document.addEventListener("turbolinks:load", () => {
 
 				// if (this.params.state == "playerwait")
 				// 	score += 1;
-				console.log(game.params.state)
+				console.log("3__3 " + this.params.state)
 				if (MATCH.player > 0 && MATCH.player != lastGoalPlayer) {
 					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 					MATCH.model.save();
