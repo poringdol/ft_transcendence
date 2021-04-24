@@ -173,8 +173,8 @@ $(function () {
 		addOne: function (war) {
 			var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
 			this.$el.append(warView.render().el);
-			if (curr_user.attributes.id == this.view.guild.owner_id ||
-				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)) {
+			if (war.attributes.is_accepted == false && (curr_user.attributes.id == this.view.guild.owner_id ||
+				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id))) {
 				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
 				this.$el.append(warViewBtn.render().el);
 			}
