@@ -126,15 +126,13 @@ class WarsController < ApplicationController
 
       same_time_wars = all_wars.where(start: war.start..war.end)    # Начало текущей войны находится во время другой принятой войны
                       .or(all_wars.where(end: war.start..war.end))  # Конец текущей войны находится во время другой принятой войны
-                      .or(all_wars.where(start: DateTime.now..war.start, end: war.end..DateTime::Infinity.new)) # Начало раньше, конец позже другой принятой войны
-
-      if same_time_wars.empty?
-        war.update(is_accepted: true)
-        respond_to do |format|
+                      .or(all_wars.where(start: DateTime.new(2021,1,1,0,0)..war.start, end: war.end..DateTime::Infinity.new)) # Начало раньше, конец позже другой принятой войны
+      
+      respond_to do |format|
+        if same_time_wars.empty?
+          war.update(is_accepted: true)
           format.json { render :show, status: :ok, location: @war }
-        end
-      else
-        respond_to do |format|
+        else
           format.json { render json: { error: 'Another warr is scheduled for same time' }, status: :unprocessable_entity}
         end
       end

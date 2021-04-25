@@ -12,7 +12,7 @@ document.addEventListener("turbolinks:load", () => {
 					end_game: 132,
 					start_game: 133,
 					update_state: 134, };
-	const MAX_RATE = 7;
+	const MAX_RATE = 2;
 	const BRACKET_SPEED = 50;
 	const RADIUS = 8
 
@@ -41,7 +41,13 @@ document.addEventListener("turbolinks:load", () => {
 					}
 					// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
 					else {
-						game.goal((MATCH.player == 1) ? 2 : 1);
+						let lastGoalPlayer = (MATCH.player == 1) ? 2 : 1;
+						let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
+
+						MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+						MATCH.model.save();
+						subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
+						subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 					}
 				}
 			}
@@ -59,7 +65,7 @@ document.addEventListener("turbolinks:load", () => {
 				if (MATCH_ID > 0) {
 					console.log(`Connected to match ${MATCH_ID}`);
 	
-					//При подключении к каналу создаем модель матча (фетчим данные из бд), создаем вью, в которой стартуем игру
+					// При подключении к каналу создаем модель матча (фетчим данные из бд), создаем вью, в которой стартуем игру
 					MATCH = new App.Views.Match({ model: new App.Models.Match() });
 				}
 			},
@@ -120,9 +126,9 @@ document.addEventListener("turbolinks:load", () => {
 			}
 		});
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 		
-		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 
 		window.App = {
 			Models: {},
@@ -216,10 +222,10 @@ document.addEventListener("turbolinks:load", () => {
 			
 			renderResult: function () {
 
-				//Останавливаем цикл
+				// Останавливаем цикл
 				if (typeof game !== "undefined") {
 					cancelAnimationFrame(game.requestLoop);
-					//Убираем слушателей событий
+					// Убираем слушателей событий
 					document.removeEventListener("keydown", game.keyDownEvent);
 				}
 
@@ -228,7 +234,23 @@ document.addEventListener("turbolinks:load", () => {
 				let template = MATCH.result_template(MATCH.model.attributes);
 				$("#GameWrapper").html(template);
 
-				MATCH.model.fetch();
+				MATCH.model.fetch({
+					success: () => {
+						
+						if (MATCH.model.get("is_ranked") == true) {
+							let rating = MATCH.model.get("rating");
+
+							if (MATCH.model.get("player1_score") > MATCH.model.get("player2_score")) {
+								$("#Player1Rating").html(`Rating:  <span style='color: green'>+${rating}</span>`)
+								$("#Player2Rating").html(`Rating:  <span style='color: red'>-${rating}</span>`)
+							}
+							else {
+								$("#Player1Rating").html(`Rating:  <span style='color: red'>-${rating}</span>`)
+								$("#Player2Rating").html(`Rating:  <span style='color: green'>+${rating}</span>`)
+							}
+						}
+					}
+				});
 			},
 
 			changeOnlineStatus: function (is_online, player) {
@@ -240,13 +262,12 @@ document.addEventListener("turbolinks:load", () => {
 			},
 			
 			changeScore: function (score, player) {
-				this.model.fetch({ success: () => { $(`#MatchPlayer${player}Score`).html(score); } })
-				
-
+				// this.model.fetch({ success: () => { $(`#MatchPlayer${player}Score`).html(score); } })
+				$(`#MatchPlayer${player}Score`).html(score);
 			},
 		})
 
-		//Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
+		// Опишем наши игровые объекты + научим их рисовать себя на канвасе и передвигаться
 		var Ball = function () {
 			return {
 				radius: RADIUS,
@@ -255,15 +276,15 @@ document.addEventListener("turbolinks:load", () => {
 				y: 0,
 				yspeed: 0,
 				xspeed: 0,
-				bounce: 1.1, //коофицент упругости - для ускорения шарика после отскока
+				bounce: 1.1, // коофицент упругости - для ускорения шарика после отскока
 				render: function (ctx) {
 					ctx.beginPath();
 					ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
 					ctx.fillStyle = this.color;
 					ctx.fill();
 				},
-				//Передвижение шара всегда происходит с определенной скоростью 
-				//поэтому мы не будем передавть x y для кастомного перемещения.
+				// Передвижение шара всегда происходит с определенной скоростью 
+				// поэтому мы не будем передавть x y для кастомного перемещения.
 				move: function () {
 					this.x = this.x + this.xspeed;
 					this.y = this.y + this.yspeed;
@@ -271,7 +292,7 @@ document.addEventListener("turbolinks:load", () => {
 			}
 		};
 		
-		//Блоки для отбивания шарика
+		// Блоки для отбивания шарика
 		var Bracket = function () {
 			return {
 				w: 10,
@@ -287,18 +308,18 @@ document.addEventListener("turbolinks:load", () => {
 			}
 		};
 		
-		//Теперь сама игра
+		// Теперь сама игра
 		var Game = function (player, is_newgame) {
 		
-			//Сохраним ссылку на контекст
-			//для дальнейшей передачи в ивенты
+			// Сохраним ссылку на контекст
+			// для дальнейшей передачи в ивенты
 			var _this = this;
 			
-			//Параметры с которыми будет игра
+			// Параметры с которыми будет игра
 			this.params = {
 				width: 960,
 				height: 600,
-				state: "loading", //Состояние игры
+				state: "loading", // Состояние игры
 				lastGoalPlayer: 0,
 			};
 
@@ -312,11 +333,11 @@ document.addEventListener("turbolinks:load", () => {
 				subscribe.perform("get_state", { match_id: MATCH_ID, key_code: KEYS.update_state });
 			}
 		
-			//Сохраняем ссылки на canvas и контекст для дальнейшего рисования
+			// Сохраняем ссылки на canvas и контекст для дальнейшего рисования
 			this.canvasBlock = document.getElementById("gameCanvas");
 			this.ctx = this.canvasBlock.getContext("2d");
 			
-			//Подписываемся на события кнопок, если пользователь участник игры
+			// Подписываемся на события кнопок, если пользователь участник игры
 			if (player > 0) {
 				// var keeDown = function (event) { _this.keyDownEvent.call(_this, event, player); }
 				// document.addEventListener("keydown", _.throttle(keeDown, THROTTLE));
@@ -327,77 +348,79 @@ document.addEventListener("turbolinks:load", () => {
 			return this;
 		};
 		
-		//Игровые методы
+		// Игровые методы
 		Game.prototype = {
-			//Старт игры
+			// Старт игры
 			startGame: function () {
 
 				var _this = this;
 
-				//Инициализируем игровые объекты
+				// Инициализируем игровые объекты
 				this.objects = {
 					ball: new Ball(),
 					bracket1: new Bracket(),
-					bracket2: new Bracket()
+					bracket2: new Bracket(),
+					canvasColor: "#eeeeee"
 				};
 
-				//Расставляем стартовые позиции ракеток
+				// Расставляем стартовые позиции ракеток
 				this.objects.bracket1.x = 50;
 				this.objects.bracket1.y = this.params.height / 2 - this.objects.bracket1.h / 2;
 				
 				this.objects.bracket2.x = this.params.width - 50;
 				this.objects.bracket2.y = this.params.height / 2 - this.objects.bracket1.h / 2;
 				
-				//Перекрасим второго игрока
+				// Перекрасим второго игрока
 				this.objects.bracket2.color = "#00FFCC";
 				
-				//Запускаем игровой цикл
+				// Запускаем игровой цикл
 				this.loop();
 			},
 		
-			//Игровой цикл
+			// Игровой цикл
 			loop: function () {
 				var _this = this;
 				
-				//Логика игры
+				// Логика игры
+				// _.throttle(this.logic(), 100);
 				this.logic();
-				//Физика игры
+				// Физика игры
 				this.physic();
-				//Рендер игры
+				// Рендер игры
 				this.render();
 		
 				if (this.params.state == "stop" || this.params.state == "leave")
 					return;
-				//Используем замыкание для передачи контекста
+				// Используем замыкание для передачи контекста
 				this.requestLoop = requestAnimationFrame(function() {
 					_this.loop.call(_this);
 				});
 			},
 		
-			//Логика игры
+			// Логика игры
 			logic: function () {
 		
 				var ball = game.objects.ball;
 		
-				//Если сейчас идет игра
-				if (this.params.state == "game") {
-			
-					//И шарик оказался за первым игроком
-					if (ball.x + ball.radius/2 <= RADIUS * 3) {
-						this.params.state == "palyerwait";
-						//Засчтитаем гол
-						this.goal(2);
+					// Если сейчас идет игра
+					if (this.params.state == "game") {
+
+						// И шарик оказался за первым игроком
+						if (ball.x <= RADIUS * 2) {
+							this.params.state = "playerwait";
+							// Засчтитаем гол
+							this.goal(2);
+						}
+						
+						// Шарик оказался за вторым игроком
+						else if (ball.x >= game.params.width - (RADIUS * 2)) {
+							this.params.state = "playerwait";
+							// Засчтитаем гол
+							this.goal(1);
+						}
 					}
-					
-					//Шарик оказался за вторым игроком
-					if (ball.x + ball.radius/2 >= game.params.width - (RADIUS * 3)) {
-						this.params.state == "palyerwait";
-						//Засчтитаем гол
-						this.goal(1);
-					}
-			
-				}
-				//Проверяем наличие победителя
+
+				// Проверяем наличие победителя
 				if (MATCH.model.get("player1_score") >= MAX_RATE && MATCH.player == 1) {
 					this.stopGame();
 				}
@@ -408,71 +431,71 @@ document.addEventListener("turbolinks:load", () => {
 		
 			},
 		
-			//Физика игры
+			// Физика игры
 			physic: function () {
 
 				var ball = game.objects.ball,
 				b1 = game.objects.bracket1,
 				b2 = game.objects.bracket2;
 				
-				//Передвигаем шар
+				// Передвигаем шар
 				game.objects.ball.move();
 		
-				//Отскок слева
+				// Отскок слева
 				if (ball.x + ball.radius/2 < 0) {
 					game.objects.ball.xspeed = -game.objects.ball.xspeed;
 				}
-				//Отскок Справа
+				// Отскок Справа
 				if (ball.x + ball.radius/2 > game.params.width) {
 					game.objects.ball.xspeed = -game.objects.ball.xspeed;
 				}
-				//Отскок от границ canvas по высоте
+				// Отскок от границ canvas по высоте
 				if (ball.y + ball.radius/2 > game.params.height || ball.y + ball.radius/2 < 0) {
 					game.objects.ball.yspeed = -game.objects.ball.yspeed;
 				}
 				
-				//Отскок шарика от 1 блока
+				// Отскок шарика от 1 блока
 				if (ball.x <= 60 && ball.y >= b1.y && ball.y <= b1.y+b1.h) {
 					ball.xspeed = -ball.xspeed;
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
-				//Ускоряем шарик
+				// Ускоряем шарик
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
-				//Отскок шарика от 2 блока
+				// Отскок шарика от 2 блока
 				if (ball.x >= this.params.width-50 && ball.y >= b2.y && ball.y <= b2.y+b2.h) {
 					ball.xspeed = -ball.xspeed;
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
-				//Ускоряем шарик
+				// Ускоряем шарик
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
 
-				//В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
+				// В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
 				if (this.params.state == "playerwait") {
 					subscribe.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
 				}
 		
-				//Не позволяем вылезать блокам за canvas и возврщаем их на место
+				// Не позволяем вылезать блокам за canvas и возврщаем их на место
 				if (b1.y <= 0) b1.y = 1; 
 				if (b2.y <= 0) b2.y = 1; 
 				if (b1.y+b1.h >= this.params.height) b1.y = this.params.height-b1.h;
 				if (b2.y+b2.h >= this.params.height) b2.y = this.params.height-b2.h;
 			},
 		
-			//Рендер игры
+			// Рендер игры
 			render: function () {
-				//Чистим канвас на каждом кадре
-				game.ctx.fillStyle = "#eeeeee";
+				// Чистим канвас на каждом кадре
+				game.ctx.fillStyle = game.objects.canvasColor;
 				game.ctx.fillRect(0,0, game.params.width, game.params.height);
 		
-				//Рендерим шарик
+				// Рендерим шарик
 				game.objects.ball.render(game.ctx);
 				game.objects.bracket1.render(game.ctx);
 				game.objects.bracket2.render(game.ctx);
 			},
 		
-			//Инициализация игровых событий
+			// Инициализация игровых событий
 			keyDownEvent: function (event, player) {
 			
 				var kCode = event.keyCode;
@@ -498,15 +521,15 @@ document.addEventListener("turbolinks:load", () => {
 			goal: function (lastGoalPlayer) {
 				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
 
-				if (MATCH.player > 0 && MATCH.player != lastGoalPlayer) {
-					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+				if (MATCH.player > 0 && MATCH.player == lastGoalPlayer) {
 					MATCH.model.save();
 					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
 					subscribe.perform("command", { match_id: MATCH_ID, player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 				}
 			},
 			
-			//Выставление шарика на ракетку после гола
+			// Выставление шарика на ракетку после гола
 			resetBall: function (player) {
 				game.objects.ball.xspeed = 0;
 				game.objects.ball.yspeed = 0;
@@ -521,7 +544,7 @@ document.addEventListener("turbolinks:load", () => {
 				}
 			},
 			
-			//Пуск шарика после гола
+			// Пуск шарика после гола
 			kickBall: function () {
 				this.params.state = "game";
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: this.params.state, player: game.params.lastGoalPlayer, key_code: KEYS.update_state });
@@ -539,13 +562,11 @@ document.addEventListener("turbolinks:load", () => {
 			},
 		
 			
-			//Стоп игра
+			// Стоп игра
 			stopGame: function () {
 				game.params.state = "stop";
-				
-				// MATCH.model.set("is_end", true);
-				// MATCH.model.set("is_inprogress", false);
-				MATCH.model.save({ is_end: true, is_inprogress: false });
+				// MATCH.model.save({ is_end: true, is_inprogress: false });
+				$.post("/matches/end_game", { id: MATCH_ID })
 				
 				subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game })
 			},
@@ -554,6 +575,7 @@ document.addEventListener("turbolinks:load", () => {
 				game.objects.bracket1.color = this.randomColor();
 				game.objects.bracket2.color = this.randomColor();
 				game.objects.ball.color = this.randomColor();
+				game.objects.canvasColor = this.randomColor();
 			},
 
 			randomColor: function () {

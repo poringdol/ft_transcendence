@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.boolean "is_end", default: false
     t.boolean "is_inprogress", default: false
     t.boolean "is_ranked", default: false
-    t.integer "rating", default: 10
+    t.integer "rating", default: 0
     t.boolean "is_player1_online", default: false
     t.boolean "is_player2_online", default: false
     t.datetime "created_at", precision: 6, null: false
