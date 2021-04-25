@@ -6,6 +6,7 @@ class War < ApplicationRecord
 
   after_create {
     self.addons = Addon.create(addon1: false, addon2: false, addon3: false)
+    self.save()
   }
 
   after_destroy {

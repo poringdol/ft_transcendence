@@ -1,5 +1,7 @@
 class GuildsController < ApplicationController
   skip_before_action :verify_authenticity_token
+  # skip_forgery_protection
+
   before_action :check_nickname, only: [:add_officer]
   before_action :set_guild, only: [:destroy, :update]
   before_action :check_guild, only: [:join, :add_officer, :delete_officer, :delete_member]
@@ -98,10 +100,10 @@ class GuildsController < ApplicationController
       unless guild_members
         guild.destroy
 
-    guild_invites = GuildInvite.where(guild_id: guild_id)
-    for guild_invite in guild_invites
-    guild_invite.destroy
-    end
+      guild_invites = GuildInvite.where(guild_id: guild_id)
+      for guild_invite in guild_invites
+        guild_invite.destroy
+      end
 
       else
         if user.id == guild.owner_id
@@ -145,17 +147,17 @@ class GuildsController < ApplicationController
 	# if current_user.is_admin != true
 	  user = User.find(params[:id])
     unless user.guild_id?
-		redirect_and_responce("User not in guild")
+		  redirect_and_responce("User not in guild")
     else
-		guild = Guild.find(user.guild_id)
-		if guild.owner_id == current_user.id || current_user.is_admin == true
-			guild.owner_id = user.id
-        	if guild.save
-          		render json: 1
-        #   redirect_to '/guilds'
-        	end
-		end
-	end
+      guild = Guild.find(user.guild_id)
+      if guild.owner_id == current_user.id || current_user.is_admin == true
+        guild.owner_id = user.id
+        if guild.save
+            render json: 1
+      #   redirect_to '/guilds'
+        end
+      end
+    end
     # if current_user.is_admin == true
     #   user = User.find(params[:id])
     #   unless user.guild_id?

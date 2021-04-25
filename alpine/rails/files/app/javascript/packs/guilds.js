@@ -9,9 +9,10 @@
 **        - GuildCard
 **        - GuildCardBtn
 **        - GuildMemberList
-** -------------------------------------------------------
+// ** -------------------------------------------------------
 */
 
+// const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
 
 $(function () {
 	window.App = {
@@ -172,7 +173,12 @@ $(function () {
 		},
 		addOne: function (war) {
 			var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
-			this.$el.append(warView.render().el);
+			// Обычному члену гильдии показываются только принятые войны
+			if (war.attributes.is_accepted == true || curr_user.attributes.id == this.view.guild.owner_id ||
+				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)) {
+				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
+				this.$el.append(warView.render().el);
+			}
 			if (war.attributes.is_accepted == false && (curr_user.attributes.id == this.view.guild.owner_id ||
 				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id))) {
 				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
@@ -245,19 +251,17 @@ $(function () {
 			return this;
 		},
 		declineWar: function () {
-			alert('decline')
-			// fetch("/wars/decline/" + this.model.id)
-			// 	.then(res => res.json())
-			// 	.then(_.bind((res) => {
-			// 		if (res.error)
-			// 			alert(res.error)
-			// 		else
-			// 			alert('You successfully declined the war!')
-			// 	}, this))
+			fetch("/wars/decline/" + this.model.id)
+				// .then(res => res.json())
+				// .then(res => res.ok ? res.json() : Promise.reject(res))
+				// .then(_.bind((res) => {
+				.then(() => {
+					alert('You successfully declined the war!');
+				}, this)
 		},
 		acceptWar: function () {
 			alert('accept')
-			// fetch("/wars/accept/" + this.model.id)
+			fetch("/wars/accept/" + this.model.id)
 			// .then(res => res.ok ? res.json() : Promise.reject(res))
 			// .then(_.bind(res => {
 			// 	alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
@@ -560,12 +564,14 @@ $(function () {
 	// GUILD          MODEL CARD BUTTON VIEW
 	// -----------------------------------------
 	App.Views.GuildCardBtn = Backbone.View.extend({
+
 		templateDeleteBtn: _.template($("#GuildDelBtnTemplate").html()),
 		templateJoinBtn:   _.template($("#GuildJoinBtnTemplate").html()),
 		templateLeaveBtn:  _.template($("#GuildLeaveBtnTemplate").html()),
 		templateEditeBtn:  _.template($("#GuildEditBtnTemplate").html()),
 		templateEdite:     _.template($("#GuildEditTemplate").html()),
 		templateWarBtn:    _.template($("#GuildWarBtnTemplate").html()),
+
 		initialize: function (data) {
 			this.model = data.model;
 			this.view = data.view;
@@ -670,7 +676,9 @@ $(function () {
 
 
 	App.Views.FormWar = Backbone.View.extend({
+
 		template: _.template($("#WarCreateTemplate").html()),
+
 		initialize: function (data) {
 			this.guild_2 = data.guild_2
 			this.$el.html(this.template())

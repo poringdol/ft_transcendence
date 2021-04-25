@@ -68,10 +68,10 @@
 		</div>
 		<div class='col' style='text-align: center'>
 			<div class='col-12' style='text-align: center'>
-				<%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %> <%%= start_date.toLocaleTimeString('default', {hour: '2-digit', minute:'2-digit'}) %> 
+				<%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %> <%%= start_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
 			</div>
 			<div class='col-12' style='text-align: center'>
-				<%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %> <%%= end_date.toLocaleTimeString('default', {hour: '2-digit', minute:'2-digit'}) %> 
+				<%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %> <%%= end_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
 			</div>
 		</div>
 		<div class='col-2 MiddleVerticalAlign'>
@@ -282,7 +282,7 @@
 			<li class="list-group-item">
 				<div class="row">
 					<div class="col-4 FormDateTitle">
-						Date start
+						Date end
 					</div>
 					<div class="col">
 						<form class="row formMatches">
@@ -292,7 +292,7 @@
 				</div>
 				<div class="row">
 					<div class="col-4 FormDateTitle">
-						Time start
+						Time end
 					</div>
 					<div class="col">
 						<form class="row formMatches">

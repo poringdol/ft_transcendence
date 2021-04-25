@@ -135,6 +135,8 @@ Rails.application.routes.draw do
 # WARS
 # ------------------
   get 'wars/guild_wars/:id' => 'wars#guild_wars'
+  get 'wars/decline/:id' => 'wars#decline'
+  get 'wars/accept/:id' => 'wars#accept'
 
 # --------------------
 #    AUTHENTIFICATION
