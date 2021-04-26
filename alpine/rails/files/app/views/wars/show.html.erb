@@ -1,49 +1,87 @@
-<p id="notice"><%= notice %></p>
+<div>
+	<div class='row'>
+		<div class='col-1'></div>
+		<div class='col-10' id='WarInfo'>
+			<div  style="text-align: center">
+				<div class="card-body row">
+					<div class='col-4'>
+						<h4 class="card-title"><%= @war.guild_1.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_1.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_1.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_1.score %></h5>
+					</div>
+					<div class='col-4' style='margin: auto'>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">Prize:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.prize %></h2>
+						</div>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">Start date:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.start.to_formatted_s(:short) %></h2>
+						</div>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">End date:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.end.to_formatted_s(:short) %></h2>
+						</div>
+						<div class='row'>
+							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild_1_wins %> - <%= @war.guild_2_wins %></h2>
+						</div>
+					</div>
+					<div class='col-4'>
+						<h4 class="card-title"><%= @war.guild_2.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_2.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_2.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_2.score %></h5>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='col-1'></div>
+	</div>
+	<div class='row'>
+		<div class='col-1'></div>
+		<div class='col-3' id='WarCreateMatch'></div>
+		<div class='col-1'></div>
+		<div class='col-6' id='WarMatches'></div>
+		<div class='col-1'></div>
+	</div>
+</div>
 
-<p>
-  <strong>Guild 1:</strong>
-  <%= @war.guild_1_id %>
-</p>
+<!--<script type="text/template" id="WarInfoTemplate">
+	<div class="card" style="text-align: center">
+		<div class="card-body row">
+			<div class='col-4'>
+				<h5 class="card-title"><%= @war.guild_1.name %></h5>
+				<h6 class="card-subtitle mb-2 text-muted"><%= @war.guild_1.anagram %></h6>
+				<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_1.logo.url %>>
+			</div>
+			<div class='col-4' style='margin: auto'>
+				<h6 class="card-subtitle mb-2 text-muted">Prize:</h6>
+				<h2 class="card-subtitle mb-2 text-muted"><%= @war.prize %></h2>
+			</div>
+			<div class='col-4'>
+				<h5 class="card-title"><%= @war.guild_2.name %></h5>
+				<h6 class="card-subtitle mb-2 text-muted"><%= @war.guild_2.anagram %></h6>
+				<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_2.logo.url %>>
+			</div>
+		</div>
+	</div>
+	<div class="list-group list-group-flush" id="list-tab" role="tablist">
+		<li class="list-group-item">
+			Start Date: <%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %>
+		</li>
+		<li class="list-group-item">
+			Start Time: <%%= start_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
+		</li>
+		<li class="list-group-item">
+			End Date: <%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %>
+		</li>
+		<li class="list-group-item">
+			End Time: <%%= end_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
+		</li>
+	</div>
+</script>-->
 
-<p>
-  <strong>Guild 2:</strong>
-  <%= @war.guild_2_id %>
-</p>
-
-<p>
-  <strong>Start:</strong>
-  <%= @war.start %>
-</p>
-
-<p>
-  <strong>End:</strong>
-  <%= @war.end %>
-</p>
-
-<p>
-  <strong>Prize:</strong>
-  <%= @war.prize %>
-</p>
-
-<p>
-  <strong>Max unanswered:</strong>
-  <%= @war.max_unanswered %>
-</p>
-
-<p>
-  <strong>Addons:</strong>
-  <%= @war.addons_id %>
-</p>
-
-<p>
-  <strong>Guild 1 wins:</strong>
-  <%= @war.guild_1_wins %>
-</p>
-
-<p>
-  <strong>Guild 2 wins:</strong>
-  <%= @war.guild_2_wins %>
-</p>
-
-<%= link_to 'Edit', edit_war_path(@war) %> |
-<%= link_to 'Back', wars_path %>
+<!-- <%= link_to 'Edit', edit_war_path(@war) %> |
+<%= link_to 'Back', wars_path %> -->
