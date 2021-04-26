@@ -76,6 +76,12 @@ class MatchesController < ApplicationController
           if (params[:addons] == "disco")
             @match.addons.addon1 = true
             @match.addons.save
+          elsif (params[:addons] == "boost")
+            @match.addons.addon2 = true
+            @match.addons.save
+          elsif (params[:addons] == "epilepsy")
+            @match.addons.addon3 = true
+            @match.addons.save
           end
 
           format.html { redirect_to @match, notice: "Match was successfully created." }
@@ -224,6 +230,18 @@ class MatchesController < ApplicationController
   end
 
   def end_game
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
+    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
     match = Match.find(params[:id])
 
     update_war_status()
@@ -232,7 +250,9 @@ class MatchesController < ApplicationController
       set_rating(match)
     end
 
+    p "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
     match.update(is_end: true, is_inprogress: false)
+    p ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
   end
 
   private
@@ -247,6 +267,16 @@ class MatchesController < ApplicationController
     end
 
     def set_rating(match)
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
+      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
       winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
       loser  = (winner == match.player1) ? match.player2 : match.player1
       guild_winner = (match.player1_score - match.player2_score > 0) ? match.guild_1 : match.guild_2
