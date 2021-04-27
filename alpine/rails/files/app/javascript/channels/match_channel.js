@@ -2,19 +2,12 @@ import consumer from "./consumer"
 
 document.addEventListener("turbolinks:load", () => {
 	
-	const KEYS = {	start_ball: 13,
-					up: 87,
-					down: 83,
-					reset_ball: 128,
-					visit_page: 129,
-					leave_page: 130,
-					goal: 131,
-					end_game: 132,
-					start_game: 133,
-					update_state: 134, };
+	const KEYS = {	start_ball: 13, up: 87, down: 83, reset_ball: 128,	// Кавиши управления
+					visit_page: 129, leave_page: 130, goal: 131, end_game: 132, start_game: 133, update_state: 134, };
 	const MAX_RATE = 7;
 	const BRACKET_SPEED = 50;
-	const RADIUS = 8
+	const RADIUS = 8;
+	const COLOR = { BRACKET1: "#CCFF00", BRACKET2: "#00FFCC", BALL: "#FFCC00", CANVAS: "#EEEEEE" };
 
 	const match_element = $("#MatchID");
 	const MATCH_ID = (match_element != null) ? parseInt(match_element.attr("data-MatchID")) : -1;
@@ -32,12 +25,12 @@ document.addEventListener("turbolinks:load", () => {
 
 					MATCH.model.set(`is_player${MATCH.player}_online`, false);
 				
-	// 				// Если оба игрока покинули страницу с игрой, завершаем игру
+	 				// Если оба игрока покинули страницу с игрой, завершаем игру
 					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
 						$.post("/matches/end_game", { id: MATCH_ID });
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: -1 })
 					}
-	// 				// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
+	 				// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
 					else
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 				}
@@ -103,19 +96,28 @@ document.addEventListener("turbolinks:load", () => {
 						// Если победитель игры онлайн, то он завершает игру
 						if (MATCH.model.get(`is_player${data.player}_online`) == true) {
 							if (MATCH.player == data.player)
-								$.post("/matches/end_game", { id: MATCH_ID })
+								$.post("/matches/end_game", { id: MATCH_ID });
 						}
 						// Иначе второй игрок матча завершает игру
 						else if (MATCH.player > 0)
-							$.post("/matches/end_game", { id: MATCH_ID })
+							$.post("/matches/end_game", { id: MATCH_ID });
 						
 						setTimeout(() => {
-							MATCH.model.fetch({ success: MATCH.renderResult() }
+							MATCH.model.fetch({
+								success: MATCH.renderResult 
+							}
 						)}, 1000);
 					}
 					else if (key_code == KEYS.update_state) {
 						game.params.state = data.state;
 						game.params.lastGoalPlayer = data.player;
+					}
+					else if (key_code == KEYS.goal) {
+						game.params.state = data.state;
+						game.params.lastGoalPlayer = data.player;
+
+						MATCH.model.set(`player${data.player}_score`, data.score);
+						MATCH.renderScore(data.score, data.player);
 					}
 				}
 			},
@@ -239,7 +241,7 @@ document.addEventListener("turbolinks:load", () => {
 						$("#Player1Rating").html(`Rating:  <span style='color: green'>+${rating}</span>`)
 						$("#Player2Rating").html(`Rating:  <span style='color: red'>-${rating}</span>`)
 					}
-					else {
+					else if (MATCH.model.get("player1_score") < MATCH.model.get("player2_score")) {
 						$("#Player1Rating").html(`Rating:  <span style='color: red'>-${rating}</span>`)
 						$("#Player2Rating").html(`Rating:  <span style='color: green'>+${rating}</span>`)
 					}
@@ -263,7 +265,7 @@ document.addEventListener("turbolinks:load", () => {
 		var Ball = function () {
 			return {
 				radius: RADIUS,
-				color: "#FFCC00",
+				color: COLOR.BALL,
 				x: 0,
 				y: 0,
 				yspeed: 0,
@@ -271,7 +273,7 @@ document.addEventListener("turbolinks:load", () => {
 				bounce: 1.1, // коофицент упругости - для ускорения шарика после отскока
 				render: function (ctx) {
 					ctx.beginPath();
-					ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+					ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
 					ctx.fillStyle = this.color;
 					ctx.fill();
 				},
@@ -285,14 +287,14 @@ document.addEventListener("turbolinks:load", () => {
 		};
 		
 		// Блоки для отбивания шарика
-		var Bracket = function () {
+		var Bracket = function (color) {
 			return {
 				w: 10,
 				h: 100,
 				x: 0,
 				y: 0,
 				speed: BRACKET_SPEED,
-				color: "#CCFF00",
+				color: color,
 				render: function (ctx) {
 					ctx.fillStyle = this.color;
 					ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -346,39 +348,38 @@ document.addEventListener("turbolinks:load", () => {
 
 				this.objects = {
 					ball: new Ball(),
-					bracket1: new Bracket(),
-					bracket2: new Bracket(),
-					canvasColor: "#EEEEEE"
+					bracket1: new Bracket(COLOR.BRACKET1),
+					bracket2: new Bracket(COLOR.BRACKET2),
+					canvasColor: COLOR.CANVAS
 				};
 
-				// Расставляем стартовые позиции ракеток
+				// Стартовые позиции ракеток
 				this.objects.bracket1.x = 50;
 				this.objects.bracket1.y = this.params.height / 2 - this.objects.bracket1.h / 2;
 				
 				this.objects.bracket2.x = this.params.width - 50;
 				this.objects.bracket2.y = this.params.height / 2 - this.objects.bracket1.h / 2;
 				
-				// Перекрасим второго игрока
-				this.objects.bracket2.color = "#00FFCC";
-				
-				// Запускаем игровой цикл
 				this.loop();
+				// this.last_time = performance.now();
+  				// this.curr_time = performance.now();
 			},
 		
 			// Игровой цикл
 			loop: function () {
 				var _this = this;
 				
-				// Логика игры
-				// _.throttle(this.logic(), 100);
+				// if (this.curr_time - this.last_time > 200) {
 				this.logic();
-				// Физика игры
+				// 	this.last_time = this.curr_time;
+				// }
 				this.physic();
-				// Рендер игры
 				this.render();
+				// this.curr_time = performance.now()
 		
 				if (this.params.state == "stop" || this.params.state == "leave")
 					return;
+				
 				// Используем замыкание для передачи контекста
 				this.requestLoop = requestAnimationFrame(function() {
 					_this.loop.call(_this);
@@ -394,30 +395,27 @@ document.addEventListener("turbolinks:load", () => {
 				if (this.params.state == "game") {
 
 					// Шарик оказался за первым игроком
-					if (ball.x <= RADIUS * 2) {
-						this.params.state = "playerwait";
-						debugger
-						console.log("Goal by 1")
+					if (ball.x <= RADIUS * 2)
 						this.goal(2);
-					}
 					
 					// Шарик оказался за вторым игроком
-					else if (ball.x >= game.params.width - (RADIUS * 2)) {
-						this.params.state = "playerwait";
-						console.log("Goal by 1")
-						debugger
+					if (ball.x >= game.params.width - RADIUS * 2)
 						this.goal(1);
-					}
 				}
 
 				// Проверяем наличие победителя
-				if (MATCH.model.get("player1_score") >= MAX_RATE && MATCH.player == 1)
-					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: 1 });
-					// this.stopGame(1);
-				
-				if (MATCH.model.get("player2_score") >= MAX_RATE && MATCH.player == 2)
-					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: 2 });
-					// this.stopGame(2);
+				if (MATCH.model.get("player1_score") >= MAX_RATE && MATCH.player == 1) {
+					game.params.state = "stop";
+					setTimeout(() => {
+						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: 1 });
+					}, 300)
+				}
+				if (MATCH.model.get("player2_score") >= MAX_RATE && MATCH.player == 2) {
+					game.params.state = "stop";
+					setTimeout(() => {
+						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: 2 });
+					}, 300)
+				}
 			},
 		
 			// Физика игры
@@ -452,7 +450,7 @@ document.addEventListener("turbolinks:load", () => {
 					ball.xspeed = ball.xspeed * ball.bounce;
 				}
 				// Отскок шарика от 2 блока
-				if (ball.x >= this.params.width-50 && ball.y >= b2.y && ball.y <= b2.y+b2.h) {
+				if (ball.x >= this.params.width - 50 && ball.y >= b2.y && ball.y <= b2.y + b2.h) {
 					ball.xspeed = -ball.xspeed;
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
@@ -469,8 +467,8 @@ document.addEventListener("turbolinks:load", () => {
 				// Не позволяем вылезать блокам за canvas и возврщаем их на место
 				if (b1.y <= 0) b1.y = 1; 
 				if (b2.y <= 0) b2.y = 1; 
-				if (b1.y+b1.h >= this.params.height) b1.y = this.params.height-b1.h;
-				if (b2.y+b2.h >= this.params.height) b2.y = this.params.height-b2.h;
+				if (b1.y + b1.h >= this.params.height) b1.y = this.params.height - b1.h;
+				if (b2.y + b2.h >= this.params.height) b2.y = this.params.height - b2.h;
 			},
 		
 			// Рендер игры
@@ -484,7 +482,6 @@ document.addEventListener("turbolinks:load", () => {
 					game.objects.bracket2.color = this.randomColor();
 					game.objects.ball.color = this.randomColor();
 					game.objects.canvasColor = this.randomColor();
-					
 				}
 				game.objects.ball.render(game.ctx);
 				game.objects.bracket1.render(game.ctx);
@@ -512,17 +509,26 @@ document.addEventListener("turbolinks:load", () => {
 					player == 1 ? (br1 -= game.objects.bracket1.speed) : (br2 -= game.objects.bracket2.speed);
 					subscribe.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
 				}
+
+
+			// DEBUG
+			const keys = { L: 76, A: 65, M: 77}
+			if (kCode == keys.L) { console.log(game.params.lastGoalPlayer) }
+			if (kCode == keys.A) { console.log(game.params.state) }
+			if (kCode == keys.M) { console.log(MATCH.player) }
+
 			},
 
 			goal: function (lastGoalPlayer) {
 				
-				let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
-				MATCH.renderScore(score, lastGoalPlayer);
-				MATCH.model.set(`player${lastGoalPlayer}_score`, score);
+				MATCH.params.state = "playerwait";
+				
+				if (MATCH.player == lastGoalPlayer) {
+					let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
 
-				if (MATCH.player > 0 && MATCH.player == lastGoalPlayer) {
+					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 					MATCH.model.save();
-					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.update_state });
+					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 				}
 			},
 			
@@ -533,16 +539,17 @@ document.addEventListener("turbolinks:load", () => {
 
 				if (player == 1) {
 					game.objects.ball.x = game.objects.bracket1.x + game.objects.bracket1.w + game.objects.ball.radius + 1;
-					game.objects.ball.y = game.objects.bracket1.y + game.objects.bracket1.h/2;
+					game.objects.ball.y = game.objects.bracket1.y + game.objects.bracket1.h / 2;
 				}
 				else if (player == 2) {
 					game.objects.ball.x = game.objects.bracket2.x - game.objects.ball.radius - 1;
-					game.objects.ball.y = game.objects.bracket2.y + game.objects.bracket2.h/2;
+					game.objects.ball.y = game.objects.bracket2.y + game.objects.bracket2.h / 2;
 				}
 			},
 			
 			// Пуск шарика после гола
 			kickBall: function () {
+				console.log("kick ball")
 				this.params.state = "game";
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: "game", player: game.params.lastGoalPlayer, key_code: KEYS.update_state });
 

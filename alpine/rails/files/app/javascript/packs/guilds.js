@@ -172,19 +172,17 @@ $(function () {
 			return this;
 		},
 		addOne: function (war) {
-			
+			var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
 			// Обычному члену гильдии показываются только принятые войны
 			if (war.attributes.is_accepted == true || curr_user.attributes.id == this.view.guild.owner_id ||
 				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)) {
-				var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
+				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
 				this.$el.append(warView.render().el);
-
-				if (war.attributes.is_accepted == false &&
-					(curr_user.attributes.id == this.view.guild.owner_id ||
-					(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id))) {
-					var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this, warView: warView });
-					this.$el.append(warViewBtn.render().el);
-				}
+			}
+			if (war.attributes.is_accepted == false && (curr_user.attributes.id == this.view.guild.owner_id ||
+				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id))) {
+				var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
+				this.$el.append(warViewBtn.render().el);
 			}
 		}
 	})
@@ -223,13 +221,11 @@ $(function () {
 
 		template_accept:	_.template($("#AcceptWarBtnTemplate").html()),
 		template_decline:	_.template($("#DeclineWarBtnTemplate").html()),
-		template_vaiting:	_.template($("#VaitingWarBtnTemplate").html()),
 
 		initialize: function (data) {
 			this.model = data.model
 			this.view = data.view
 			this.parent = data.parent
-			this.warView = data.warView
 
 			this.model.on('destroy', this.remove, this);
 			this.model.on('sync', this.render, this);
@@ -248,43 +244,34 @@ $(function () {
 				var role = 'officer'
 
 			if (role == 'owner' || role == 'officer') {
-				if (this.model.attributes.is_accepted == false && this.model.attributes.guild_1.id == this.view.guild_id)
-					this.$el.append(this.template_vaiting);
-				else {
-					this.$el.append(this.template_accept);
-					this.$el.append(this.template_decline);
-				}
+				this.$el.append(this.template_accept);
+				this.$el.append(this.template_decline);
 			}
 
 			return this;
 		},
 		declineWar: function () {
 			fetch("/wars/decline/" + this.model.id)
-				.then(res => res.json())
-				.then(_.bind((res) => {
-					console.log(res)
-					if (res.error)
-						alert(res.error)
-					else {
-						alert('You successfully declined a war!')
-						this.$el.remove();
-						this.warView.$el.remove()
-					}
-				}, this))
+				// .then(res => res.json())
+				// .then(res => res.ok ? res.json() : Promise.reject(res))
+				// .then(_.bind((res) => {
+				.then(() => {
+					alert('You successfully declined the war!');
+				}, this)
 		},
 		acceptWar: function () {
+			alert('accept')
 			fetch("/wars/accept/" + this.model.id)
-				.then(res => res.json())
-				.then(_.bind((res) => {
-					console.log(res)
-					if (res.error)
-						alert(res.error)
-					else {
-						alert('You successfully accepted a war!')
-						this.$el.remove();
-						this.parent.render()
-					}
-				}, this))
+			// .then(res => res.ok ? res.json() : Promise.reject(res))
+			// .then(_.bind(res => {
+			// 	alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
+			// 	curr_user.fetch()
+			// 	this.model.is_officer = false
+			// 	// this.view.GuildCard.render()
+			// 	this.render()
+			// 	// window.location.reload()
+			// }, this))
+			// .catch(() => alert("You are not able to do that"))
 		},
 		remove: function () {
 			this.$el.remove();
@@ -427,7 +414,6 @@ $(function () {
 				alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
 				curr_user.fetch()
 				this.model.is_officer = false
-				this.model.save()
 				// this.view.GuildCard.render()
 				this.render()
 				// window.location.reload()
@@ -455,8 +441,6 @@ $(function () {
 				alert('Success! User ' + this.model.nickname + ' became an owner!')
 				curr_user.fetch()
 				this.model.attributes.guild.owner_id = this.model.id
-				this.view.guild.owner_id = this.model.id
-				this.model.save()
 				this.view.GuildCard.render()
 				this.parent.collection.fetch()
 				// this.view.MemberCol.fetch()
@@ -549,8 +533,7 @@ $(function () {
 		renderMemberList: function () {
 			if (!this.view.GuildMemberList) {
 				this.view.newGuildMemberList({ model: this.model })
-				this.view.GuildMemberList.collection.fetch()
-					.then(() => this.view.GuildMemberList.render())
+				// this.view.GuildMemberList.render();
 			}
 			else {
 				this.view.GuildMemberList.collection.fetch()
@@ -560,8 +543,7 @@ $(function () {
 		renderOfficerList: function () {
 			if (!this.view.GuildOfficerList) {
 				this.view.newGuildOfficerList({ model: this.model })
-				this.view.GuildOfficerList.collection.fetch()
-					.then(() => this.view.GuildOfficerList.render())
+				// this.view.GuildOfficerList.render();
 			}
 			else {
 				this.view.GuildOfficerList.collection.fetch()

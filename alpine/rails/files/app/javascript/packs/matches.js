@@ -74,26 +74,6 @@ $(function () {
 	})
 
 /*
-** VIEW OF TABLE
-*/
-	App.Views.TableMatches = Backbone.View.extend({
-		template: _.template($("#MatchesTableTemplate").html()),
-		initialize: function (data) {
-			this.collection = data.collection
-			this.type = data.type
-
-			this.collection.on('sync', this.render, this)
-		},
-		render: function () {
-			this.$el.html(this.template({ type: this.type }))
-			$("#" + this.type + "Matches").html(this.el)
-			matches = new App.Views.Matches({ collection: this.collection, type: this.type })
-			matches.render()
-			return this
-		},
-	})
-
-/*
 ** VIEW OF TABLE INNER (ALL ROWS)
 */
 	App.Views.Matches = Backbone.View.extend({
@@ -129,6 +109,27 @@ $(function () {
 		}
 	});
 
+
+	
+/*
+** VIEW OF TABLE
+*/
+	App.Views.TableMatches = Backbone.View.extend({
+		template: _.template($("#MatchesTableTemplate").html()),
+		initialize: function (data) {
+			this.collection = data.collection
+			this.type = data.type
+
+			this.collection.on('sync', this.render, this)
+		},
+		render: function () {
+			this.$el.html(this.template({ type: this.type }))
+			$("#" + this.type + "Matches").html(this.el)
+			matches = new App.Views.Matches({ collection: this.collection, type: this.type })
+			matches.render()
+			return this
+		},
+	})
 
 /*
 ** VIEW OF ONE MATCH (ONE ROW)

@@ -28,6 +28,8 @@ class MatchChannel < ApplicationCable::Channel
   end
   
   def command(data)
+    REDIS.set "player:#{data["player"]}:#{data["match_id"]}", data["online"]
+
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          player: data["player"],
                                                                          key_code: data["key_code"],
@@ -41,7 +43,8 @@ class MatchChannel < ApplicationCable::Channel
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          key_code: data["key_code"],
                                                                          state: data["state"],
-                                                                         player: data["player"]}
+                                                                         player: data["player"],
+                                                                         score: data["score"]}
   end
   
   def get_state(data)

@@ -103,16 +103,14 @@ class WarsController < ApplicationController
     guild = war.guild_2
 
     if current_user.id == guild.owner_id || (current_user.guild == guild && current_user.is_officer == true)
-      respond_to do |format|
-		if war.destroy()
-        	format.json { render json: 1, status: :ok, location: @war }
-		else
-			format.json { render json: { error: 'Unexpected error' }, status: :unprocessable_entity}
-		end
-      end
+      war.destroy()
+      # respond_to do |format|
+      #   format.json { render :show, status: :ok, location: @war }
+      # end
+      render json: 1
     else
       respond_to do |format|
-        format.json { render json: { error: 'You have no rights' }, status: :unprocessable_entity}
+        format.json { render json: { error: 'You are have no rights' }, status: :unprocessable_entity}
       end
     end
   end
@@ -135,7 +133,7 @@ class WarsController < ApplicationController
           war.update(is_accepted: true)
           format.json { render :show, status: :ok, location: @war }
         else
-          format.json { render json: { error: 'Another war is scheduled at same time' }, status: :unprocessable_entity}
+          format.json { render json: { error: 'Another warr is scheduled for same time' }, status: :unprocessable_entity}
         end
       end
     else
