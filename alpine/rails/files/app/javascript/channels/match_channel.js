@@ -447,7 +447,7 @@ document.addEventListener("turbolinks:load", () => {
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
 					// Ускоряем шарик
-					if (MATCH.model.get("addons").addon3 == true)
+					if (MATCH.model.get("addons").addon3 == true || MATCH.model.get("is_ranked") == true)
 						ball.xspeed = ball.xspeed * ball.bounce;
 				}
 				// Отскок шарика от 2 блока

@@ -116,6 +116,8 @@ Rails.application.routes.draw do
   post 'rooms/new_match' => 'matches#new_match'
   post 'rooms/kick' => 'rooms#kick'
 
+  post 'rooms/watch_stream' => 'matches#watch_stream'
+
 # ------------------
 #    GAME PAGE
 # ------------------

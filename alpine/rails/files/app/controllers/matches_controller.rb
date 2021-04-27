@@ -63,10 +63,6 @@ class MatchesController < ApplicationController
 
   def new_match
 
-    p "######################################################"
-    p params
-    p "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-
     player2 = User.find_by(nickname: params[:player2])
     if (player2)
       player1_id = current_user.id
@@ -87,6 +83,12 @@ class MatchesController < ApplicationController
             @match.addons.addon3 = true
           end
           @match.addons.save
+
+          NotificationJob.perform_later({
+            user: player2,
+            message: "#{@match.player1.nickname} invite you to play a game",
+            link: "/matches/#{@match.id}"
+          })
 
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render :show, status: :created, location: @match }
@@ -234,18 +236,6 @@ class MatchesController < ApplicationController
   end
 
   def end_game
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
-    p "end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game end_game "
     match = Match.find(params[:id])
 
     update_war_status()
@@ -254,9 +244,26 @@ class MatchesController < ApplicationController
       set_rating(match)
     end
 
-    p "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
     match.update(is_end: true, is_inprogress: false)
-    p ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
+  end
+
+  def watch_stream
+    user = User.find(params[:streamer_id])
+    match = Match.where(player1: user, is_inprogress: true, is_player1_online: true)
+                   .or(Match.where(player2: user, is_inprogress: true, is_player2_online: true))
+
+    # p "11111111111111111111111111111111111111111"
+    # p match
+    # p "======"
+    # p match.id
+    # p "22222222222222222222222222222222222222222"
+
+
+    if match.empty?
+      redirect_to "/matches"
+    else
+      redirect_to "/matches/#{match.first.id}"
+    end
   end
 
   private
@@ -271,16 +278,6 @@ class MatchesController < ApplicationController
     end
 
     def set_rating(match)
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
-      p "set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating set_rating "
       winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
       loser  = (winner == match.player1) ? match.player2 : match.player1
       guild_winner = (match.player1_score - match.player2_score > 0) ? match.guild_1 : match.guild_2

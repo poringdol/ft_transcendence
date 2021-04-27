@@ -21,9 +21,9 @@ class WarsController < ApplicationController
   end
 
   def guild_wars
-	id = params[:id]
-	wars = War.where("CASE WHEN guild_1_id = #{id} OR guild_2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:start} desc")#.where(is_accepted: true)
-	render json: wars
+    id = params[:id]
+    wars = War.where("CASE WHEN guild_1_id = #{id} OR guild_2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:start} desc")#.where(is_accepted: true)
+    render json: wars
   end
 
   # POST /wars or /wars.json
@@ -69,6 +69,13 @@ class WarsController < ApplicationController
     @war = War.new(guild_1: current_user.guild, guild_2: guild_2, start: war_start, end: war_end, prize: params[:prize])
     respond_to do |format|
       if @war.save
+
+        NotificationJob.perform_later({
+          user: @war.guild_2.owner,
+          message: "The #{@war.guild_1.name} guild has declared war on you",
+          link: "/wars/"
+        })
+
         format.json { render json: @war, status: :created }
       else
         format.json { render json: @war.errors, status: :unprocessable_entity }
@@ -104,6 +111,12 @@ class WarsController < ApplicationController
 
     if current_user.id == guild.owner_id || (current_user.guild == guild && current_user.is_officer == true)
       war.destroy()
+
+      NotificationJob.perform_later({
+            user: war.guild_1.owner,
+            message: "#{war.guild_2.name} declined guid war",
+            link: ""
+      })
       # respond_to do |format|
       #   format.json { render :show, status: :ok, location: @war }
       # end
@@ -131,6 +144,13 @@ class WarsController < ApplicationController
       respond_to do |format|
         if same_time_wars.empty?
           war.update(is_accepted: true)
+
+          NotificationJob.perform_later({
+            user: war.guild_1.owner,
+            message: "#{war.guild_2.name} accepted guid war",
+            link: "/wars/#{war.id}"
+          })
+
           format.json { render :show, status: :ok, location: @war }
         else
           format.json { render json: { error: 'Another warr is scheduled for same time' }, status: :unprocessable_entity}
