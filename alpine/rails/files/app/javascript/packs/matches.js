@@ -52,8 +52,9 @@ $(function () {
 		submit: function (e) {
 			e.preventDefault();
 			let match = {
-				player2: $(e.currentTarget).find('input[id=formPlayer2Nickname]').val(),
-				addons: $(e.currentTarget).find('input[id=formAddons]').val()
+				player2: $('input[id=formPlayer2Nickname]').val(),
+				color: $('input[name="radioColor"]:checked').val(),
+				boost: $('input[id=AddonBoost]').val(),
 			}
 			fetch("/matches/new_match", {
 				method: "POST",

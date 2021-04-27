@@ -62,6 +62,11 @@ class MatchesController < ApplicationController
   end
 
   def new_match
+
+    p "######################################################"
+    p params
+    p "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
     player2 = User.find_by(nickname: params[:player2])
     if (player2)
       player1_id = current_user.id
@@ -73,13 +78,14 @@ class MatchesController < ApplicationController
       respond_to do |format|
         if @match.save
 
-          if (params[:addons] == "disco")
+          if (params[:color] == "disco")
             @match.addons.addon1 = true
             @match.addons.save
-          elsif (params[:addons] == "boost")
+          elsif (params[:color] == "epilepsy")
             @match.addons.addon2 = true
             @match.addons.save
-          elsif (params[:addons] == "epilepsy")
+          end
+          if (params[:boost] == "boost")
             @match.addons.addon3 = true
             @match.addons.save
           end

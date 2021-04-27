@@ -446,17 +446,18 @@ document.addEventListener("turbolinks:load", () => {
 					ball.xspeed = -ball.xspeed;
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
-				// Ускоряем шарик
-					ball.xspeed = ball.xspeed * ball.bounce;
+					// Ускоряем шарик
+					if (MATCH.model.get("addons").addon3 == true)
+						ball.xspeed = ball.xspeed * ball.bounce;
 				}
 				// Отскок шарика от 2 блока
 				if (ball.x >= this.params.width - 50 && ball.y >= b2.y && ball.y <= b2.y + b2.h) {
 					ball.xspeed = -ball.xspeed;
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
-				// Ускоряем шарик
-				if (MATCH.model.get("addons").addon2 == true)
-					ball.xspeed = ball.xspeed * ball.bounce;
+					// Ускоряем шарик
+					if (MATCH.model.get("addons").addon3 == true)
+						ball.xspeed = ball.xspeed * ball.bounce;
 				}
 
 				// В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
@@ -464,7 +465,7 @@ document.addEventListener("turbolinks:load", () => {
 					subscribe.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
 				}
 		
-				// Не позволяем вылезать блокам за canvas и возврщаем их на место
+				// Не позволяем вылезать блокам за пределы canvas
 				if (b1.y <= 0) b1.y = 1; 
 				if (b2.y <= 0) b2.y = 1; 
 				if (b1.y + b1.h >= this.params.height) b1.y = this.params.height - b1.h;
@@ -477,7 +478,7 @@ document.addEventListener("turbolinks:load", () => {
 				game.ctx.fillStyle = game.objects.canvasColor;
 				game.ctx.fillRect(0,0, game.params.width, game.params.height);
 
-				if (MATCH.model.get("addons").addon3 == true) {
+				if (MATCH.model.get("addons").addon2 == true) {
 					game.objects.bracket1.color = this.randomColor();
 					game.objects.bracket2.color = this.randomColor();
 					game.objects.ball.color = this.randomColor();
@@ -510,24 +511,23 @@ document.addEventListener("turbolinks:load", () => {
 					subscribe.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
 				}
 
-
-			// DEBUG
-			const keys = { L: 76, A: 65, M: 77}
-			if (kCode == keys.L) { console.log(game.params.lastGoalPlayer) }
-			if (kCode == keys.A) { console.log(game.params.state) }
-			if (kCode == keys.M) { console.log(MATCH.player) }
+			// // DEBUG
+			// const keys = { L: 76, A: 65, M: 77}
+			// if (kCode == keys.L) { console.log(game.params.lastGoalPlayer) }
+			// if (kCode == keys.A) { console.log(game.params.state) }
+			// if (kCode == keys.M) { console.log(MATCH.player) }
 
 			},
 
 			goal: function (lastGoalPlayer) {
 				
-				MATCH.params.state = "playerwait";
 				
 				if (MATCH.player == lastGoalPlayer) {
 					let score = MATCH.model.get(`player${lastGoalPlayer}_score`) + 1;
-
+					
 					MATCH.model.set(`player${lastGoalPlayer}_score`, score);
 					MATCH.model.save();
+					game.params.state = "playerwait";
 					subscribe.perform("save_state", { match_id: MATCH_ID, state: "playerwait", player: lastGoalPlayer, key_code: KEYS.goal, score: score });
 				}
 			},

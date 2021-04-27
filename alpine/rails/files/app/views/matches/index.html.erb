@@ -1,70 +1,59 @@
 <div class='MatchesContent row'>
 	<div class='col-1'></div>
 	<div class="col-3" style='min-width: 340px'>
-		<div class='card col mb-3' id='MatchCreationForm'>
+		<div class='card col mb-3'>
 			<div class="card-body">
 				<h6 class="card-title">New friendly match</h6>
 			</div>
 			<div class="list-group list-group-flush" id="list-tab" role="tablist">
-				<li class="list-group-item">
-					<form class="row formMatches">
-						<input placeholder="Nickname of your opponent" type="text" class="form-control col formMatchesInput" id="formPlayer2Nickname" value="">
-					</form>
-				</li>
-				<li class="list-group-item">
-					<form class="row formMatches">
-						<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
-					</form>
-				</li>
- 
-					<form class="row formMatches">
-						<p><input name="AddonDisco" type="checkbox" id="formAddonDisco" value=""> Disco</p>
-						<p><input name="AddonBoost" type="checkbox" id="formAddonBoost" value=""> Boost</p>
-						<p><input name="AddonEpilepsy" type="checkbox" id="formAddonEpilepsy" value=""> Epilepsy</p>
-					</form>
-				</li>
+				<form class="form-group formMatches" id='MatchCreationForm'>
 					
-				<li class="list-group-item">
-					<div class="row">
+					<li class="list-group-item">	
+						<input class="form-control col formMatchesInput" type="text" name="Player2Nickname" id="formPlayer2Nickname" value="" placeholder="Nickname of your opponent" >
+					</li>
 					
-						<div class="col-6">
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="false">
-								<label class="form-check-label" for="gridRadios2">
-									None
-								</label>
+					<li class="list-group-item">
+						<div class="row">
+					
+							<div class="col-6">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
+									<label class="form-check-label" for="AddonColorNone">
+										None
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="disco">
+									<label class="form-check-label" for="AddonColorDisco">
+										Disco
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="epilepsy">
+									<label class="form-check-label" for="AddonColorEpilepsy">
+										Epilepsy
+									</label>
+								</div>
 							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="false">
-								<label class="form-check-label" for="gridRadios1">
-									Disco
-								</label>
+
+							<div class="col-6">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="boost">
+									<label class="form-check-label" for="AddonBoost">
+										Boost
+									</label>
+								</div>
 							</div>
-							<div class="form-check disabled">
-								<input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="false">
-								<label class="form-check-label" for="gridRadios3">
-									Epilepsy
-								</label>
-							</div>
+
 						</div>
+					</li>
 
-						<div class="col-6">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="false">
-								<label class="form-check-label" for="gridRadios2">
-									Boost
-								</label>
-							</div>
+					<li class="list-group-item">
+						<div class="row">
+							<input type="submit" class="btn btn-outline-secondary col" value="create">
 						</div>
-
-					</div>
-				</li>
-
-				<li class="list-group-item">
-					<form class="row formMatches">
-						<input type="submit" class="btn btn-outline-secondary col" value="create">
-					</form>
-				</li>
+					</li>
+				</form>
 			</div>
 		</div>
 
