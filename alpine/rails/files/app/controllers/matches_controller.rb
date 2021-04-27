@@ -80,15 +80,13 @@ class MatchesController < ApplicationController
 
           if (params[:color] == "disco")
             @match.addons.addon1 = true
-            @match.addons.save
           elsif (params[:color] == "epilepsy")
             @match.addons.addon2 = true
-            @match.addons.save
           end
           if (params[:boost] == "boost")
             @match.addons.addon3 = true
-            @match.addons.save
           end
+          @match.addons.save
 
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render :show, status: :created, location: @match }

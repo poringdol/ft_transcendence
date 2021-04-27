@@ -52,9 +52,9 @@ $(function () {
 		submit: function (e) {
 			e.preventDefault();
 			let match = {
-				player2: $('input[id=formPlayer2Nickname]').val(),
+				player2: $('#formPlayer2Nickname').val(),
 				color: $('input[name="radioColor"]:checked').val(),
-				boost: $('input[id=AddonBoost]').val(),
+				boost: $('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
 			}
 			fetch("/matches/new_match", {
 				method: "POST",
@@ -199,6 +199,27 @@ $(function () {
 		},
 	})
 
+	App.Models.AllUsers = Backbone.Model.extend({ urlRoot: "/leaderboard" })
+	
+	App.Collections.AllUsers = Backbone.Collection.extend({
+		url: "/leaderboard",
+		model: App.Models.AllUsers,
+		initialize: function() { this.fetch(); }
+	});
+
+	App.Views.AllUsers = Backbone.View.extend({
+
+		initialize: function() {
+			this.collection.on('sync', this.render, this)
+		},
+        render: function () {
+            this.collection.each((it) => {
+				var nickname = it.get("nickname");
+				$('#formPlayer2Nickname').append(`<option value='${nickname}'>${nickname}</option>`);
+			});
+            return this;
+        }
+    });
 
 /*
 ** MAIN
@@ -210,5 +231,8 @@ $(function () {
 	plannedTable = new App.Views.TableMatches({ collection: col, type: 'Planned' })
 	historyTable = new App.Views.TableMatches({ collection: col, type: 'History' })
 	new App.Views.FormWar()
+
+	var col = new App.Collections.AllUsers()
+	new App.Views.AllUsers({ collection: col });
 
 }());
