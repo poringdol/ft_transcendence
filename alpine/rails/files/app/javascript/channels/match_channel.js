@@ -2,12 +2,12 @@ import consumer from "./consumer"
 
 document.addEventListener("turbolinks:load", () => {
 	
-	const KEYS = {	start_ball: 13, up: 87, down: 83, reset_ball: 128,	// Кавиши управления
+	const KEYS = {	start_ball: 13, up: 87, down: 83, color: 67, reset_ball: 128,	// Кавиши управления
 					visit_page: 129, leave_page: 130, goal: 131, end_game: 132, start_game: 133, update_state: 134, };
 	const MAX_RATE = 7;
 	const BRACKET_SPEED = 50;
 	const RADIUS = 8;
-	const COLOR = { BRACKET1: "#CCFF00", BRACKET2: "#00FFCC", BALL: "#FFCC00", CANVAS: "#EEEEEE" };
+	const COLOR = { BRACKET1: "#222AAA", BRACKET2: "#991515", BALL: "#FFCC00", CANVAS: "#EEEEEE" };
 
 	const match_element = $("#MatchID");
 	const MATCH_ID = (match_element != null) ? parseInt(match_element.attr("data-MatchID")) : -1;
@@ -178,8 +178,8 @@ document.addEventListener("turbolinks:load", () => {
 				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
 					this.model.save({ is_inprogress: true }).done(function () {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
+						$.post("/matches/duration", { match_id: MATCH_ID });	// завершение игры через 5 минут
 					});
-
 				}
 				else {
 					this.renderWaiting();
@@ -462,7 +462,7 @@ document.addEventListener("turbolinks:load", () => {
 
 				// В состоянии ожидания пуска шарика от ракетки игрока, выставляем шарик рядом с ракеткой забившего игрока
 				if (this.params.state == "playerwait") {
-					subscribe.perform("reset_ball", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
+					subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.reset_ball, player: this.params.lastGoalPlayer });
 				}
 		
 				// Не позволяем вылезать блокам за пределы canvas
@@ -509,6 +509,10 @@ document.addEventListener("turbolinks:load", () => {
 				else if (kCode == KEYS.up) {
 					player == 1 ? (br1 -= game.objects.bracket1.speed) : (br2 -= game.objects.bracket2.speed);
 					subscribe.perform("move_bracket", { match_id: MATCH_ID, player: player, key_code: kCode, bracket1: br1, bracket2: br2});
+				}
+				else if (kCode == KEYS.color) {
+					player == 1 ? game.objects.bracket1.color = this.randomColor() :
+								  game.objects.bracket2.color = this.randomColor();
 				}
 
 			// // DEBUG

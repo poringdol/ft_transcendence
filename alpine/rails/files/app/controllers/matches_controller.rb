@@ -64,7 +64,7 @@ class MatchesController < ApplicationController
   def new_match
 
     player2 = User.find_by(nickname: params[:player2])
-    if (player2)
+    if (player2 && player2 != current_user)
       player1_id = current_user.id
       player2_id = player2.id
       guild_1_id = current_user.guild_id
@@ -97,6 +97,11 @@ class MatchesController < ApplicationController
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @match.errors, status: :unprocessable_entity }
         end
+      end
+    elsif (player2 == current_user)
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { error: 'You cannot play with yourself ' }, status: :unprocessable_entity, errorText: "sss" }
       end
     else
       respond_to do |format|
@@ -237,8 +242,7 @@ class MatchesController < ApplicationController
 
   def end_game
     match = Match.find(params[:id])
-
-    update_war_status()
+    # update_war_status()
     if match.is_ranked?
       war_score(match.guild_1, match.guild_2, match.player1_score, match.player2_score)
       set_rating(match)
@@ -252,19 +256,41 @@ class MatchesController < ApplicationController
     match = Match.where(player1: user, is_inprogress: true, is_player1_online: true)
                    .or(Match.where(player2: user, is_inprogress: true, is_player2_online: true))
 
-    # p "11111111111111111111111111111111111111111"
-    # p match
-    # p "======"
-    # p match.id
-    # p "22222222222222222222222222222222222222222"
-
-
     if match.empty?
       redirect_to "/matches"
     else
       redirect_to "/matches/#{match.first.id}"
     end
   end
+
+  def duration
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p "33333333333333333333333333"
+    p params
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    p "44444444444444444444444444"
+    # end_game(params[:id])
+  end
+  handle_asynchronously :duration, :run_at => Proc.new { 1.minutes.from_now }
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -280,7 +306,6 @@ class MatchesController < ApplicationController
     def set_rating(match)
       winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
       loser  = (winner == match.player1) ? match.player2 : match.player1
-      guild_winner = (match.player1_score - match.player2_score > 0) ? match.guild_1 : match.guild_2
       
       rating = (match.player1_score - match.player2_score).abs
       match.rating = (rating <= loser.score) ? rating : loser.score
@@ -289,7 +314,10 @@ class MatchesController < ApplicationController
       if match.rating != 0
         winner.update(score: (winner.score + match.rating))
         loser.update(score: (loser.score - match.rating))
-        guild_winner.update(score: (guild_winner.score + match.rating))
+
+        unless winner.guild.nil?
+          winner.guild.update(score: (winner.guild.score + match.rating))
+        end
       end
     end
 
@@ -327,3 +355,4 @@ class MatchesController < ApplicationController
       end
     end
 end
+

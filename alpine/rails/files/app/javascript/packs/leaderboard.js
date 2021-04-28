@@ -20,7 +20,8 @@ $(function () {
 		model: App.Models.Leaderboard,
 		initialize: function() {
 			this.fetch();
-		}
+		},
+		// refresh: function() { this.fetch(); }
 	});
 
 	// -----------------------------------------
@@ -32,6 +33,9 @@ $(function () {
 			this.collection.on('sync', this.render, this)
 		},
         render: function () {
+			$('#Leaderboard').html("")
+			this.$el.html("")
+
 			this.position = 1;
             this.collection.each(this.addOne, this);
             $('#Leaderboard').html(this.el);
@@ -39,9 +43,13 @@ $(function () {
         },
         addOne: function (Leaderboard) {
             var LeaderboardView = new App.Views.LeaderboardListEl({ model: Leaderboard, position: this.position });
+			console.log(this.$el)
 			this.$el.append(LeaderboardView.render().el);
 			this.position += 1;
-        }
+        },
+		refresh: function () {
+			this.collection.fetch();
+		}
     });
 
 	// -----------------------------------------
@@ -66,4 +74,5 @@ $(function () {
 
 	var coll = new App.Collections.Leaderboard()
 	new App.Views.Leaderboard({collection: coll})
+	$("#LeaderboardRefresh").on("click", function() { coll.fetch(); })
 })

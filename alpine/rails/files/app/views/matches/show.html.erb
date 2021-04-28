@@ -21,7 +21,8 @@
     <dl>
       <dt>W</dt> <dd>- вверх</dd>
       <dt>S</dt> <dd>- вниз</dd> <br>
-      <dt id="btn-enter">Enter</dt> <dd>- пуск шарика</dd>
+      <dt>C</dt> <dd>- цвет ракетки</dd> <br>
+      <dt>Enter</dt> <dd>- пуск шарика</dd>
     </dl>
   </div>
 </script>
@@ -49,8 +50,11 @@
 <%# ПОЛЬЗОВАТЕЛЬ 2 %>
 <script type="text/template" id="MatchUser2ProfileTemplate">
   <p>
-    <a href=<%%= (player2 == null) ? `#` : `/profile/#{player2.id}` %>>
-      <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
+    <%% if (player2 == null) %>
+      <a href="#">
+    <%% else %>
+      <a href='/profile/<%%= player2.id %>'>
+    <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
     </a>
   </p>
   <p>
