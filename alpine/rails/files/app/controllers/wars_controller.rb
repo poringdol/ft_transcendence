@@ -120,10 +120,17 @@ class WarsController < ApplicationController
       # respond_to do |format|
       #   format.json { render :show, status: :ok, location: @war }
       # end
-      render json: 1
+    #   render json: 1
+	  respond_to do |format|
+		if war.destroy()
+        	format.json { render json: 1, status: :ok, location: @war }
+		else
+			format.json { render json: { error: 'Unexpected error' }, status: :unprocessable_entity}
+		end
+      end
     else
       respond_to do |format|
-        format.json { render json: { error: 'You are have no rights' }, status: :unprocessable_entity}
+        format.json { render json: { error: 'You have no rights' }, status: :unprocessable_entity}
       end
     end
   end
@@ -153,7 +160,7 @@ class WarsController < ApplicationController
 
           format.json { render :show, status: :ok, location: @war }
         else
-          format.json { render json: { error: 'Another warr is scheduled for same time' }, status: :unprocessable_entity}
+          format.json { render json: { error: 'Another war is scheduled at same time' }, status: :unprocessable_entity}
         end
       end
     else

@@ -62,7 +62,6 @@ class MatchesController < ApplicationController
   end
 
   def new_match
-
     player2 = User.find_by(nickname: params[:player2])
     if (player2)
       player1_id = current_user.id
@@ -83,6 +82,8 @@ class MatchesController < ApplicationController
             @match.addons.addon3 = true
           end
           @match.addons.save
+		
+		  war_match()
 
           NotificationJob.perform_later({
             user: player2,
@@ -106,6 +107,23 @@ class MatchesController < ApplicationController
     end
   end
 
+  def war_match
+	now = DateTime.now
+	war = War.where(guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)
+	  .or(War.where(guild_2_id: @match.guild_1_id, guild_1_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)).first
+	if war.present?
+		@war_match = WarMatch.new(match_id: @match.id, war_id: war.id)
+		@war_match.save
+	end
+  end
+
+  def war_matches
+	@war_match = WarMatch.where(war_id: params[:id])
+	if @war_match
+		render json: @war_match
+	end
+  end
+
   def new_match_profile
 
     player2 = User.find_by(id: params[:id])
@@ -124,6 +142,9 @@ class MatchesController < ApplicationController
             message: "You will be invited to game with #{current_user.nickname}. Go to game!",
             link: "/matches/#{@match.id}"
           })
+
+		  war_match()
+
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render json: @match}
 
@@ -193,7 +214,10 @@ class MatchesController < ApplicationController
         
         existing_match.player2_id = current_user.id
         existing_match.guild_2_id = current_user.guild_id
-        
+        @match = existing_match
+		
+		war_match()
+
         respond_to do |format|
           if existing_match.save
             format.html { existing_match }
@@ -318,7 +342,7 @@ class MatchesController < ApplicationController
             if war.first.guild_1 == guild_2 || war.first.guild_2 == guild_2
               if score_1 > score_2
                 war.first.update(guild_1_wins: (war.first.guild_1_wins + 1))
-              else
+              elsif score_1 < score_2
                 war.first.update(guild_2_wins: (war.first.guild_2_wins + 1))
               end
             end

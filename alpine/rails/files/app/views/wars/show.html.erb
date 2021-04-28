@@ -1,49 +1,142 @@
-<p id="notice"><%= notice %></p>
+<div>
+	<div class='row'>
+		<div class='col-1'></div>
+		<div class='col-10' id='WarInfo'>
+			<div  style="text-align: center">
+				<div class="card-body row">
+					<div class='col-4'>
+						<h4 class="card-title"><%= @war.guild_1.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_1.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_1.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_1.score %></h5>
+					</div>
+					<div class='col-4' style='margin: auto'>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">Prize:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.prize %></h2>
+						</div>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">Start date:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.start.to_formatted_s(:short) %></h2>
+						</div>
+						<div class='row WarParams'>
+							<h6 class="card-subtitle mb-2 text-muted">End date:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.end.to_formatted_s(:short) %></h2>
+						</div>
+						<div class='row'>
+							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild_1_wins %> - <%= @war.guild_2_wins %></h2>
+						</div>
+					</div>
+					<div class='col-4'>
+						<h4 class="card-title"><%= @war.guild_2.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_2.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_2.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_2.score %></h5>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='col-1'></div>
+	</div>
+	<div class='row' style='text-align: center; margin-top: 20px'>
+		<h5 class="card-title">MATCHES</h5>
+	</div>
+	<div class='row'>
+		<div class='col-2'></div>
+		<!--<div class='col-3' id='WarCreateMatch'></div>
+		<div class='col-1'></div> -->
+		<div class='col-8' id='WarMatches'></div>
+		<div class='col-2'></div>
+	</div>
+</div>
 
-<p>
-  <strong>Guild 1:</strong>
-  <%= @war.guild_1_id %>
-</p>
+<!--
+	TABLE TEMPLATE
+-->
+<script type="text/template" id="MatchesTableTemplate">
+	<table class="table table-striped matchesTable" id='MatchesTable'>
+		<thead id='MatchesTableThead'>
+			<tr class='tableHeader'>
+				<th scope="col" class='tableHeader'>Player-1</th>
+				<th scope="col" class='tableHeader'>Player-2</th>
+				<th scope="col" class='tableHeader'>Score</th>
+				<th scope="col" class='tableHeader'>Guild-1</th>
+				<th scope="col" class='tableHeader'>Guild-2</th>
+				<th scope="col" class='tableHeader'>Addons</th>
+				<th colspan="3"></th>
+			</tr>
+		</thead>
+	</table>
+</script>
 
-<p>
-  <strong>Guild 2:</strong>
-  <%= @war.guild_2_id %>
-</p>
+<!--
+	TABLE ROW TEMPLATE
+-->
+<script type="text/template" id="MatchesRowTemplate">
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/profile/<%%= player1.id %>'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>>
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= player1.nickname %>
+			</div>
+		</div>
+	</td>
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/profile/<%%= player2.id %>'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= player2.nickname %>
+			</div>
+		</div>
+	</td>
+	<td><%%= player1_score %> - <%%= player2_score %></td>
+	<td>
+		<div class='row justify-content-md-center'>
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/guilds'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_1 == null) ? "/assets/default-avatar.jpg" : guild_1.logo.url %>>
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= (guild_1 == null) ? "none" : guild_1.anagram %>
+			</div>
+		</div>
+	</td>
+	<td>
+		<div class='row justify-content-md-center'>
+			<div class='col-lg-2 matchesTablePhotos'>
+				<a href='/guilds'>
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_2 == null) ? "/assets/default-avatar.jpg" : guild_2.logo.url %>>
+				</a>
+			</div>
+			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+				<%%= (guild_2 == null) ? "none" : guild_2.anagram %>
+			</div>
+		</div>
+	</td>
+	<td>none</td>
+	<td>
+		<a type='button' class='btn btn-guild' id='ShowMatch' href='/matches/<%%= id %>'>
+			Show
+		</a>
+	</td>
+	<% if current_user.is_admin? || current_user.is_moderator? %>
+		<td>
+			<button type='button' class='btn btn-guild' id='DeleteMatch'>
+				Delete
+			</button>
+		</td>
+	<% end %>
+</script>
 
-<p>
-  <strong>Start:</strong>
-  <%= @war.start %>
-</p>
 
-<p>
-  <strong>End:</strong>
-  <%= @war.end %>
-</p>
-
-<p>
-  <strong>Prize:</strong>
-  <%= @war.prize %>
-</p>
-
-<p>
-  <strong>Max unanswered:</strong>
-  <%= @war.max_unanswered %>
-</p>
-
-<p>
-  <strong>Addons:</strong>
-  <%= @war.addons_id %>
-</p>
-
-<p>
-  <strong>Guild 1 wins:</strong>
-  <%= @war.guild_1_wins %>
-</p>
-
-<p>
-  <strong>Guild 2 wins:</strong>
-  <%= @war.guild_2_wins %>
-</p>
-
-<%= link_to 'Edit', edit_war_path(@war) %> |
-<%= link_to 'Back', wars_path %>
+<%= javascript_pack_tag 'war' %>

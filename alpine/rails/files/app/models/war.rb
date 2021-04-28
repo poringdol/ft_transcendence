@@ -10,6 +10,9 @@ class War < ApplicationRecord
   }
 
   after_destroy {
-    Addon.find(self.addons_id).destroy
+    addon = Addon.where(id: self.addons_id).first
+	if addon.present?
+		addon.destroy
+	end
   }
 end

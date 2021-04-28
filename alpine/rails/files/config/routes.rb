@@ -134,6 +134,7 @@ Rails.application.routes.draw do
   get 'new_match_profile/:id' => 'matches#new_match_profile'
 
   post 'matches/end_game' => 'matches#end_game'
+  get 'matches/war_matches/:id' => 'matches#war_matches'
 
 # ------------------
 # WARS
