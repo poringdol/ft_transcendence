@@ -644,7 +644,10 @@ $(function () {
 			'click #WarGuildBtn':   'warGuild',
 		},
 		deleteGuild: function () {
-			alert("DELETE");
+			// alert("DELETE");
+			if (confirm('Are you sure you want to DELETE the guild?') == false)
+				return;
+
 			var promise = this.model.destroy([], {
 				dataType: "text"
 			})

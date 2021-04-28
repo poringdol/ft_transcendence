@@ -5,6 +5,12 @@ class WarsController < ApplicationController
   # GET /wars or /wars.json
   def index
     @wars = War.all
+    p "DateTime.now"
+    p Time.current
+    p "Time.current"
+    p DateTime.now
+    p "Time.current.to_date"
+    p Time.current.to_date
   end
 
   # GET /wars/1 or /wars/1.json
@@ -53,11 +59,11 @@ class WarsController < ApplicationController
 
     date_start = Date.parse params[:date_start]
     time_start = Time.parse params[:time_start]
-    war_start = DateTime.new(date_start.year, date_start.month, date_start.day, time_start.hour, time_start.min) - 3.hour
+    war_start = DateTime.new(date_start.year, date_start.month, date_start.day, time_start.hour, time_start.min)
 
     date_end = Date.parse params[:date_end]
     time_end = Time.parse params[:time_end]
-    war_end = DateTime.new(date_end.year, date_end.month, date_end.day, time_end.hour, time_end.min) - 3.hour
+    war_end = DateTime.new(date_end.year, date_end.month, date_end.day, time_end.hour, time_end.min)
 
     if war_end - war_start < 0 || war_start - DateTime.now < 0 || war_end - DateTime.now < 0
       respond_to do |format|

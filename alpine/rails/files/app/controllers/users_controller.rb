@@ -32,9 +32,6 @@ class UsersController < ApplicationController
   end
 
   def update_nickname
-    p "----------------------"
-    p params
-    p "----------------------"
     if current_user.nickname != params[:user][:nickname]
       current_user.nickname = params[:user][:nickname]
       current_user.save!
@@ -112,6 +109,11 @@ class UsersController < ApplicationController
   def online
     online_users = User.all.online().select(:id, :encrypted_otp_secret)
     return render json: online_users
+  end
+
+  def users_list
+    @user = User.select(:id, :nickname, :encrypted_otp_secret).order(:nickname)
+    render json: @user
   end
 
 end

@@ -21,15 +21,7 @@ class MatchChannel < ApplicationCable::Channel
                                                                         bracket2: data["bracket2"]}
   end
   
-  def reset_ball(data)
-    ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
-                                                                         player: data["player"],
-                                                                         key_code: data["key_code"]}
-  end
-  
   def command(data)
-    REDIS.set "player:#{data["player"]}:#{data["match_id"]}", data["online"]
-
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          player: data["player"],
                                                                          key_code: data["key_code"],

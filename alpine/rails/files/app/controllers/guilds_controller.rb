@@ -8,7 +8,7 @@ class GuildsController < ApplicationController
 
 
   def index
-    update_war_status()
+    # update_war_status()
     @guilds = Guild.order(:score).reverse
 
     respond_to do |format|
@@ -399,4 +399,5 @@ class GuildsController < ApplicationController
         it.guild_2.update(is_in_war: true)
       end
     end
-end
+
+  end

@@ -199,12 +199,14 @@ $(function () {
 		},
 	})
 
-	App.Models.AllUsers = Backbone.Model.extend({ urlRoot: "/leaderboard" })
-	
+/*
+** Выпадающий список со всеми пользователями для формы создания матча
+*/
+	App.Models.AllUsers = Backbone.Model.extend({ urlRoot: "/users_list" })
 	App.Collections.AllUsers = Backbone.Collection.extend({
-		url: "/leaderboard",
+		url: "/users_list",
 		model: App.Models.AllUsers,
-		initialize: function() { this.fetch(); }
+		initialize: function() { this.fetch(); },
 	});
 
 	App.Views.AllUsers = Backbone.View.extend({
@@ -213,6 +215,8 @@ $(function () {
 			this.collection.on('sync', this.render, this)
 		},
         render: function () {
+			$('#formPlayer2Nickname').css('color', 'rgba(0, 0, 0, 0.55)');
+			$('#formPlayer2Nickname').append(`<option value='' disabled selected>Select an opponent</option>`);
             this.collection.each((it) => {
 				var nickname = it.get("nickname");
 				$('#formPlayer2Nickname').append(`<option value='${nickname}'>${nickname}</option>`);
@@ -224,7 +228,7 @@ $(function () {
 /*
 ** MAIN
 */
-	col = new App.Collections.Match()
+	var col = new App.Collections.Match()
 	new App.Views.FormMatches
 	new App.Views.RandomMatches
 	currentTable = new App.Views.TableMatches({ collection: col, type: 'Current' })
@@ -232,7 +236,8 @@ $(function () {
 	historyTable = new App.Views.TableMatches({ collection: col, type: 'History' })
 	new App.Views.FormWar()
 
-	var col = new App.Collections.AllUsers()
-	new App.Views.AllUsers({ collection: col });
+	var user_list = new App.Collections.AllUsers()
+	new App.Views.AllUsers({ collection: user_list });
+	$("#MatchesTableRefresh").on("click", function() { col.fetch(); })
 
 }());

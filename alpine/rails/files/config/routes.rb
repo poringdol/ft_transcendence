@@ -54,7 +54,6 @@ Rails.application.routes.draw do
 #    PROFILE PAGE
 # ------------------
 
-  get '/leaderboard' => 'users#index'
   get '/user' => "profile#index"
   get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
   get 'profile/get_curr_user' => "profile#get_curr_user"
@@ -85,6 +84,9 @@ Rails.application.routes.draw do
   post 'rooms/unblock_user' => 'users#unblock_user'
 
   get 'users/online' => 'users#online'
+
+  get '/leaderboard' => 'users#index'
+  get '/users_list' => 'users#users_list'
 
 # ------------------------------------
 #   PROFILE PAGE - FRIENDS CONTROLLER
@@ -135,6 +137,7 @@ Rails.application.routes.draw do
 
   post 'matches/end_game' => 'matches#end_game'
   get 'matches/war_matches/:id' => 'matches#war_matches'
+  post 'matches/duration' => 'matches#duration'
 
 # ------------------
 # WARS
