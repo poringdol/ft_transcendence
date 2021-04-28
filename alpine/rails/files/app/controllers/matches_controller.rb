@@ -113,20 +113,20 @@ class MatchesController < ApplicationController
   end
 
   def war_match
-	now = DateTime.now
-	war = War.where(guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)
-	  .or(War.where(guild_2_id: @match.guild_1_id, guild_1_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)).first
-	if war.present?
-		@war_match = WarMatch.new(match_id: @match.id, war_id: war.id)
-		@war_match.save
-	end
+    now = DateTime.now
+    war = War.where(guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)
+      .or(War.where(guild_2_id: @match.guild_1_id, guild_1_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)).first
+    if war.present?
+      @war_match = WarMatch.new(match_id: @match.id, war_id: war.id)
+      @war_match.save
+    end
   end
 
   def war_matches
-	@war_match = WarMatch.where(war_id: params[:id])
-	if @war_match
-		render json: @war_match
-	end
+    @war_match = WarMatch.where(war_id: params[:id])
+    if @war_match
+      render json: @war_match
+    end
   end
 
   def new_match_profile
@@ -148,7 +148,7 @@ class MatchesController < ApplicationController
             link: "/matches/#{@match.id}"
           })
 
-		  war_match()
+		      war_match()
 
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render json: @match}
@@ -221,7 +221,7 @@ class MatchesController < ApplicationController
         existing_match.guild_2_id = current_user.guild_id
         @match = existing_match
 		
-		war_match()
+		    war_match()
 
         respond_to do |format|
           if existing_match.save
@@ -286,35 +286,6 @@ class MatchesController < ApplicationController
       redirect_to "/matches/#{match.first.id}"
     end
   end
-
-  def duration
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p "33333333333333333333333333"
-    p params
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    p "44444444444444444444444444"
-    # end_game(params[:id])
-  end
-  handle_asynchronously :duration, :run_at => Proc.new { 1.minutes.from_now }
 
   private
     # Use callbacks to share common setup or constraints between actions.

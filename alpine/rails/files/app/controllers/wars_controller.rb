@@ -4,13 +4,6 @@ class WarsController < ApplicationController
 
   # GET /wars or /wars.json
   def index
-    @wars = War.all
-    p "DateTime.now"
-    p Time.current
-    p "Time.current"
-    p DateTime.now
-    p "Time.current.to_date"
-    p Time.current.to_date
   end
 
   # GET /wars/1 or /wars/1.json

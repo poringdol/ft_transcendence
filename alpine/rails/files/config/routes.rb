@@ -137,7 +137,6 @@ Rails.application.routes.draw do
 
   post 'matches/end_game' => 'matches#end_game'
   get 'matches/war_matches/:id' => 'matches#war_matches'
-  post 'matches/duration' => 'matches#duration'
 
 # ------------------
 # WARS

@@ -178,7 +178,6 @@ document.addEventListener("turbolinks:load", () => {
 				else if (this.model.get("is_player1_online") && this.model.get("is_player2_online")) {
 					this.model.save({ is_inprogress: true }).done(function () {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.start_game });
-						$.post("/matches/duration", { match_id: MATCH_ID });	// завершение игры через 5 минут
 					});
 				}
 				else {
