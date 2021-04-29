@@ -23,24 +23,6 @@ class MatchChannel < ApplicationCable::Channel
   
   def command(data)
 
-    if key_code == "133"
-      Match.find(data["match_id"]).delay.delay_end
-      p "string string string string string string string string string "
-      p "string string string string string string string string string "
-      p "string string string string string string string string string "
-      p "string string string string string string string string string "
-      p "string string string string string string string string string "
-    
-    elsif key_code == 133
-      Match.find(data["match_id"]).delay.delay_end
-      p "int int int int int int int int int int int int int int int int"
-      p "int int int int int int int int int int int int int int int int"
-      p "int int int int int int int int int int int int int int int int"
-      p "int int int int int int int int int int int int int int int int"
-      p "int int int int int int int int int int int int int int int int"
-
-    end
-
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          player: data["player"],
                                                                          key_code: data["key_code"],

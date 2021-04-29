@@ -55,6 +55,8 @@ alpine/rails/files/.yarn-integrity
 alpine/rails/files/storage/*
 !alpine/rails/files/storage/.keep
 
+alpine/rails/files/test/*
+
 # Ignore avatar
 alpine/rails/files/public/*
 

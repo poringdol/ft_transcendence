@@ -10,7 +10,6 @@ $(function () {
 		urlRoot: "/matches/war_matches/",
 		initialize: function () {
 			this.urlRoot += war_id + ".json"
-			console.log(this)
 		}
 	});
 
@@ -19,7 +18,6 @@ $(function () {
 		url: "/matches/war_matches/",
 		initialize: function () {
 			this.url += war_id + ".json"
-			console.log(this.url)
 			this.fetch()
 		}
 	});
@@ -76,17 +74,29 @@ $(function () {
 				fetch('/matches/' + this.model.get('id'), {
 					method: 'DELETE',
 				})
-					.then(res => res.ok ? res : Promise.reject(res))
-					.then(_.bind(() => {
-						alert('Success! Match was removed!')
-						this.$el.remove();
-					}, this))
-					.catch(() => {
-						alert('Error!')
-					})
+				.then(res => res.ok ? res : Promise.reject(res))
+				.then(_.bind(() => {
+					alert('Success! Match was removed!')
+					this.$el.remove();
+				}, this))
+				.catch(() => {
+					alert('Error!')
+				})
 			}
 		}
 	});
+
+	$('#WarMatchCreate').on("click", function() {
+		fetch("/wars/create_war_match", { id: 4 })
+		.then(res => res.ok ? res.json() : Promise.reject(res))
+		.then(_.bind((res) => {
+			if (res.error)
+				alert(res.error)
+			else
+				// Turbolinks.visit("/matches/" + res.id);
+				console.log(res)
+		}, this))
+	})
 
 	const urlArray = window.jQuery.ajaxSettings.url.split('/')
 	const war_id = urlArray[urlArray.length - 1]

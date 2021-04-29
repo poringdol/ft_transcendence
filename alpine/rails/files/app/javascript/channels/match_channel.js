@@ -35,6 +35,9 @@ document.addEventListener("turbolinks:load", () => {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 				}
 			}
+			$("a").off();
+			$(window).off();
+			document.removeEventListener("keydown", game.keyDownEvent);
 			consumer.subscriptions.remove(subscribe);
 			return true;
 		}
@@ -196,7 +199,7 @@ document.addEventListener("turbolinks:load", () => {
 						game.startGame();
 
 						$("a").on("click", leave_page);
-						window.addEventListener("beforeunload", leave_page);
+						$(window).on("beforeunload", leave_page);
 					}
 				})
 			},
@@ -446,7 +449,7 @@ document.addEventListener("turbolinks:load", () => {
 					if (MATCH.model.get("addons").addon1 == true)
 						this.disco();
 					// Ускоряем шарик
-					if (MATCH.model.get("addons").addon3 == true || MATCH.model.get("is_ranked") == true)
+					if (MATCH.model.get("addons").addon3 == true)
 						ball.xspeed = ball.xspeed * ball.bounce;
 				}
 				// Отскок шарика от 2 блока

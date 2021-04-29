@@ -18,10 +18,10 @@ User.create!(email: 'splinter@a.a', nickname: 'splinter', password: 'splinter', 
 guild = Guild.create(name: 'Ninja Turtles', anagram: 'TMNT', score: 80, rating: 3, owner_id: User.where(nickname: 'splinter').first.id)
 guild.update_column :logo, 'tmnt.jpg'
 
-User.create!(email: 'leonardo@a.a',     nickname: 'leonardo',     guild_id: guild.id, is_banned: true,  password: 'leonardo',     password_confirmation: 'leonardo')
+User.create!(email: 'leonardo@a.a',     nickname: 'leonardo',     guild_id: guild.id,					password: 'leonardo',     password_confirmation: 'leonardo')
 User.create!(email: 'donatello@a.a',    nickname: 'donatello',    guild_id: guild.id, is_officer: true, password: 'donatello',    password_confirmation: 'donatello')
 User.create!(email: 'raphael@a.a',      nickname: 'raphael',      guild_id: guild.id,                   password: 'raphael',      password_confirmation: 'raphael')
-User.create!(email: 'michelangelo@a.a', nickname: 'michelangelo', guild_id: guild.id,                   password: 'michelangelo', password_confirmation: 'michelangelo')
+User.create!(email: 'michelangelo@a.a', nickname: 'michelangelo', guild_id: guild.id, is_banned: true,  password: 'michelangelo', password_confirmation: 'michelangelo')
 
 User.create!(email: 'rick_sanchez@a.a', nickname: 'rick_sanchez', password: 'rick_sanchez', password_confirmation: 'rick_sanchez')
 guild = Guild.create(name: 'Rick and Morty', anagram: 'R&M', score: 90, rating: 2, owner_id: User.where(nickname: 'rick_sanchez').first.id)

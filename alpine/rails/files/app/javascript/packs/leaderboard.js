@@ -43,7 +43,6 @@ $(function () {
         },
         addOne: function (Leaderboard) {
             var LeaderboardView = new App.Views.LeaderboardListEl({ model: Leaderboard, position: this.position });
-			console.log(this.$el)
 			this.$el.append(LeaderboardView.render().el);
 			this.position += 1;
         },

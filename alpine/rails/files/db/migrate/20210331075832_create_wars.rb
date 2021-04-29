@@ -6,10 +6,12 @@ class CreateWars < ActiveRecord::Migration[6.0]
       t.datetime :start
       t.datetime :end
       t.integer :prize, default: 0
+      t.integer :unanswered, default: 0
       t.integer :max_unanswered, default: 10
       t.references :addons, foreign_key: true
       t.integer :guild_1_wins, default: 0
       t.integer :guild_2_wins, default: 0
+      t.boolean :is_inprogress, default: false
       t.boolean :is_end, default: false
       t.boolean :is_accepted, default: false
       t.boolean :is_ranked, default: false

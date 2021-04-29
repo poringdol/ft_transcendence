@@ -71,8 +71,6 @@ gem "bower-rails", "~> 0.7.3"
 
 gem 'active_model_serializers'
 
-gem 'delayed_job_active_record'
-
 # avatars
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick'

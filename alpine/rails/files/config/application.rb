@@ -13,13 +13,13 @@ module Pingpong
 
     config.web_console.whitelisted_ips = '172.18.0.1/16'
 
-    config.active_job.queue_adapter = :delayed_job  # отложенные задания
     # config.web_console.whiny_requests = false
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.time_zone = 'Moscow'
+    # config.time_zone = 'Moscow'
+    # config.active_record.default_timezone = :local
   end
 end

@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_27_220847) do
+ActiveRecord::Schema.define(version: 2021_04_17_115004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "addons", force: :cascade do |t|
-    t.boolean "addon1"
-    t.boolean "addon2"
-    t.boolean "addon3"
+    t.boolean "addon1", default: false
+    t.boolean "addon2", default: false
+    t.boolean "addon3", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -30,21 +30,6 @@ ActiveRecord::Schema.define(version: 2021_04_27_220847) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["blocked_user_id"], name: "index_blocklists_on_blocked_user_id"
     t.index ["user_id"], name: "index_blocklists_on_user_id"
-  end
-
-  create_table "delayed_jobs", force: :cascade do |t|
-    t.integer "priority", default: 0, null: false
-    t.integer "attempts", default: 0, null: false
-    t.text "handler", null: false
-    t.text "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string "locked_by"
-    t.string "queue"
-    t.datetime "created_at", precision: 6
-    t.datetime "updated_at", precision: 6
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "friends", force: :cascade do |t|
@@ -221,6 +206,7 @@ ActiveRecord::Schema.define(version: 2021_04_27_220847) do
     t.bigint "addons_id"
     t.integer "guild_1_wins", default: 0
     t.integer "guild_2_wins", default: 0
+    t.boolean "is_inprogress", default: false
     t.boolean "is_end", default: false
     t.boolean "is_accepted", default: false
     t.boolean "is_ranked", default: false

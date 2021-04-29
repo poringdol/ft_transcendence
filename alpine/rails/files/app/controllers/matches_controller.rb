@@ -83,8 +83,8 @@ class MatchesController < ApplicationController
           end
           @match.addons.save
 		
-		  war_match()
-
+		      war_match()
+          DeleteMatchInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "#{@match.player1.nickname} invite you to play a game",
@@ -142,13 +142,14 @@ class MatchesController < ApplicationController
       @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
       respond_to do |format|
         if @match.save
+
+          war_match()
+          DeleteMatchInviteJob.set(wait: 1.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "You will be invited to game with #{current_user.nickname}. Go to game!",
             link: "/matches/#{@match.id}"
           })
-
-		      war_match()
 
           format.html { redirect_to @match, notice: "Match was successfully created." }
           format.json { render json: @match}
@@ -244,6 +245,7 @@ class MatchesController < ApplicationController
       new_match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id, is_ranked: true)
       respond_to do |format|
         if new_match.save
+          new_match.addons.update(addon3: true)
           format.html { new_match }
           format.json { render json: new_match}
         else
@@ -265,8 +267,8 @@ class MatchesController < ApplicationController
   end
 
   def end_game
+
     match = Match.find(params[:id])
-    # update_war_status()
     if match.is_ranked?
       war_score(match.guild_1, match.guild_2, match.player1_score, match.player2_score)
       set_rating(match)
@@ -313,21 +315,6 @@ class MatchesController < ApplicationController
         unless winner.guild.nil?
           winner.guild.update(score: (winner.guild.score + match.rating))
         end
-      end
-    end
-
-    def update_war_status
-      wars_ended = War.where(start: DateTime.now..DateTime::Infinity.new, is_accepted: true)
-               .or(War.where(end: DateTime.new(2021,1,1,0,0)..DateTime.now))
-      wars_ended.each do |it|
-        it.guild_1.update(is_in_war: false)
-        it.guild_2.update(is_in_war: false)
-      end
-      
-      wars_now = War.where(start: DateTime.new(2021,1,1,0,0)..DateTime.now, end: DateTime.now..DateTime::Infinity.new, is_accepted: true)
-      wars_now.each do |it|
-        it.guild_1.update(is_in_war: true)
-        it.guild_2.update(is_in_war: true)
       end
     end
 

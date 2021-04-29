@@ -8,7 +8,6 @@ class GuildsController < ApplicationController
 
 
   def index
-    # update_war_status()
     @guilds = Guild.order(:score).reverse
 
     respond_to do |format|
@@ -383,21 +382,6 @@ class GuildsController < ApplicationController
 
     def check_guild
       redirect_to guilds_path, notice: "Guild not found" and return if !Guild.all.find(params[:id])
-    end
-
-    def update_war_status
-      wars_ended = War.where(start: DateTime.now..DateTime::Infinity.new, is_accepted: true)
-               .or(War.where(end: DateTime.new(2021,1,1,0,0)..DateTime.now))
-      wars_ended.each do |it|
-        it.guild_1.update(is_in_war: false)
-        it.guild_2.update(is_in_war: false)
-      end
-      
-      wars_now = War.where(start: DateTime.new(2021,1,1,0,0)..DateTime.now, end: DateTime.now..DateTime::Infinity.new, is_accepted: true)
-      wars_now.each do |it|
-        it.guild_1.update(is_in_war: true)
-        it.guild_2.update(is_in_war: true)
-      end
     end
 
   end
