@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_17_115004) do
+ActiveRecord::Schema.define(version: 2021_04_30_182507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,14 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.string "link"
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "room_users", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "room_id"
@@ -202,6 +210,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.datetime "start"
     t.datetime "end"
     t.integer "prize", default: 0
+    t.integer "unanswered", default: 0
     t.integer "max_unanswered", default: 10
     t.bigint "addons_id"
     t.integer "guild_1_wins", default: 0

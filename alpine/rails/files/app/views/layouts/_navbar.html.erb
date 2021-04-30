@@ -27,6 +27,10 @@
 						Notifications
 					</a>
 					<ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
+						<% @notify = Notification.where(user_id: current_user.id) %>
+						<% @notify.each do |notify| %>
+    						<%= render 'layouts/notification', message: notify.message, link: notify.link, id: notify.id %>
+    					<% end %>
 						<div id="Notify">
 						</div>
 					</ul>
@@ -46,3 +50,18 @@
 	</div>
 </nav>
 
+
+	<script type="text/javascript">
+    function deleteNotify(id) {
+			fetch("/notification/destroy", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: id })
+			})
+			$(`#notify-msg-${id}`).remove()
+			return true
+    };
+  </script>

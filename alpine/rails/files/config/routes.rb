@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :guilds
   resources :pingpongs
 
+  post '/notification/destroy' => 'notification#destroy'
 # ------------------
 #    GUILDS PAGE
 # ------------------

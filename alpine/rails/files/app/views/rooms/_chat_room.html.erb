@@ -7,7 +7,6 @@
     </nav>
 
     <div class="row">
-      <%# <div class="btn-outline-primary mb-3 btn-chat"> %>
       <div class="mb-3 col-2">
           <%= form_with model: @room, url: "leave", method: :post do |form| %>
               <%= form.hidden_field :room_id, value: @room.id %>

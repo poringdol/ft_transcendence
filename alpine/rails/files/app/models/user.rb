@@ -39,6 +39,12 @@ class User < ApplicationRecord
   end
 
   def self.from_omniauth(auth)
+    us = User.where(nickname: auth.info.nickname).first
+    if us.present?
+      if us.last_sign_in_ip != nil
+        auth.info.nickname = auth.info.nickname + "#{rand(666)}"
+      end
+    end
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.password = Devise.friendly_token[0,20]
