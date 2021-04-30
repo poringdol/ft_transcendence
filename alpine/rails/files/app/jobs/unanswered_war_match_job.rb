@@ -2,7 +2,16 @@ class UnansweredWarMatchJob < ApplicationJob
   queue_as :default
 
   def perform(match, war)
-    # if match.is_inprogress == false && match.is_end == false
+
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+    p match
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+    p war
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+    p "unanswered_war_match_job unanswered_war_match_job unanswered_war_match_job "
+
     if match.player2.nil?
       match.player1_score = 1
       match.rating = 1
@@ -10,7 +19,7 @@ class UnansweredWarMatchJob < ApplicationJob
       match.save
       
       match.player1.score += 1
-      match.player.save
+      match.player1.save
       
       match.guild_1.score += 1
       match.guild_1.save
@@ -31,6 +40,7 @@ class UnansweredWarMatchJob < ApplicationJob
           war.guild2.score += war.prize
         end
         war.save
+      end
     end
   end
 end

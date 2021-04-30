@@ -1,4 +1,4 @@
-<div>
+<div id="WarID" data-WarID="<%= @war.nil? ? 0 : @war.id %>"></div>
 	<div class='row'>
 		<div class='col-1'></div>
 		<div class='col-10' id='WarInfo'>
@@ -17,11 +17,11 @@
 						</div>
 						<div class='row WarParams'>
 							<h6 class="card-subtitle mb-2 text-muted">Start date:</h6>
-							<h2 class="card-subtitle mb-2 text-muted"><%= @war.start.to_formatted_s(:short) %></h2>
+							<h2 class="card-subtitle mb-2 text-muted"><%= (@war.start + 3.hour).to_formatted_s(:short) %></h2>
 						</div>
 						<div class='row WarParams'>
 							<h6 class="card-subtitle mb-2 text-muted">End date:</h6>
-							<h2 class="card-subtitle mb-2 text-muted"><%= @war.end.to_formatted_s(:short) %></h2>
+							<h2 class="card-subtitle mb-2 text-muted"><%= (@war.end + 3.hour).to_formatted_s(:short) %></h2>
 						</div>
 						<div class='row'>
 							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>

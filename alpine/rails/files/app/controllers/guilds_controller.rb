@@ -41,7 +41,7 @@ class GuildsController < ApplicationController
   end
 
   def user_update
-    User.find(params[:id]).update
+    User.find(params[:id])
   end
 
   def get_guilds
@@ -211,7 +211,7 @@ class GuildsController < ApplicationController
   end
 
   def update
-	  @guild.save
+	  @guild.update(guilds_params)
   end
 
   def join

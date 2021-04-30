@@ -84,7 +84,7 @@ class MatchesController < ApplicationController
           @match.addons.save
 		
 		      war_match()
-          DeleteMatchInviteJob.set(wait: 5.minutes).perform_later(@match)
+          DeleteGameInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "#{@match.player1.nickname} invite you to play a game",
@@ -144,7 +144,7 @@ class MatchesController < ApplicationController
         if @match.save
 
           war_match()
-          DeleteMatchInviteJob.set(wait: 1.minutes).perform_later(@match)
+          DeleteGameInviteJob.set(wait: 1.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "You will be invited to game with #{current_user.nickname}. Go to game!",
@@ -230,7 +230,7 @@ class MatchesController < ApplicationController
             format.json { render json: existing_match}
           else
             format.html { render :new, status: :unprocessable_entity }
-            format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
+            format.json { render json: { error: 'Error while creating a match' }, status: :unprocessable_entity }
           end
         end
 
@@ -246,11 +246,13 @@ class MatchesController < ApplicationController
       respond_to do |format|
         if new_match.save
           new_match.addons.update(addon3: true)
+
+           DeleteGameInviteJob.set(wait: 5.minutes).perform_later(new_match)
           format.html { new_match }
           format.json { render json: new_match}
         else
           format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: { error: 'There is no such a user' }, status: :unprocessable_entity }
+          format.json { render json: { error: 'Error while creating a match' }, status: :unprocessable_entity }
         end
       end
 

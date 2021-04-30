@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   resources :messages
   resources :rooms
   resources :guilds
-  resources :pingpongs
 
 # ------------------
 #    GUILDS PAGE
@@ -145,7 +144,7 @@ Rails.application.routes.draw do
   get 'wars/decline/:id' => 'wars#decline'
   get 'wars/accept/:id' => 'wars#accept'
 
-  get 'wars/create_war_match' => 'wars#create_war_match'
+  post 'create_war_match' => 'wars#create_war_match'
 
 # --------------------
 #    AUTHENTIFICATION

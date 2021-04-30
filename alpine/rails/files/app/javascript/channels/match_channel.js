@@ -16,28 +16,30 @@ document.addEventListener("turbolinks:load", () => {
 	let subscribe = 0;
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
-
+		
 		function leave_page() {
-			if (typeof game !== "undefined" && typeof MATCH !== "undefined" && MATCH.player != 0) {
-				game.params.state = "leave";
+			if (typeof MATCH !== "undefined" && MATCH.player != 0) {
+				if (typeof game !== "undefined")
+					game.params.state = "leave";
 
-				if (MATCH.model.get("is_inprogress") == true) {
-
+				if (MATCH.model.get("is_end") == false) {
+					
 					MATCH.model.set(`is_player${MATCH.player}_online`, false);
-				
-	 				// Если оба игрока покинули страницу с игрой, завершаем игру
-					if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
-						$.post("/matches/end_game", { id: MATCH_ID });
-						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: -1 })
+					MATCH.model.save();
+					
+					if (MATCH.model.get("is_inprogress") == true) {
+						// Если оба игрока покинули страницу с игрой, завершаем игру
+						if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
+							$.post("/matches/end_game", { id: MATCH_ID });
+							subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.end_game, player: -1 })
+						}
+						// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
+						else
+							subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 					}
-	 				// Иначе засчитываем гол игроку, покинувшему страницу с игрой во время матча
-					else
-						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
 				}
 			}
-			$("a").off();
-			$(window).off();
-			document.removeEventListener("keydown", game.keyDownEvent);
+			$("body").off();
 			consumer.subscriptions.remove(subscribe);
 			return true;
 		}
@@ -152,7 +154,6 @@ document.addEventListener("turbolinks:load", () => {
 				_.bindAll(this, "init");
 				this.model.fetch({ success: this.init })
 			},
-
 			
 			init: function () {
 				// Если игра завершена - рисуем результаты
@@ -167,7 +168,7 @@ document.addEventListener("turbolinks:load", () => {
 				this.player = (this.model.get("player1").id == this.model.get("current_user").id) ? 1 :
 							  (this.model.get("player2") != null &&
 							   this.model.get("player2").id == this.model.get("current_user").id) ? 2 : 0;
-
+							   
 				if (this.player != 0) {
 					this.model.set(`is_player${this.player}_online`, true);
 					this.model.save().done(() => {
@@ -175,6 +176,10 @@ document.addEventListener("turbolinks:load", () => {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
 					})
 				}
+				
+				$("a").on("click", leave_page);
+				$(window).on("beforeunload", leave_page);
+
 				if (this.model.get("is_inprogress") == true) {
 					this.renderGame(false);
 				}
@@ -197,9 +202,6 @@ document.addEventListener("turbolinks:load", () => {
 		
 						window.game = new Game(this.player, is_newgame);
 						game.startGame();
-
-						$("a").on("click", leave_page);
-						$(window).on("beforeunload", leave_page);
 					}
 				})
 			},

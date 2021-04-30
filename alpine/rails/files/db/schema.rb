@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_115004) do
     t.datetime "start"
     t.datetime "end"
     t.integer "prize", default: 0
+    t.integer "unanswered", default: 0
     t.integer "max_unanswered", default: 10
     t.bigint "addons_id"
     t.integer "guild_1_wins", default: 0

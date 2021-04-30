@@ -50,10 +50,7 @@
 <%# ПОЛЬЗОВАТЕЛЬ 2 %>
 <script type="text/template" id="MatchUser2ProfileTemplate">
   <p>
-    <%% if (player2 == null) %>
-      <a href="#">
-    <%% else %>
-      <a href='/profile/<%%= player2.id %>'>
+    <%%= player2 == null ? '<a href="#">' : "<a href='/profile/#{player2.id}'>" %>
     <img width="50px" height="50px" class="rounded-circle" src=<%%= (player2 == null) ? "/assets/default-avatar1.jpg" : player2.avatar.url %>> 
     </a>
   </p>
@@ -95,12 +92,12 @@
    
     <div class="col-6">
       <p>
-        <a href='/profile/<%%= player2.id %>'>
-          <img width="150px" height="150px" class="rounded-circle" src=<%%= player2.avatar.url %>> 
+        <%% player2 == null ? "<a href='#'>" : "<a href='/profile/#{player2.id}'>"%>
+          <img width='150px' height='150px' class='rounded-circle' src='<%%= player2 == null ? "/assets/default-avatar1.jpg" : player2.avatar.url %>'> 
         </a>
       </p>
       <p>
-        Nickname: <%%= player2.nickname %> 
+        <%%= (player2 == null) ? "No one answered the invitation to this match " : ("Nickname: " + player2.nickname) %> 
       </p>
       <p>
         Guild: <%%= (guild_2 == null) ? "none" : guild_2.name %> 
@@ -112,5 +109,3 @@
     </div>
   </div>
 </script>
-
-<%= javascript_pack_tag 'pingpong' %>

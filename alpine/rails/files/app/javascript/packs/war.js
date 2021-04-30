@@ -1,4 +1,8 @@
 $(function () {
+
+	const war_el = $("#WarID");
+	const WAR_ID = parseInt(war_el.attr("data-WarID"));
+
 	window.App = {
 		Models: {},
 		Views: {},
@@ -9,7 +13,7 @@ $(function () {
 	App.Models.WarMatch = Backbone.Model.extend({
 		urlRoot: "/matches/war_matches/",
 		initialize: function () {
-			this.urlRoot += war_id + ".json"
+			this.urlRoot += WAR_ID + ".json"
 		}
 	});
 
@@ -17,7 +21,7 @@ $(function () {
 		model: App.Models.WarMatch,
 		url: "/matches/war_matches/",
 		initialize: function () {
-			this.url += war_id + ".json"
+			this.url += WAR_ID + ".json"
 			this.fetch()
 		}
 	});
@@ -87,20 +91,24 @@ $(function () {
 	});
 
 	$('#WarMatchCreate').on("click", function() {
-		fetch("/wars/create_war_match", { id: 4 })
-		.then(res => res.ok ? res.json() : Promise.reject(res))
-		.then(_.bind((res) => {
-			if (res.error)
+		fetch("/create_war_match", {
+			method: "POST",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: WAR_ID })
+		})
+		.then(res => res.json())
+		.then(res => {
+			if (res.id)
+				Turbolinks.visit("/matches/" + res.id);
+			else if (res.error)
 				alert(res.error)
 			else
-				// Turbolinks.visit("/matches/" + res.id);
-				console.log(res)
-		}, this))
+				alert("Unknown error. Please, refresh your wars list")
+		})
 	})
-
-	const urlArray = window.jQuery.ajaxSettings.url.split('/')
-	const war_id = urlArray[urlArray.length - 1]
-	window.war_id = war_id
 
 	col = new App.Collections.WarMatch()
 	new App.Views.TableMatches({ collection: col })
