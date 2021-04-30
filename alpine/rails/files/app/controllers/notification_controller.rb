@@ -3,12 +3,8 @@ class NotificationController < ApplicationController
 
   def destroy
     notify = Notification.where(id: params[:id]).first
-    p '----------------------------------'
-    p  notify
-    p '----------------------------------'
     if notify.present?
       notify.destroy
     end
-    #render json: status: :ok
   end
 end

@@ -7,9 +7,6 @@ class ApplicationController < ActionController::Base
 
   def all_users
     all_users = User.all
-    # p '------------------------------------'
-
-    # p '===================================='
   end
 
   protected
