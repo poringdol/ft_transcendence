@@ -264,10 +264,3 @@ class RoomsController < ApplicationController
       @room = Room.find(params[:id])
     end
 end
-
-
-for i in 0..users.size()
-  for j in i..user.size()
-
-  end
-end
