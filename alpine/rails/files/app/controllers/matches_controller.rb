@@ -202,11 +202,11 @@ class MatchesController < ApplicationController
   def create_random_match
 
     existing_match = Match.where(player2_id: nil).first
-    
+
     if existing_match
-    
+
       if existing_match.player1_id != current_user.id
-        
+
         existing_match.player2_id = current_user.id
         existing_match.guild2_id = current_user.guild_id
         @match = existing_match

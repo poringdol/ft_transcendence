@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
+  post '/notification/destroy' => 'notification#destroy'
 # ------------------
 #    GUILDS PAGE
 # ------------------

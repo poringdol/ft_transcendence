@@ -38,13 +38,13 @@ class UsersController < ApplicationController
       NotificationJob.perform_later({
         user: current_user,
         message: "Nickname changed to #{current_user.nickname}",
-        link: ""
+        link: ''
       })
     else
       NotificationJob.perform_later({
         user: current_user,
         message: "Choose other nickname",
-        link: ""
+        link: ''
       })
     end
   end
@@ -58,13 +58,13 @@ class UsersController < ApplicationController
       NotificationJob.perform_later({
         user: current_user,
         message: "Avatar updated",
-        link: ""
+        link: ''
       })
     else
       NotificationJob.perform_later({
         user: current_user,
         message: "Choose file",
-        link: ""
+        link: ''
       })
     end
   end
@@ -84,7 +84,7 @@ class UsersController < ApplicationController
         NotificationJob.perform_later({
           user: current_user,
           message: "User #{User.find(blocked_user_id).nickname} now in your block list",
-          link: ""
+          link: ''
         })
     end
   end
@@ -102,7 +102,7 @@ class UsersController < ApplicationController
     NotificationJob.perform_later({
       user: current_user,
       message: "User #{User.find(blocked_user_id)} removed from block list",
-      link: ""
+      link: ''
     })
   end
 
