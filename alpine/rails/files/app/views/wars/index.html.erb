@@ -1,1 +1,211 @@
-<h1>Wars</h1>
+<div class='WarsContent' style='min-width: 1000px'>
+	<div class='row'>
+		<div class='col-2'></div>
+		<% if current_user.guild_id? && (current_user.guild.owner_id == current_user.id || current_user.is_officer) %>
+		<div id='WarCreationForm' class='col' style='min-width: 340px'></div>
+		<% end %>
+		<div class='col-2'></div>
+	</div>
+
+	<div class='row'>
+		<div class='col-1'></div>
+		<div class='col' style='min-width: 660px'>
+			<div class="row">
+				<div class='card p-0' style='width: 98%'>
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="current-tab" data-bs-toggle="tab"
+								data-bs-target="#current" type="button" role="tab" aria-controls="current"
+								aria-selected="true">Current Wars</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned"
+								type="button" role="tab" aria-controls="planned" aria-selected="false">Planned
+								Wars</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
+								type="button" role="tab" aria-controls="history" aria-selected="false">History
+								Wars</button>
+						</li>
+					</ul>
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="current" role="tabpanel"
+							aria-labelledby="current-tab">
+							<div class='row' id='CurrentWars'>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
+							<div class='row' id='PlannedWars'>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
+							<div class='row' id='HistoryWars'>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row ">
+				<div class="col-2 mt-3 btn btn-outline-secondary" id="WarsTableRefresh" style='font-weight: lighter;'>REFRESH</div>
+			</div>
+		</div>
+		<div class='col-1'></div>
+	</div>
+</div>
+
+
+<!--
+	TABLE TEMPLATE
+-->
+<script type="text/template" id="WarsTableTemplate">
+	<table class="table table-striped matchesTable" id='<%%= type %>WarsTable'>
+		<thead id='WarsTableThead'>
+			<tr class='tableHeader'>
+				<th scope="col" class='tableHeader'>Guild-1</th>
+				<th scope="col" class='tableHeader'>Guild-2</th>
+				<th scope="col" class='tableHeader'>Prize</th>
+				<th scope="col" class='tableHeader'>Score</th>
+				<th scope="col" class='tableHeader'>Start date</th>
+				<th scope="col" class='tableHeader'>Start time</th>
+				<th scope="col" class='tableHeader'>End date</th>
+				<th scope="col" class='tableHeader'>End time</th>
+				<th scope="col" class='tableHeader'>Addons</th>
+				<th colspan="3"></th>
+			</tr>
+		</thead>
+	</table>
+</script>
+
+<!--
+	TABLE ROW TEMPLATE
+-->
+<script type="text/template" id="WarsRowTemplate">
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<img width="50" height="50" class="rounded-circle" src=<%%= guild1.logo.url %>>
+			</div>
+			<div class='col-lg-2 TablePicText'>
+				<%%= guild1.anagram %>
+			</div>
+		</div>
+	</td>
+	<td>
+		<div class="row justify-content-md-center">
+			<div class='col-lg-2 matchesTablePhotos'>
+				<img width="50" height="50" class="rounded-circle" src=<%%= guild2.logo.url %>>
+			</div>
+			<div class='col-lg-2 TablePicText'>
+				<%%= guild2.anagram %>
+			</div>
+		</div>
+	</td>
+	<td><%%= prize %></td>
+	<td><%%= guild1_wins %> - <%%= guild2_wins %></td>
+	<td>
+		<%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %>
+	</td>
+	<td>
+		<%%= start_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %>
+	</td>
+	<td>
+		<%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %>
+	</td>
+	<td>
+		<%%= end_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
+	</td>
+	<td>addon</td>
+	<td>
+		<a type='button' class='btn btn-guild' id='ShowWar' href='/wars/<%%= id %>'>
+			Show
+		</a>
+	</td>
+</script>
+
+
+<!--
+	CREATION FORM TEMPLATE
+-->
+<script type="text/template" id="WarCreateTemplate">
+	<div class='card col mb-3'>
+		<div class="card-body center_align">
+			<h3 class="card-title" style='font-weight: lighter;'>NEW GUILD WAR</h3>
+		</div>
+		<div class="list-group list-group-flush" id="list-tab" role="tablist">
+
+			<li class="list-group-item">
+				<form class="row formWars">
+					<input placeholder="Guildname of your opponent" type="text" class="form-control col formMatchesInput" id="formGuild2Name" value="">
+				</form>
+			</li>
+
+			<li class="list-group-item">
+				<div class='row'>
+					<div class='col-6 '>
+						<div class="row">
+							<div class="col-4 FormDateTitle">
+								Date start
+							</div>
+							<div class="col">
+								<form class="row formWars">
+									<input type="date" class="form-control col formMatchesInput" id="formWarDateStart" value="">
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4 FormDateTitle">
+								Time start
+							</div>
+							<div class="col">
+								<form class="row formWars">
+									<input type="time" class="form-control col formMatchesInput" id="formWarTimeStart" value="">
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class='col-6 center_align'>
+						<div class="row">
+							<div class="col-4 FormDateTitle">
+								Date end
+							</div>
+							<div class="col">
+								<form class="row formWars">
+									<input type="date" class="form-control col formMatchesInput" id="formWarDateEnd" value="">
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4 FormDateTitle">
+								Time end
+							</div>
+							<div class="col">
+								<form class="row formWars">
+									<input type="time" class="form-control col formMatchesInput" id="formWarTimeEnd" value="">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+
+			<li class="list-group-item">
+				<form class="row formWars">
+					<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
+				</form>
+			</li>
+			<li class="list-group-item">
+				<form class="row formWars">
+					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
+				</form>
+			</li>
+		</div>
+	</div>
+	<div class='row' style='text-align: center'>
+		<form class="formWars">
+			<input type="submit" class="btn btn-outline-secondary CreationBtn" value="CREATE">
+		</form>
+	</div>
+</script>
+
+<%= javascript_pack_tag 'wars' %>

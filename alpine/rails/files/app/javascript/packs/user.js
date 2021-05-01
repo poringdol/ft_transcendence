@@ -10,9 +10,9 @@ $(function () {
 	};
 
 
-	// -----------------------------------------
-	//  USER              MODEL
-	// -----------------------------------------
+// -----------------------------------------
+//  USER              MODEL
+// -----------------------------------------
 	App.Models.User = Backbone.Model.extend({
 		initialize: function (data) {
 			this.id = data.user.id

@@ -23,9 +23,19 @@
 							<h6 class="card-subtitle mb-2 text-muted">End date:</h6>
 							<h2 class="card-subtitle mb-2 text-muted"><%= (@war.end + 3.hour).to_formatted_s(:short) %></h2>
 						</div>
-						<div class='row'>
+						<div class='row WarParams'>
 							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>
 							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild1_wins %> - <%= @war.guild2_wins %></h2>
+						</div>
+						<div class='row'>
+							<h6 class="card-subtitle mb-2 text-muted">Status:</h6>
+							<% if @war.is_end %>
+								<h2 class="card-subtitle mb-2 text-muted">finished</h2>
+							<% elsif @war.is_inprogress %>
+								<h2 class="card-subtitle mb-2 text-muted">in progress</h2>
+							<% else %>
+								<h2 class="card-subtitle mb-2 text-muted">not started</h2>
+							<% end %>
 						</div>
 					</div>
 					<div class='col-4'>

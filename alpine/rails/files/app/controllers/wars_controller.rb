@@ -4,6 +4,12 @@ class WarsController < ApplicationController
 
   # GET /wars or /wars.json
   def index
+	@wars = War.all.order("#{:start} desc")
+
+	respond_to do |format|
+        format.html { render :index }
+        format.json { render json: @wars }
+    end
   end
 
   # GET /wars/1 or /wars/1.json

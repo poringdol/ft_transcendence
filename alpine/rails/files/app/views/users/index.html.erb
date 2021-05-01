@@ -12,13 +12,15 @@
 </div>
 <script type="text/template" id="LeaderboardListElTemplate">
 	<a href='/profile/<%%= id %>' class='SimpleHref'>
-		<div id="LeaderboardNameList" style="padding: 10px" class='row'>
+		<div id="LeaderboardNameList" style="padding: 10px; font-weight: lighter" class='row'>
 			<div style="margin-right: 5px; width: 50px">
 				<%%= position %>.
 			</div>
-			<div class='col'>
+			<div class='col-3'>
 				<img width="30" height="30" class="rounded-circle" src=<%%= avatar.url %>>
 				<%%= nickname %>
+			</div>
+			<div class='col'>
 				<%%= score %>
 			</div>
 		</div>
