@@ -12,10 +12,6 @@
 					</div>
 					<div class='col-4' style='margin: auto'>
 						<div class='row WarParams'>
-							<h6 class="card-subtitle mb-2 text-muted">Prize:</h6>
-							<h2 class="card-subtitle mb-2 text-muted"><%= @war.prize %></h2>
-						</div>
-						<div class='row WarParams'>
 							<h6 class="card-subtitle mb-2 text-muted">Start date:</h6>
 							<h2 class="card-subtitle mb-2 text-muted"><%= (@war.start + 3.hour).to_formatted_s(:short) %></h2>
 						</div>
@@ -27,7 +23,7 @@
 							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>
 							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild1_wins %> - <%= @war.guild2_wins %></h2>
 						</div>
-						<div class='row'>
+						<div class='row WarParams'>
 							<h6 class="card-subtitle mb-2 text-muted">Status:</h6>
 							<% if @war.is_end %>
 								<h2 class="card-subtitle mb-2 text-muted">finished</h2>
@@ -36,6 +32,28 @@
 							<% else %>
 								<h2 class="card-subtitle mb-2 text-muted">not started</h2>
 							<% end %>
+						</div>
+						<div class='row'>
+							<div class='col-2'></div>
+							<div class='col'>
+								<h6 class="card-subtitle mb-2 text-muted">Addons:</h6>
+								<% if @war.addons.addon3 == true %>
+									<h2 class="card-subtitle mb-2 text-muted">boost</h2>
+								<% end %>
+								<% if @war.addons.addon1 == true %>
+									<h2 class="card-subtitle mb-2 text-muted">disco</h2>
+								<% elsif @war.addons.addon2 == true %>
+									<h2 class="card-subtitle mb-2 text-muted">epilepsy</h2>
+								<% end %>
+								<% if @war.addons.addon3 == false && @war.addons.addon2 == false && @war.addons.addon1 == false%>
+									<h2 class="card-subtitle mb-2 text-muted">none</h2>
+								<% end %>
+							</div>
+							<div class='col'>
+								<h6 class="card-subtitle mb-2 text-muted">Prize:</h6>
+								<h2 class="card-subtitle mb-2 text-muted"><%= @war.prize %></h2>
+							</div>
+							<div class='col-2'></div>
 						</div>
 					</div>
 					<div class='col-4'>
@@ -62,7 +80,9 @@
 	<div class='row'>
 		<div class='col-2'></div>
 		<div class="col-8">
+			<% if @war.is_end == false %>
 			<div class='col-2 btn btn-outline-secondary mt-3' id='WarMatchCreate'>Create match</div>
+			<% end %>
 			<div class='col-2 btn btn-outline-secondary mt-3' id='WarMatchRefresh'>Refresh list</div>
 		</div>
 		<div class='col-2'></div>

@@ -75,7 +75,7 @@
 			</div>
 		</div>
 		<div class='col-2 MiddleVerticalAlign'>
-			none
+			<%%= addon_type %>
 		</div>
 	</div>
 </script>
@@ -309,13 +309,41 @@
 			</li>
 
 			<li class="list-group-item">
-				<form class="row formMatches">
-					<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
-				</form>
+				Addons
+				<div class="row">
+					<div class="col-6">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
+							<label class="form-check-label" for="AddonColorNone">
+								None
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="disco">
+							<label class="form-check-label" for="AddonColorDisco">
+								Disco
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="epilepsy">
+							<label class="form-check-label" for="AddonColorEpilepsy">
+								Epilepsy
+							</label>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="boost">
+							<label class="form-check-label" for="AddonBoost">
+								Boost
+							</label>
+						</div>
+					</div>
+				</div>
 			</li>
 			<li class="list-group-item">
 				<form class="row formMatches">
-					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="0">
+					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
 				</form>
 			</li>
 			<li class="list-group-item">

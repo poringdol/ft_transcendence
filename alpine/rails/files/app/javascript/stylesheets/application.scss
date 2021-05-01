@@ -376,10 +376,6 @@ body {
 	border: 1px solid #fff0;
 }
 
-#MatchCreationForm {
-	height: 250px;
-}
-
 .GameWrapper	{
   display: block;
   width: 960px;
@@ -461,6 +457,10 @@ body {
 	font-weight: lighter;
 	font-size: large;
 	text-transform: capitalize
+}
+
+.MatchesCreationList {
+	border-width: 0px;
 }
 
 // Светящийся текст нотификаций

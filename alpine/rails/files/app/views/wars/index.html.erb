@@ -115,7 +115,9 @@
 	<td>
 		<%%= end_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
 	</td>
-	<td>addon</td>
+	<td>
+		<%%= addon_type %>
+	</td>
 	<td>
 		<a type='button' class='btn btn-guild' id='ShowWar' href='/wars/<%%= id %>'>
 			Show
@@ -136,7 +138,8 @@
 
 			<li class="list-group-item">
 				<form class="row formWars">
-					<input placeholder="Guildname of your opponent" type="text" class="form-control col formMatchesInput" id="formGuild2Name" value="">
+					<select class="form-control col formMatchesInput" id="formGuild2Name"></select>
+					<%# <input placeholder="Guildname of your opponent" type="text" class="form-control col formMatchesInput" id="formGuild2Name" value=""> %>
 				</form>
 			</li>
 
@@ -188,11 +191,40 @@
 					</div>
 				</div>
 			</li>
-
 			<li class="list-group-item">
-				<form class="row formWars">
-					<input placeholder="Addons" type="text" class="form-control col formMatchesInput" id="formAddons" value="">
-				</form>
+				<div class="FormDateTitle">
+					Addons
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
+							<label class="form-check-label" for="AddonColorNone">
+								None
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="disco">
+							<label class="form-check-label" for="AddonColorDisco">
+								Disco
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="epilepsy">
+							<label class="form-check-label" for="AddonColorEpilepsy">
+								Epilepsy
+							</label>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="boost">
+							<label class="form-check-label" for="AddonBoost">
+								Boost
+							</label>
+						</div>
+					</div>
+				</div>
 			</li>
 			<li class="list-group-item">
 				<form class="row formWars">

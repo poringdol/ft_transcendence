@@ -47,6 +47,14 @@ class WarsController < ApplicationController
       return render json: { error: 'You can not create match between the same guilds' }, status: :unprocessable_entity
     end
 
+	if params[:prize].to_i > 1000 || params[:prize].to_i < 0
+		return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
+	end
+
+	if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
+		return render json: { error: 'Invalid date' }, status: :unprocessable_entity
+	end
+
     date_start = Date.parse params[:date_start]
     time_start = Time.parse params[:time_start]
     war_start = DateTime.new(date_start.year, date_start.month, date_start.day, time_start.hour, time_start.min) - 3.hour
@@ -62,13 +70,22 @@ class WarsController < ApplicationController
     @war = War.new(guild1: current_user.guild, guild2: guild2, start: war_start, end: war_end, prize: params[:prize])
     
     if @war.save
-      @war.addons.update(addon3: true)
+      if (params[:color] == "disco")
+        @war.addons.addon1 = true
+      elsif (params[:color] == "epilepsy")
+        @war.addons.addon2 = true
+      end
 
-      DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
-      NotificationJob.perform_later({
-        user: @war.guild2.owner,
-        message: "The #{@war.guild1.name} guild has declared war on you",
-        link: "/wars/"
+      if (params[:boost] == "boost")
+        @war.addons.addon3 = true
+      end
+      @war.addons.save
+
+	  DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
+	  NotificationJob.perform_later({
+		user: @war.guild2.owner,
+		message: "The #{@war.guild1.name} guild has declared war on you",
+		link: "/wars/"
       })
 
       render json: @war, status: :created

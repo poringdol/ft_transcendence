@@ -16,8 +16,13 @@ class GuildsController < ApplicationController
     end
   end
 
+  def guilds_list
+	guilds_names = Guild.all.select(:name).order(:name)
+	render json: guilds_names
+  end
+
   def get_owner_nick
-	  guild = Guild.find(params[:id])
+	guild = Guild.find(params[:id])
     owner = User.find(guild.owner_id)
     render json: owner
   end

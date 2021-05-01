@@ -14,7 +14,6 @@ $(function () {
 	App.Models.War = Backbone.Model.extend({
 		urlRoot: "/wars.json",
 		initialize: function () {
-			console.log(this)
 		}
 	});
 
@@ -23,7 +22,6 @@ $(function () {
 		url: "/wars.json",
 		initialize: function () {
 			this.fetch()
-			console.log(this)
 		}
 	});
 
@@ -98,10 +96,44 @@ $(function () {
 		render: function () {
 			this.model.attributes.start_date = new Date(this.model.attributes.start)
 			this.model.attributes.end_date = new Date(this.model.attributes.end)
+			this.model.attributes.addon_type = ''
+			if (this.model.attributes.addons.addon3 == true)
+				this.model.attributes.addon_type = 'boost '
+			if (this.model.attributes.addons.addon1 == true)
+				this.model.attributes.addon_type += 'disco'
+			else if (this.model.attributes.addons.addon2 == true)
+				this.model.attributes.addon_type += 'epilepsy'
+			if (this.model.attributes.addon_type == '')
+				this.model.attributes.addon_type = 'none'
 			this.$el.html(this.template(this.model.attributes))
 			return this;
 		}
 	});
+
+/*
+** Выпадающий список со всеми пользователями для формы создания матча
+*/
+	App.Models.AllGuilds = Backbone.Model.extend({ urlRoot: "/guilds_list" })
+	App.Collections.AllGuilds = Backbone.Collection.extend({
+		url: "/guilds_list",
+		model: App.Models.AllGuilds,
+		initialize: function() { this.fetch(); },
+	});
+
+	App.Views.AllGuilds = Backbone.View.extend({
+		initialize: function() {
+			this.collection.on('sync', this.render, this)
+		},
+        render: function () {
+			$('#formGuild2Name').css('color', 'rgba(0, 0, 0, 0.55)');
+			$('#formGuild2Name').append(`<option value='' disabled selected>Guildname of your opponent</option>`);
+            this.collection.each((it) => {
+				var name = it.get("name");
+				$('#formGuild2Name').append(`<option value='${name}'>${name}</option>`);
+			});
+            return this;
+        }
+    });
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -119,15 +151,19 @@ $(function () {
 		},
 		submit: function (e) {
 			e.preventDefault();
+			console.log('here')
 			let war = {
-				guild2: 	$(e.currentTarget).find('input[id=formGuild2Name]').val(),
+				guild2: 	$(e.currentTarget).find('select[id=formGuild2Name]').val(),
 				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
 				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
 				date_end: 	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
 				time_end: 	$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
-				addons:		$(e.currentTarget).find('input[id=formAddons]').val(),
+				color:		$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
+				boost:		$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
 				prize: 		$(e.currentTarget).find('input[id=formPrize]').val(),
 			}
+			if (war.prize == '')
+				war.prize = 0
 			fetch("/wars", {
 				method: "POST",
 				headers: {
@@ -140,6 +176,8 @@ $(function () {
 				.then(_.bind((res) => {
 					if (res.error)
 						alert(res.error)
+					else
+						alert('You successfully sent an invitation to a war!')
 				}, this))
 		},
 	})
@@ -154,6 +192,8 @@ $(function () {
 	plannedTable = new App.Views.TableWars({ collection: col, type: 'Planned' })
 	historyTable = new App.Views.TableWars({ collection: col, type: 'History' })
 	
+	var guild_list = new App.Collections.AllGuilds()
+	new App.Views.AllGuilds({ collection: guild_list });
 	$("#WarsTableRefresh").on("click", function() { col.fetch(); })
 
 }());

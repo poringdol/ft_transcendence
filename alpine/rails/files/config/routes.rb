@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   get 'guilds/do_officer/:id' => 'guilds#do_officer'
   get 'guilds/undo_officer/:id' => 'guilds#undo_officer'
 
+  get '/guilds_list' => 'guilds#guilds_list'
+
 # ------------------
 #   GUILDS INVITES
 # ------------------
