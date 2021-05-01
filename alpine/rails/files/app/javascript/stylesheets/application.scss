@@ -463,6 +463,15 @@ body {
 	border-width: 0px;
 }
 
+#WarInfo {
+	min-width: 1200px
+}
+
+.titletext {
+	text-align: center;
+	font-weight: lighter;
+}
+
 // Светящийся текст нотификаций
 @-webkit-keyframes pulsate {
   50% { color: #2fff2f; }
