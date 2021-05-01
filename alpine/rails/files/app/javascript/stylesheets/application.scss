@@ -453,3 +453,8 @@ body {
   -webkit-animation: pulsate 2s linear infinite;
   animation: pulsate 2s linear infinite;
 }
+
+.rulesButtonChangeColor:hover {
+  color:#ffffff;
+  background-color: #212529;
+}

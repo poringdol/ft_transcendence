@@ -27,9 +27,7 @@
               <%= form.submit "Change pass", class: "btn btn-outline-primary", id: "btnChangePass", data: { disable_with: false } %>
               <script type="text/javascript">
                 $( "#btnChangePass" ).on("click", function(event) {
-                // $( "#ch_pass" ).submit(function(event) {
                   event.preventDefault();
-
                   fetch("/change_pass", {
                     method: 'POST',
                     body: new FormData(document.getElementById("ch_pass")),

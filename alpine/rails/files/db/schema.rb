@@ -198,6 +198,15 @@ ActiveRecord::Schema.define(version: 2021_04_30_182507) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  create_table "war_matches", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "war_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["match_id"], name: "index_war_matches_on_match_id"
+    t.index ["war_id"], name: "index_war_matches_on_war_id"
+  end
+
   create_table "wars", force: :cascade do |t|
     t.bigint "guild1_id", null: false
     t.bigint "guild2_id", null: false
@@ -235,6 +244,8 @@ ActiveRecord::Schema.define(version: 2021_04_30_182507) do
   add_foreign_key "matches", "users", column: "player2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
+  add_foreign_key "war_matches", "matches"
+  add_foreign_key "war_matches", "wars"
   add_foreign_key "wars", "addons", column: "addons_id"
   add_foreign_key "wars", "guilds", column: "guild1_id"
   add_foreign_key "wars", "guilds", column: "guild2_id"
