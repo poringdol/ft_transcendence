@@ -31,9 +31,9 @@
   <div class="col-3">
     <%= f.text_field :nickname, class: 'form-control' %>
   <div class="col-3 input-group-append">
-    <%= f.submit "Update nickname", class: "btn btn-primary" %>
+    <%= f.submit "Update nickname", id: "update_nickname_btn",class: "btn btn-primary" %>
       <script type="text/javascript">
-        $("#up_nick").submit(function(event) {
+        $("#update_nickname_btn").on('click', function(event) {
           event.preventDefault();
           fetch("/users/update_nickname", {
               method : "POST",
