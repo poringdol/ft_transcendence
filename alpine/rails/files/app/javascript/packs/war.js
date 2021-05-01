@@ -13,7 +13,7 @@ $(function () {
 	App.Models.WarMatch = Backbone.Model.extend({
 		urlRoot: "/matches/war_matches/",
 		initialize: function () {
-			this.urlRoot += WAR_ID + ".json"
+			this.urlRoot += WAR_ID
 		}
 	});
 
@@ -21,7 +21,7 @@ $(function () {
 		model: App.Models.WarMatch,
 		url: "/matches/war_matches/",
 		initialize: function () {
-			this.url += WAR_ID + ".json"
+			this.url += WAR_ID
 			this.fetch()
 		}
 	});
@@ -67,10 +67,15 @@ $(function () {
 		template: _.template($("#MatchesRowTemplate").html()),
 		tagName: 'tr',
 		events: {
-			'click #DeleteMatch': 'deleteMatch'
+			'click #DeleteMatch': 'deleteMatch',
+			'click #JoinMatch': 'joinMatch'
 		},
 		render: function () {
-			this.$el.html(this.template(this.model.attributes.match))
+			this.$el.html(this.template(this.model.attributes))
+
+			if (this.model.get("is_inprogress") == false && this.model.get("is_end") == false && current_user.guild_id == this.model.get("guild2").id) {
+				this.$el[0].innerHTML = this.$el[0].innerHTML.replace('style="display: none"', '')
+			}
 			return this;
 		},
 		deleteMatch: function () {
@@ -87,6 +92,25 @@ $(function () {
 					alert('Error!')
 				})
 			}
+		},
+		joinMatch: function (e) {
+			e.preventDefault();
+
+			fetch("/wars/join_match", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: this.model.get('id') })
+			})
+			.then(res => res.json())
+			.then(res => {
+				if (res.error)
+					alert(res.error)
+				else
+					Turbolinks.visit("/matches/" + this.model.get('id')) 
+			})
 		}
 	});
 
@@ -110,7 +134,14 @@ $(function () {
 		})
 	})
 
-	col = new App.Collections.WarMatch()
-	new App.Views.TableMatches({ collection: col })
+	fetch("/profile/get_curr_user")
+	.then(res => res.ok ? res.json() : Promise.reject(res))
+	.then(function (res) { 
+		window.current_user = res
+	
+		col = new App.Collections.WarMatch()
+		new App.Views.TableMatches({ collection: col })
+		$("#WarMatchRefresh").on("click", function() { col.fetch(); })
+	})
 
 }());

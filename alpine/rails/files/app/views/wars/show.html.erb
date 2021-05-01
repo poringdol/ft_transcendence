@@ -5,10 +5,10 @@
 			<div  style="text-align: center">
 				<div class="card-body row">
 					<div class='col-4'>
-						<h4 class="card-title"><%= @war.guild_1.name %></h4>
-						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_1.anagram %></h5>
-						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_1.logo.url %>>
-						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_1.score %></h5>
+						<h4 class="card-title"><%= @war.guild1.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild1.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild1.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild1.score %></h5>
 					</div>
 					<div class='col-4' style='margin: auto'>
 						<div class='row WarParams'>
@@ -25,14 +25,14 @@
 						</div>
 						<div class='row'>
 							<h6 class="card-subtitle mb-2 text-muted">Score:</h6>
-							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild_1_wins %> - <%= @war.guild_2_wins %></h2>
+							<h2 class="card-subtitle mb-2 text-muted"><%= @war.guild1_wins %> - <%= @war.guild2_wins %></h2>
 						</div>
 					</div>
 					<div class='col-4'>
-						<h4 class="card-title"><%= @war.guild_2.name %></h4>
-						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild_2.anagram %></h5>
-						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild_2.logo.url %>>
-						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild_2.score %></h5>
+						<h4 class="card-title"><%= @war.guild2.name %></h4>
+						<h5 class="card-subtitle mb-2 text-muted"><%= @war.guild2.anagram %></h5>
+						<img width="300" height="300" class="rounded-circle" src=<%= @war.guild2.logo.url %>>
+						<h5 class="card-title" style='margin-top: 10px'>Score: <%= @war.guild2.score %></h5>
 					</div>
 				</div>
 			</div>
@@ -53,6 +53,7 @@
 		<div class='col-2'></div>
 		<div class="col-8">
 			<div class='col-2 btn btn-outline-secondary mt-3' id='WarMatchCreate'>Create match</div>
+			<div class='col-2 btn btn-outline-secondary mt-3' id='WarMatchRefresh'>Refresh list</div>
 		</div>
 		<div class='col-2'></div>
 	</div>
@@ -96,12 +97,12 @@
 	<td>
 		<div class="row justify-content-md-center">
 			<div class='col-lg-2 matchesTablePhotos'>
-				<a href='/profile/<%%= player2.id %>'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
+				<%% player2 == null ? "<a href='#'>" : "<a href='/profile/#{player2.id}'>"%>
+					<img width='30px' height='30px' class='rounded-circle' src='<%%= player2 == null ? "/assets/default-avatar1.jpg" : player2.avatar.url %>'> 
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= player2.nickname %>
+				<%%= (player2 == null) ? "No one answer" : player2.nickname %> 
 			</div>
 		</div>
 	</td>
@@ -110,11 +111,11 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_1 == null) ? "/assets/default-avatar.jpg" : guild_1.logo.url %>>
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild1 == null) ? "/assets/default-avatar.jpg" : guild1.logo.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= (guild_1 == null) ? "none" : guild_1.anagram %>
+				<%%= (guild1 == null) ? "none" : guild1.anagram %>
 			</div>
 		</div>
 	</td>
@@ -122,11 +123,11 @@
 		<div class='row justify-content-md-center'>
 			<div class='col-lg-2 matchesTablePhotos'>
 				<a href='/guilds'>
-					<img width="30" height="30" class="rounded-circle" src=<%%= (guild_2 == null) ? "/assets/default-avatar.jpg" : guild_2.logo.url %>>
+					<img width="30" height="30" class="rounded-circle" src=<%%= (guild2 == null) ? "/assets/default-avatar.jpg" : guild2.logo.url %>>
 				</a>
 			</div>
 			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
-				<%%= (guild_2 == null) ? "none" : guild_2.anagram %>
+				<%%= (guild2 == null) ? "none" : guild2.anagram %>
 			</div>
 		</div>
 	</td>
@@ -134,6 +135,11 @@
 	<td>
 		<a type='button' class='btn btn-guild' id='ShowMatch' href='/matches/<%%= id %>'>
 			Show
+		</a>
+	</td>
+	<td>
+		<a type='button' class='btn btn-guild' id='JoinMatch' style='display: none'>
+			Join
 		</a>
 	</td>
 	<% if current_user.is_admin? || current_user.is_moderator? %>

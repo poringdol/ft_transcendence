@@ -23,10 +23,9 @@ document.addEventListener("turbolinks:load", () => {
 					game.params.state = "leave";
 
 				if (MATCH.model.get("is_end") == false) {
-					
 					MATCH.model.set(`is_player${MATCH.player}_online`, false);
 					MATCH.model.save();
-					
+				
 					if (MATCH.model.get("is_inprogress") == true) {
 						// Если оба игрока покинули страницу с игрой, завершаем игру
 						if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
@@ -178,7 +177,7 @@ document.addEventListener("turbolinks:load", () => {
 				}
 				
 				$("a").on("click", leave_page);
-				$(window).on("beforeunload", leave_page);
+				// $(window).on("beforeunload", leave_page);
 
 				if (this.model.get("is_inprogress") == true) {
 					this.renderGame(false);
@@ -520,10 +519,10 @@ document.addEventListener("turbolinks:load", () => {
 				}
 
 			// // DEBUG
-			// const keys = { L: 76, A: 65, M: 77}
+			const keys = { L: 76, A: 65, M: 77}
 			// if (kCode == keys.L) { console.log(game.params.lastGoalPlayer) }
 			// if (kCode == keys.A) { console.log(game.params.state) }
-			// if (kCode == keys.M) { console.log(MATCH.player) }
+			if (kCode == keys.M) { console.log(MATCH.player) }
 
 			},
 
@@ -557,7 +556,6 @@ document.addEventListener("turbolinks:load", () => {
 			
 			// Пуск шарика после гола
 			kickBall: function () {
-				console.log("kick ball")
 				this.params.state = "game";
 				subscribe.perform("save_state", { match_id: MATCH_ID, state: "game", player: game.params.lastGoalPlayer, key_code: KEYS.update_state });
 

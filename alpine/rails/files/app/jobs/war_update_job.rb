@@ -3,27 +3,28 @@ class WarUpdateJob < ApplicationJob
 
   def perform(war, action)
 
-  if action == "start"
-    p "start start start start start start start start start start start start start start start start start "
-    p "start start start start start start start start start start start start start start start start start "
-    p "start start start start start start start start start start start start start start start start start "
-    p "start start start start start start start start start start start start start start start start start "
-    p "start start start start start start start start start start start start start start start start start "
-    war.guild_1.update(is_in_war: true)
-    war.guild_2.update(is_in_war: true)
-    war.update(is_inprogress: true)
+    if action == "start"
+      war.guild1.update(war: war)
+      war.guild2.update(war: war)
+      war.update(is_inprogress: true)
 
-  elsif action == "end"
-    p "end end end end end end end end end end end end end end end end end end end end end end end end end end "
-    p "end end end end end end end end end end end end end end end end end end end end end end end end end end "
-    p "end end end end end end end end end end end end end end end end end end end end end end end end end end "
-    p "end end end end end end end end end end end end end end end end end end end end end end end end end end "
-    p "end end end end end end end end end end end end end end end end end end end end end end end end end end "
-    war.guild_1.update(is_in_war: false)
-    war.guild_2.update(is_in_war: false)
-    war.update(is_inprogress: false)
-    war.update(is_end: true)
+    elsif action == "end"
+      war.guild1.update(war: nil)
+      war.guild2.update(war: nil)
+      war.is_inprogress = false
+      war.is_end = true
 
+      if war.guild1_wins > war.guild2_wins
+        war.guild1.score += war.prize
+        war.guild2.score -= war.prize
+      elsif war.guild1_wins < war.guild2_wins
+        war.guild1.score -= war.prize
+        war.guild2.score += war.prize
+      end
+
+      war.save
+      war.guild1.save
+      war.guild2.save
     end
-  end
+  end 
 end

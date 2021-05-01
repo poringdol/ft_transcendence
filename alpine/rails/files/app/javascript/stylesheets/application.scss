@@ -443,17 +443,13 @@ body {
 
 // Светящийся текст нотификаций
 @-webkit-keyframes pulsate {
-  // 50% { color: #212529; }
   50% { color: #2fff2f; }
 }
 @keyframes pulsate {
-  // 50% { color: #212529; }
   50% { color: #2fff2f; }
 }
 #N-Notify-pulsate {
   color: rgba(0, 0, 0, 0.55);
-  /* color: rgb(245,245,245); */
-  // text-shadow: 0 -1px rgba(0,0,0,.1);
   -webkit-animation: pulsate 2s linear infinite;
   animation: pulsate 2s linear infinite;
 }

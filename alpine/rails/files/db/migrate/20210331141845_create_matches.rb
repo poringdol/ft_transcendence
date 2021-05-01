@@ -6,8 +6,8 @@ class CreateMatches < ActiveRecord::Migration[6.0]
       t.references :player2, foreign_key: { to_table: :users }, default: nil
       t.integer :player1_score, default: 0
       t.integer :player2_score, default: 0
-      t.references :guild_1, foreign_key: { to_table: :guilds }, default: nil
-      t.references :guild_2, foreign_key: { to_table: :guilds }, default: nil
+      t.references :guild1, foreign_key: { to_table: :guilds }, default: nil
+      t.references :guild2, foreign_key: { to_table: :guilds }, default: nil
       t.references :addons, foreign_key: true
 
       t.boolean :is_end, default: false
@@ -17,6 +17,8 @@ class CreateMatches < ActiveRecord::Migration[6.0]
 
       t.boolean :is_player1_online, default: false
       t.boolean :is_player2_online, default: false
+
+      t.references :war, default: nil
 
       t.timestamps
     end

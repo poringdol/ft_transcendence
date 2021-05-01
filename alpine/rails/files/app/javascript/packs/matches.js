@@ -10,12 +10,7 @@ $(function () {
 /*
 ** MODEL AND COLLECTION OF MATCHES
 */
-	App.Models.Match = Backbone.Model.extend({
-		urlRoot: "/matches.json",
-		initialize: function () {
-
-		}
-	});
+	App.Models.Match = Backbone.Model.extend({ urlRoot: "/matches.json" });
 
 	App.Collections.Match = Backbone.Collection.extend({
 		url: "/matches.json",
@@ -175,7 +170,7 @@ $(function () {
 		submit: function (e) {
 			e.preventDefault();
 			let war = {
-				guild_2: 	$(e.currentTarget).find('input[id=formGuild2Name]').val(),
+				guild2: 	$(e.currentTarget).find('input[id=formGuild2Name]').val(),
 				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
 				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
 				date_end: 	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),

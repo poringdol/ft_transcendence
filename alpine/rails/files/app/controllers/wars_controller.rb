@@ -21,15 +21,15 @@ class WarsController < ApplicationController
 
   def guild_wars
     id = params[:id]
-    wars = War.where("CASE WHEN guild_1_id = #{id} OR guild_2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:start} desc")#.where(is_accepted: true)
+    wars = War.where("CASE WHEN guild1_id = #{id} OR guild2_id = #{id} THEN TRUE ELSE FALSE END").order("#{:start} desc")#.where(is_accepted: true)
     render json: wars
   end
 
   # POST /wars or /wars.json
   def create
-    guild_2 = Guild.where(name: params[:guild_2]).first
+    guild2 = Guild.where(name: params[:guild2]).first
 
-    unless guild_2
+    unless guild2
       return render json: { error: 'There is no such a guild' }, status: :unprocessable_entity
 	  end
 
@@ -37,7 +37,7 @@ class WarsController < ApplicationController
       return render json: { error: 'You are not in guild' }, status: :unprocessable_entity
     end
 
-    if current_user.guild_id == guild_2.id
+    if current_user.guild_id == guild2.id
       return render json: { error: 'You can not create match between the same guilds' }, status: :unprocessable_entity
     end
 
@@ -53,13 +53,15 @@ class WarsController < ApplicationController
       return render json: { error: 'Dates are invalid' }, status: :unprocessable_entity
     end
 
-    @war = War.new(guild_1: current_user.guild, guild_2: guild_2, start: war_start, end: war_end, prize: params[:prize])
+    @war = War.new(guild1: current_user.guild, guild2: guild2, start: war_start, end: war_end, prize: params[:prize])
     
     if @war.save
+      @war.addons.update(addon3: true)
+
       DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
       NotificationJob.perform_later({
-        user: @war.guild_2.owner,
-        message: "The #{@war.guild_1.name} guild has declared war on you",
+        user: @war.guild2.owner,
+        message: "The #{@war.guild1.name} guild has declared war on you",
         link: "/wars/"
       })
 
@@ -93,14 +95,14 @@ class WarsController < ApplicationController
 
   def decline
     @war = War.find(params[:id])
-    guild = @war.guild_2
+    guild = @war.guild2
 
     if current_user.id == guild.owner_id || (current_user.guild == guild && current_user.is_officer == true)
       @war.destroy()
 
       NotificationJob.perform_later({
-            user: @war.guild_1.owner,
-            message: "#{@war.guild_2.name} declined guid war",
+            user: @war.guild1.owner,
+            message: "#{@war.guild2.name} declined guid war",
             link: ""
       })
       # respond_to do |format|
@@ -128,19 +130,19 @@ class WarsController < ApplicationController
       return render json: { error: 'You are late to accept the war' }, status: :unprocessable_entity
     end
     
-    guild1 = @war.guild_1
-    guild2 = @war.guild_2
+    guild1 = @war.guild1
+    guild2 = @war.guild2
 
     if current_user.id == guild2.owner_id || (current_user.guild == guild2 && current_user.is_officer == true)
      
-      all_wars = War.where(guild_1: guild1, is_accepted: true)
-                .or(War.where(guild_2: guild1, is_accepted: true))
-                .or(War.where(guild_1: guild2, is_accepted: true))
-                .or(War.where(guild_2: guild2, is_accepted: true))
+      all_wars = War.where(guild1: guild1, is_accepted: true)
+                .or(War.where(guild2: guild1, is_accepted: true))
+                .or(War.where(guild1: guild2, is_accepted: true))
+                .or(War.where(guild2: guild2, is_accepted: true))
 
       same_time_wars = all_wars.where(start: @war.start..@war.end)    # Начало текущей войны находится во время другой принятой войны
-                      .or(all_wars.where(end: @war.start..@war.end))  # Конец текущей войны находится во время другой принятой войны
-                      .or(all_wars.where(start: DateTime.new(2021,1,1,0,0)..@war.start, end: @war.end..DateTime::Infinity.new)) # Начало раньше, конец позже другой принятой войны
+                   .or(all_wars.where(end: @war.start..@war.end))  # Конец текущей войны находится во время другой принятой войны
+                   .or(all_wars.where(start: DateTime.new(2021,1,1,0,0)..@war.start, end: @war.end..DateTime::Infinity.new)) # Начало раньше, конец позже другой принятой войны
       
       if same_time_wars.empty?
         @war.update(is_accepted: true)
@@ -149,8 +151,8 @@ class WarsController < ApplicationController
         WarUpdateJob.set(wait_until: @war.end).perform_later(@war, "end")
 
         NotificationJob.perform_later({
-          user: @war.guild_1.owner,
-          message: "#{@war.guild_2.name} accepted guid war",
+          user: @war.guild1.owner,
+          message: "#{@war.guild2.name} accepted guid war",
           link: "/wars/#{@war.id}"
         })
 
@@ -176,31 +178,41 @@ class WarsController < ApplicationController
     elsif @war.is_end == true
       return render json: { error: 'The war is already end' }, status: :unprocessable_entity
 # Пользователь не находится в гильдии, которая участвует в войне
-    elsif current_user.guild.nil? || !(current_user.guild == @war.guild_1 || current_user.guild == @war.guild_2)
+    elsif current_user.guild.nil? || !(current_user.guild == @war.guild1 || current_user.guild == @war.guild2)
       return render json: { error: 'Your guild isn\'t participating in this war' }, status: :unprocessable_entity
     end
 #
-    war_matches = WarMatch.where(war_id: params[:id])
+    war_matches = Match.where(war_id: params[:id])
 # Есть другие матчи войны в данный момент
     war_matches.each do |wm|
-      if wm.match.is_inprogress == true || (wm.match.is_inprogress == false && wm.match.is_end == false)
+      if wm.is_inprogress == true || (wm.is_inprogress == false && wm.is_end == false)
         return render json: { error: 'There is already another match in your war' }, status: :unprocessable_entity
       end
     end #do loop
     ############
 
-    guild_2_id = (current_user.guild.id == @war.guild_1.id) ? @war.guild_2.id : @war.guild_1.id
-    @match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id, guild_2_id: guild_2_id, is_ranked: true)
+    guild2_id = (current_user.guild.id == @war.guild1.id) ? @war.guild2.id : @war.guild1.id
+    @match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, guild2_id: guild2_id, is_ranked: true, war_id: @war.id)
     if @match.save
       @match.addons.update(addon3: true)
       
-      WarMatch.create(war_id: @war.id, match_id: @match.id)
       UnansweredWarMatchJob.set(wait: 5.minutes).perform_later(@match, @war)
       return render json: @match
     else
       return render json: { error: 'Failed to create match' }, status: :unprocessable_entity
     end
     
+  end
+
+  def join_match
+    @match = Match.find(params[:id])
+
+    if current_user.guild.id == @match.guild2.id && @match.player2.nil?
+      @match.update(player2: current_user)
+      return render json: @match
+    else
+      render json: { error: 'You can\'t join the match' }, status: :unprocessable_entity
+    end
   end
 
   private
@@ -211,6 +223,6 @@ class WarsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def war_params
-      params.require(:@war).permit(:guild_1_id, :guild_2_id, :start, :end, :prize, :max_unanswered, :addons_id, :guild_1_wins, :guild_2_wins)
+      params.require(:@war).permit(:guild1_id, :guild2_id, :start, :end, :prize, :max_unanswered, :addons_id, :guild1_wins, :guild2_wins)
     end
 end

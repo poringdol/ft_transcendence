@@ -5,7 +5,7 @@ class MatchSerializer < ActiveModel::Serializer
   has_one :current_user
   has_one :player1
   has_one :player2, optional: true
-  has_one :guild_1, optional: true
-  has_one :guild_2, optional: true
+  has_one :guild1, optional: true
+  has_one :guild2, optional: true
   has_one :addons
 end

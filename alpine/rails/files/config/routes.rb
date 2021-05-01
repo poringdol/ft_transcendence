@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   resources :guild_invites
   resources :room_users
   resources :blocklists
-  resources :war_matches
   resources :matches
   resources :wars
   resources :addons
@@ -145,6 +144,7 @@ Rails.application.routes.draw do
   get 'wars/accept/:id' => 'wars#accept'
 
   post 'create_war_match' => 'wars#create_war_match'
+  post '/wars/join_match' => 'wars#join_match'
 
 # --------------------
 #    AUTHENTIFICATION

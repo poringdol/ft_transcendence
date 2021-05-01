@@ -211,10 +211,10 @@ $(function () {
 			this.model.start_date = new Date(this.model.start)
 			this.model.end_date = new Date(this.model.end)
 			// console.log(this.model.start_date.day)
-			if (this.model.guild_1.id != this.guild_id)
-				this.model.enemy = this.model.guild_1
+			if (this.model.guild1.id != this.guild_id)
+				this.model.enemy = this.model.guild1
 			else
-				this.model.enemy = this.model.guild_2
+				this.model.enemy = this.model.guild2
 			this.$el.attr({ 'href': ("/wars/" + this.model.id) });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
@@ -254,7 +254,7 @@ $(function () {
 				var role = 'officer'
 
 			if (role == 'owner' || role == 'officer') {
-				if (this.model.attributes.is_accepted == false && this.model.attributes.guild_1.id == this.view.guild_id)
+				if (this.model.attributes.is_accepted == false && this.model.attributes.guild1.id == this.view.guild_id)
 					this.$el.append(this.template_vaiting);
 				else {
 					this.$el.append(this.template_accept);
@@ -268,47 +268,29 @@ $(function () {
 		},
 		declineWar: function () {
 			fetch("/wars/decline/" + this.model.id)
-				.then(res => res.json())
-				.then(_.bind((res) => {
-					console.log(res)
-					if (res.error)
-						alert(res.error)
-					else {
-						alert('You successfully declined a war!')
-						this.$el.remove();
-						this.warView.$el.remove()
-					}
-				}, this))
-				// // .then(res => res.json())
-				// // .then(res => res.ok ? res.json() : Promise.reject(res))
-				// // .then(_.bind((res) => {
-				// .then(() => {
-				// 	alert('You successfully declined the war!');
-				// }, this)
+			.then(res => res.json())
+			.then(_.bind((res) => {
+				if (res.error)
+					alert(res.error)
+				else {
+					alert('You successfully declined a war!')
+					this.$el.remove();
+					this.warView.$el.remove()
+				}
+			}, this))
 		},
 		acceptWar: function () {
 			fetch("/wars/accept/" + this.model.id)
-				.then(res => res.json())
-				.then(_.bind((res) => {
-					console.log(res)
-					if (res.error)
-						alert(res.error)
-					else {
-						alert('You successfully accepted a war!')
-						this.$el.remove()
-						// this.parent.render()
-					}
-				}, this))
-			// .then(res => res.ok ? res.json() : Promise.reject(res))
-			// .then(_.bind(res => {
-			// 	alert('Success! User ' + this.model.nickname + ' is not an officer anymore!')
-			// 	curr_user.fetch()
-			// 	this.model.is_officer = false
-			// 	// this.view.GuildCard.render()
-			// 	this.render()
-			// 	// window.location.reload()
-			// }, this))
-			// .catch(() => alert("You are not able to do that"))
+			.then(res => res.json())
+			.then(_.bind((res) => {
+				if (res.error)
+					alert(res.error)
+				else {
+					alert('You successfully accepted a war!')
+					this.$el.remove()
+					// this.parent.render()
+				}
+			}, this))
 		},
 		remove: function () {
 			this.$el.remove();
@@ -714,7 +696,7 @@ $(function () {
 			$('#GuildContent').html(this.el);
 		},
 		warGuild: function () {
-			warView = new App.Views.FormWar({ guild_2: this.model.name })
+			warView = new App.Views.FormWar({ guild2: this.model.name })
 			warView.render()
 		}
 	})
@@ -725,7 +707,7 @@ $(function () {
 		template: _.template($("#WarCreateTemplate").html()),
 
 		initialize: function (data) {
-			this.guild_2 = data.guild_2
+			this.guild2 = data.guild2
 			this.$el.html(this.template())
 			$("#GuildContent").html(this.el)
 		},
@@ -735,7 +717,7 @@ $(function () {
 		submit: function (e) {
 			e.preventDefault();
 			let war = {
-				guild_2:	this.guild_2,
+				guild2:	this.guild2,
 				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
 				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
 				date_end:	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),

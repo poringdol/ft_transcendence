@@ -66,10 +66,10 @@ class MatchesController < ApplicationController
     if (player2 && player2 != current_user)
       player1_id = current_user.id
       player2_id = player2.id
-      guild_1_id = current_user.guild_id
-      guild_2_id = player2.guild_id
+      guild1_id = current_user.guild_id
+      guild2_id = player2.guild_id
 
-      @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
+      @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild1_id: guild1_id, guild2_id: guild2_id)
       respond_to do |format|
         if @match.save
 
@@ -83,7 +83,6 @@ class MatchesController < ApplicationController
           end
           @match.addons.save
 		
-		      war_match()
           DeleteGameInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
@@ -112,20 +111,11 @@ class MatchesController < ApplicationController
     end
   end
 
-  def war_match
-    now = DateTime.now
-    war = War.where(guild_1_id: @match.guild_1_id, guild_2_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)
-      .or(War.where(guild_2_id: @match.guild_1_id, guild_1_id: @match.guild_2_id, is_accepted: true, is_end: false, start: DateTime.new(2021,1,1,0,0)..now)).first
-    if war.present?
-      @war_match = WarMatch.new(match_id: @match.id, war_id: war.id)
-      @war_match.save
-    end
-  end
-
   def war_matches
-    @war_match = WarMatch.where(war_id: params[:id])
-    if @war_match
-      render json: @war_match
+    @war_matches = Match.where(war_id: params[:id]).order(:id).reverse
+
+    unless @war_matches.empty?
+      render json: @war_matches
     end
   end
 
@@ -136,14 +126,13 @@ class MatchesController < ApplicationController
     if (player2)
       player1_id = current_user.id
       player2_id = player2.id
-      guild_1_id = current_user.guild_id
-      guild_2_id = player2.guild_id
+      guild1_id = current_user.guild_id
+      guild2_id = player2.guild_id
 
-      @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild_1_id: guild_1_id, guild_2_id: guild_2_id)
+      @match = Match.new(player1_id: player1_id, player2_id: player2_id, guild1_id: guild1_id, guild2_id: guild2_id)
       respond_to do |format|
         if @match.save
 
-          war_match()
           DeleteGameInviteJob.set(wait: 1.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
@@ -219,11 +208,9 @@ class MatchesController < ApplicationController
       if existing_match.player1_id != current_user.id
         
         existing_match.player2_id = current_user.id
-        existing_match.guild_2_id = current_user.guild_id
+        existing_match.guild2_id = current_user.guild_id
         @match = existing_match
 		
-		    war_match()
-
         respond_to do |format|
           if existing_match.save
             format.html { existing_match }
@@ -242,7 +229,7 @@ class MatchesController < ApplicationController
       end
 
     else
-      new_match = Match.new(player1_id: current_user.id, guild_1_id: current_user.guild_id, is_ranked: true)
+      new_match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, is_ranked: true)
       respond_to do |format|
         if new_match.save
           new_match.addons.update(addon3: true)
@@ -269,10 +256,10 @@ class MatchesController < ApplicationController
   end
 
   def end_game
-
     match = Match.find(params[:id])
+    war_score(match, match.guild1, match.guild2, match.addons)
+
     if match.is_ranked?
-      war_score(match.guild_1, match.guild_2, match.player1_score, match.player2_score)
       set_rating(match)
     end
 
@@ -293,50 +280,69 @@ class MatchesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_match
-      @match = Match.find(params[:id])
+  def set_match
+    @match = Match.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def match_params
+    params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild1_id, :guild2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :rating, :is_ranked, :created_at, :updated_at, :war)
+  end
+
+  def set_rating(match)
+    winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
+    loser  = (winner == match.player1) ? match.player2 : match.player1
+    
+    rating = (match.player1_score - match.player2_score).abs
+    match.rating = (rating <= loser.score) ? rating : loser.score
+    match.save()
+    
+    if match.rating != 0
+      winner.update(score: (winner.score + match.rating))
+      loser.update(score: (loser.score - match.rating))
+
+      unless winner.guild.nil?
+        winner.guild.update(score: (winner.guild.score + match.rating))
+      end
     end
+  end
 
-    # Only allow a list of trusted parameters through.
-    def match_params
-      params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild_1_id, :guild_2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :rating, :is_ranked, :created_at, :updated_at)
-    end
+  def war_score(match, guild1, guild2, addons)
+    war = match.war
+    score1 = match.player1_score
+    score2 = match.player2_score
 
-    def set_rating(match)
-      winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
-      loser  = (winner == match.player1) ? match.player2 : match.player1
+    if !war.nil?
+      if (war.guild1_id == match.guild1_id && score1 > score2) ||
+         (war.guild1_id == match.guild2_id && score1 < score2)
+        war.update(guild1_wins: (war.guild1_wins + 1))
+
+      elsif (war.guild2_id == match.guild1_id && score1 > score2) ||
+            (war.guild2_id == match.guild2_id && score1 < score2)
+        war.update(guild2_wins: (war.guild2_wins + 1))
+      end
       
-      rating = (match.player1_score - match.player2_score).abs
-      match.rating = (rating <= loser.score) ? rating : loser.score
-      match.save()
-      
-      if match.rating != 0
-        winner.update(score: (winner.score + match.rating))
-        loser.update(score: (loser.score - match.rating))
+    elsif !guild1.nil? && !guild1.war.nil? &&
+          !guild2.nil? && !guild2.war.nil? &&
+          guild1.war == guild2.war
+      war = guild1.war
+      if (war.addons.addon1 == addons.addon1 &&
+          war.addons.addon2 == addons.addon2 &&
+          war.addons.addon3 == addons.addon3)
+        match.update(war_id: war.id)
+        
+        if (war.guild1_id == match.guild1_id && score1 > score2) ||
+           (war.guild1_id == match.guild2_id && score1 < score2)
+  
+          war.update(guild1_wins: (war.guild1_wins + 1))
 
-        unless winner.guild.nil?
-          winner.guild.update(score: (winner.guild.score + match.rating))
+        elsif (war.guild2_id == match.guild1_id && score1 > score2) ||
+              (war.guild2_id == match.guild2_id && score1 < score2)
+  
+          war.update(guild2_wins: (war.guild2_wins + 1))
         end
       end
     end
+  end
 
-    def war_score(guild_1, guild_2, score_1, score_2)
-      unless guild_1.nil? && guild_2.nil?
-        if guild_1.is_in_war?
-          war = War.where(guild_1: guild_1, is_accepted: true)
-                   .or(War.where(guild_2: guild_1, is_accepted: true))
-                   .where(start: DateTime.new(2021,1,1,0,0)..DateTime.now, end: DateTime.now..DateTime::Infinity.new)
-          unless war.empty?
-            if war.first.guild_1 == guild_2 || war.first.guild_2 == guild_2
-              if score_1 > score_2
-                war.first.update(guild_1_wins: (war.first.guild_1_wins + 1))
-              elsif score_1 < score_2
-                war.first.update(guild_2_wins: (war.first.guild_2_wins + 1))
-              end
-            end
-          end
-        end
-      end
-    end
 end
-

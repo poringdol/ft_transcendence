@@ -546,7 +546,7 @@ $(function () {
 				.catch(() => alert('some error'));
 		},
 		banUser: function () {
-			if (current_user.is_admin == true) {
+			if (current_user.is_admin == true || current_user.is_moderator == true) {
 				fetch(("/profile/ban_user/" + this.model.id))
 					.then(res => res.ok ? res.json() : Promise.reject(res))
 					.then(_.bind((res) => {
@@ -564,7 +564,7 @@ $(function () {
 				alert("You don't have a permission!")
 		},
 		unbanUser: function () {
-			if (current_user.is_admin == true) {
+			if (current_user.is_admin == true || current_user.is_moderator == true) {
 				fetch(("/profile/unban_user/" + this.model.id))
 					.then(res => res.ok ? res.json() : Promise.reject(res))
 					.then(_.bind((res) => {

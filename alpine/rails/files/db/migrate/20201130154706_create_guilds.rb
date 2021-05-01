@@ -7,7 +7,7 @@ class CreateGuilds < ActiveRecord::Migration[6.0]
       t.integer :score, default: 0
       t.integer :rating, default: 0
       t.references :owner
-      t.boolean :is_in_war, default: false
+      t.references :war, default: nil
 
       t.timestamps
     end

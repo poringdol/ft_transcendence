@@ -7,14 +7,15 @@ class Guild < ApplicationRecord
 
   # has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
   belongs_to :owner, class_name: 'User', foreign_key: 'owner_id'
+  belongs_to :war, class_name: 'War', foreign_key: 'war_id', optional: true
 
   has_many :guild_members
   has_many :guild_officers
   has_many :members, :through => :guild_members, :source => :user
   has_many :officers, :through => :guild_officers, :source => :user
   
-  has_many :guild_1, class_name: 'Match', foreign_key: 'guild_1_id', dependent: :nullify
-  has_many :guild_2, class_name: 'Match', foreign_key: 'guild_2_id', dependent: :nullify
+  has_many :guild1, class_name: 'Match', foreign_key: 'guild1_id', dependent: :nullify
+  has_many :guild2, class_name: 'Match', foreign_key: 'guild2_id', dependent: :nullify
 
   after_create {
     # назначаем владельца гильдии

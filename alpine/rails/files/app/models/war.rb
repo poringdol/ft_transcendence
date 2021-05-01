@@ -1,6 +1,6 @@
 class War < ApplicationRecord
-  belongs_to :guild_1, class_name: 'Guild', foreign_key: 'guild_1_id'
-  belongs_to :guild_2, class_name: 'Guild', foreign_key: 'guild_2_id'
+  belongs_to :guild1, class_name: 'Guild', foreign_key: 'guild1_id'
+  belongs_to :guild2, class_name: 'Guild', foreign_key: 'guild2_id'
   
   belongs_to :addons, class_name: 'Addon', foreign_key: 'addons_id', optional: true
 
