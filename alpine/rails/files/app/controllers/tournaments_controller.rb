@@ -42,6 +42,10 @@ class TournamentsController < ApplicationController
 	if params[:name] == ''
 		return render json: { error: "Fill the name field" }, status: :unprocessable_entity
 	end
+  
+  unless Tournament.where(name: params[:name]).empty?
+    return render json: { error: "This name is already in use" }, status: :unprocessable_entity
+  end
 
 	if params[:prize].to_i > 1000 || params[:prize].to_i < 0
 		return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
@@ -78,13 +82,12 @@ class TournamentsController < ApplicationController
       @tournament.addons.save
 
 	  TournamentUpdateJob.set(wait_until: @tournament.start).perform_later(@tournament, "start")
-      TournamentUpdateJob.set(wait_until: @tournament.end).perform_later(@tournament, "end")
+    TournamentUpdateJob.set(wait_until: @tournament.end).perform_later(@tournament, "end")
 	#   NotificationJob.perform_later({
 	# 	user: @tournament.guild2.owner,
 	# 	message: "The #{@tournament.guild1.name} guild has declared tournament on you",
 	# 	link: "/tournaments/"
     #   })
-
       render json: @tournament, status: :created
     else
       render json: @tournament.errors, status: :unprocessable_entity

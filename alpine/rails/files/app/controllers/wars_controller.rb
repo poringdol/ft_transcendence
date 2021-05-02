@@ -191,28 +191,28 @@ class WarsController < ApplicationController
   def create_war_match
     @war = War.where(id: params[:id]).first
 
-############ Проверки
+    ############ Проверки ############
     if @war.nil?
       return render json: { error: 'War doesn\'t exist' }, status: :unprocessable_entity
-# Война не принята или принята, но не началась
+    # Война не принята или принята, но не началась
     elsif @war.is_accepted == false || (@war.is_inprogress == false && @war.is_end == false)
       return render json: { error: 'The war has not started yet' }, status: :unprocessable_entity
-# Война закончилась
+    # Война закончилась
     elsif @war.is_end == true
       return render json: { error: 'The war is already end' }, status: :unprocessable_entity
-# Пользователь не находится в гильдии, которая участвует в войне
+    # Пользователь не находится в гильдии, которая участвует в войне
     elsif current_user.guild.nil? || !(current_user.guild == @war.guild1 || current_user.guild == @war.guild2)
       return render json: { error: 'Your guild isn\'t participating in this war' }, status: :unprocessable_entity
     end
-#
+
     war_matches = Match.where(war_id: params[:id])
-# Есть другие матчи войны в данный момент
+    # Есть другие матчи войны в данный момент
     war_matches.each do |wm|
       if wm.is_inprogress == true || (wm.is_inprogress == false && wm.is_end == false)
         return render json: { error: 'There is already another match in your war' }, status: :unprocessable_entity
       end
-    end #do loop
-    ############
+    end
+    ####################################
 
     guild2_id = (current_user.guild.id == @war.guild1.id) ? @war.guild2.id : @war.guild1.id
     @match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, guild2_id: guild2_id, is_ranked: true, war_id: @war.id)
