@@ -230,12 +230,10 @@ document.addEventListener("turbolinks:load", () => {
 					// Убираем слушателей событий
 					document.removeEventListener("keydown", game.keyDownEvent);
 				}
-
-				$("#MatchUser1Profile").html("");
-				$("#MatchUser2Profile").html("");
 				
 				let template = MATCH.result_template(MATCH.model.attributes);
-				$("#GameWrapper").html(template);
+				$("#CurrentGamePage").html("");
+				$("#FinishedGame").html(template);
 				
 				if (MATCH.model.get("is_ranked") == true) {
 					let rating = MATCH.model.get("rating");

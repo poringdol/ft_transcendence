@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
-  get '*unmatched_route', to: 'application#raise_not_found'
+#   get '*unmatched_route', to: 'application#raise_not_found'
 
   post '/notification/destroy' => 'notification#destroy'
 # ------------------
@@ -159,6 +159,10 @@ Rails.application.routes.draw do
 # ------------------
   get '/tournaments/result/:id' => 'tournaments#result'
   post '/tournaments/join' => 'tournaments#join'
+  get '/tournaments/leave/:id' => 'tournaments#leave'
+  get '/tournaments/members/:id' => 'tournaments#members'
+  get '/tournaments/matches/:id' => 'tournaments#matches'
+  get '/tournaments/curr_user_is_in_tournament/:id' => 'tournaments#curr_user_is_in_tournament'
 
 # --------------------
 #    AUTHENTIFICATION

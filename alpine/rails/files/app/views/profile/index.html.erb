@@ -24,7 +24,7 @@
 <script type="text/template" id="UserGuildTemplate">
 	<div class="card" id="UserGuildCard">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title">GUILD</h5>
+			<h4 class="card-title profileCardTitle">GUILD</h4>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" id='guildInfo'>
@@ -37,24 +37,24 @@
 					<div class='col-10 col-sm-7' >
 						<div class='row'>
 							<a href="/guilds" style="text-decoration-line: none; color: black">
-								<h5 class='col'><%%= name %></h5>
+								<h4 class='col' style="font-weight: 300"><%%= name %></h4>
 							</a>
 						</div>
 						<div class='row'>
 							<div class='col'>
 								<div class='row'>
-									<div class='col-5 InfoFieldText'>Rating:</div>
+									<div class='col-5 InfoFieldText lightText'>Rating:</div>
 									<div class='col'><%%= rating %></div>
 								</div>
 								<div class='row'>
-									<div class='col-5 InfoFieldText'>Score:</div>
+									<div class='col-5 InfoFieldText lightText'>Score:</div>
 									<div class='col'><%%= score %></div>
 								</div>
 							</div>
 							<div class='col'>
 								<div class='row'>
-									<div class='col-5 InfoFieldText'>War:</div>
-									<div class='col'>no</div>
+									<div class='col-5 InfoFieldText lightText'>War:</div>
+									<div class='col'><%%= war_id ? 'yes' : 'no' %></div>
 								</div>
 							</div>
 						</div>
@@ -91,7 +91,7 @@
 <script type="text/template" id="UserNoGuildTemplate">
 	<div class="card" id="UserGuildCard">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title">GUILD</h5>
+			<h5 class="card-title profileCardTitle">GUILD</h5>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" href='/guilds' id='guildInfo'>
@@ -131,7 +131,7 @@
 			</a>
 		</div>
 	</td>
-	<td class="col" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+	<td class="col titletext" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<a href='/profile/<%%= player1.id %>' class='SimpleHref'>
 			<%%= player1.nickname %>
 		</a>
@@ -143,12 +143,12 @@
 			</a>
 		</div>
 	</td>
-	<td class="col" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+	<td class="col titletext" style="width:80px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<a href='/profile/<%%= player2.id %>' class='SimpleHref'>
 			<%%= player2.nickname %>
 		</a>
 	</td>
-	<td class="col"><%%= player1_score %> - <%%= player2_score %></td>
+	<td class="col titletext"><%%= player1_score %> - <%%= player2_score %></td>
 	<td class="col">
 		<div class='matchesTablePhotos'>
 			<a href='/guilds'>
@@ -156,7 +156,7 @@
 			</a>
 		</div>
 	</td>
-	<td class="col" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+	<td class="col titletext" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<%%= (guild1 == null) ? "none" : guild1.anagram %>
 	</td>
 	<td class="col">
@@ -166,10 +166,10 @@
 			</a>
 		</div>
 	</td>
-	<td class="col" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+	<td class="col titletext" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<%%= (guild2 == null) ? "none" : guild2.anagram %>
 	</td>
-	<td class="col" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+	<td class="col titletext" style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
 		<%%= status %>
 	</td>
 	<td class="col">
@@ -185,7 +185,7 @@
 <script type="text/template" id="UserMatchesTemplate">
 	<div class="card" id='MatchesCard'>
 		<div class="card-body">
-			<h5 class="card-title">MATCHES</h5>
+			<h4 class="card-title profileCardTitle">MATCHES</h4>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" id='MacthesList'>
@@ -216,7 +216,7 @@
 <script type="text/template" id="UserBlocklistTemplate">
 	<div class="card" id='UserBlocklistCard'>
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title">BLOCKLIST</h5>
+			<h4 class="card-title profileCardTitle">BLOCKLIST</h4>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item" id='UserBlocklistIcons'>
@@ -306,31 +306,31 @@
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField InfoFieldText'>Nickname:</div>
+					<div class='col-4 UserInfoField InfoFieldText lightText'>Nickname:</div>
 					<div class='col'><%%= nickname %> <span id="ProfileOnlineStatus<%%= id %>" style="color: #d10d0d">offline</span></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField InfoFieldText'>Email:</div>
+					<div class='col-4 UserInfoField InfoFieldText lightText'>Email:</div>
 					<div class='col'><%%= email %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField InfoFieldText'>Score:</div>
+					<div class='col-4 UserInfoField InfoFieldText lightText'>Score:</div>
 					<div class='col'><%%= score %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField InfoFieldText'>Loses:</div>
+					<div class='col-4 UserInfoField InfoFieldText lightText'>Loses:</div>
 					<div class='col'><%%= loses %></div>
 				</div>
 			</li>
 			<li class="list-group-item">
 				<div class='row'>
-					<div class='col-4 UserInfoField InfoFieldText'>Wins:</div>
+					<div class='col-4 UserInfoField InfoFieldText lightText'>Wins:</div>
 					<div class='col'><%%= wins %></div>
 				</div>
 			</li>
@@ -388,10 +388,10 @@
 <script type="text/template" id="UserFriendsTemplate">
 	<div class="card" id="UserFriendsCard">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title ms-2 me-auto">
+			<h4 class="card-title ms-2 me-auto profileCardTitle">
 				FRIENDS
 				<!--<span id="userFriendsNotification">4</span>-->
-			</h5>
+			</h4>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">
@@ -427,10 +427,10 @@
 <script type="text/template" id="UserFriendRequestsTemplate">
 	<div class="card" id="UserFriendRequestsCard">
 		<div class="card-body" id="UserGuildCardBody">
-			<h5 class="card-title ms-2 me-auto">
+			<h4 class="card-title ms-2 me-auto profileCardTitle">
 				FRIEND REQUESTS
 				<!--<span id="userFriendsNotification">4</span>-->
-			</h5>
+			</h4>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 			<li class="list-group-item">

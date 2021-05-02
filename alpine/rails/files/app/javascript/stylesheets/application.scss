@@ -262,6 +262,7 @@ body {
 .InfoFieldText {
 	min-width: 105px;
 	color: #212529b8;
+	margin-left: 25px;
 }
 
 #UserInfoBannedStatus {
@@ -471,6 +472,33 @@ body {
 	text-align: center;
 	font-weight: lighter;
 }
+
+.lightText {
+	font-weight: 200;
+}
+
+.profileCardTitle {
+	font-weight: 300;
+}
+
+.shortText {
+	width: 100px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin: auto
+}
+
+#TournamentTitle {
+	margin-bottom: 30px;
+}
+
+
+.scroll-table-body {
+	max-height: 300px;
+	overflow: auto;
+}
+
 
 // Светящийся текст нотификаций
 @-webkit-keyframes pulsate {
