@@ -39,14 +39,8 @@
 	<% if user_signed_in? %>
 		<%= render 'layouts/footer' %>
 	<% end %>
-
-	<!-- <%= debug(params) if Rails.env.development? %> -->
+	<%= %>
 </body>
 
 <%= javascript_pack_tag 'index' %>
-<!--
-  <%= javascript_pack_tag 'user' %>
-  -->
-<!-- <img class="img-avatar" src=<%#= current_user.avatar.thumb.url %>>
-<%#= image_tag(current_user.avatar.thumb.url, alt: 'Avatar') if current_user.avatar %> -->
 </html>
