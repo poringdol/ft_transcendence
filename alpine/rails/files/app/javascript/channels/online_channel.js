@@ -10,7 +10,6 @@ consumer.subscriptions.create("OnlineChannel", {
   },
 
   received(data) {
-    
     let online = document.querySelectorAll("#online")
     let el
 
@@ -18,16 +17,8 @@ consumer.subscriptions.create("OnlineChannel", {
       for (let i = 0; i < online.length; i++) {
         el = online[i].querySelector(`[data-id="${data.id}"]`)
         if (el != null) {
-          // console.log(el.dataset.id)
-          // console.log(data.id)
           if (el.dataset.id == data.id) {
-            if (data.status === "online") {
-              // console.log("ONNNNN")
-              online[i].innerHTML = data.html
-            } else if (data.status === "offline") {
-              // console.log("OFFFFF")
-              online[i].innerHTML = data.html
-            }
+            online[i].innerHTML = data.html
           }
         }
       }
@@ -36,14 +27,19 @@ consumer.subscriptions.create("OnlineChannel", {
     let online_friend = $(`#FriendOnlineStatus${data.id}`);
     let online_profile = $(`#ProfileOnlineStatus${data.id}`);
     if (data.status === "online") {
-      online_friend.css("background", "#0ec82d");
-      online_profile.css("color", "#0ec82d");
+      online_friend.css("background", "#37d00a");
+      online_profile.css("color", "#37d00a");
       online_profile.html("online");
     }
-    else {
-      online_friend.css("background", "#d10d0d");
-      online_profile.css("color", "#d10d0d");
+    else if (data.status === 'offline') {
+      online_friend.css("background", "#d41e1e");
+      online_profile.css("color", "#d41e1e");
       online_profile.html("offline");
+    }
+    else {
+      online_friend.css("background", "#ff870a");
+      online_profile.css("color", "#ff870a");
+      online_profile.html("in game");
     }
   }
 });

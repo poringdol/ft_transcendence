@@ -131,7 +131,14 @@ class RoomsController < ApplicationController
   def kick
     @room = Room.find(params[:room][:room_id])
     @user = User.find(params[:room][:user_id])
-    p @user
+    if @room.owner_id == @user.id || @user.is_admin || @user.is_moderator
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "You can't kick chat owner",
+        link: ""
+      })
+      return
+    end
     RoomUser.where(room_id: params[:room][:room_id], user_id: params[:room][:user_id]).destroy_all
     NotificationJob.perform_later({
       user: @user,
@@ -237,7 +244,7 @@ class RoomsController < ApplicationController
     user.is_admin = false
     user.save
     NotificationJob.perform_later({
-      user: cuser,
+      user: user,
       message: "Now you is not room #{params[:room]} admin",
       link: ""
     })
@@ -245,17 +252,26 @@ class RoomsController < ApplicationController
 
   def mute_user
     user = RoomUser.where(user_id: params[:room][:user_id], room_id: params[:room][:room_id]).first
+    room = Room.find(params[:room][:room_id])
+    us = User.find(params[:room][:user_id])
+
+    if room.owner_id == user.id || us.is_admin || us.is_moderator
+      NotificationJob.perform_later({
+        user: current_user,
+        message: "You can't mute chat owner",
+        link: ""
+      })
+      return
+    end
 
     user.is_muted = true
     user.save
     NotificationJob.perform_later({
-      user: user,
-      message: "You muted for 1 min in room #{params[:room]}",
+      user: us,
+      message: "You muted for 1 min in room #{room.name}",
       link: ""
     })
-    sleep(60)
-    user.is_muted = false
-    user.save
+    MuteJob.set(wait: 1.minutes).perform_later(user)
   end
 
   private

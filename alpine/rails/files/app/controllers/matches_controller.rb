@@ -82,7 +82,7 @@ class MatchesController < ApplicationController
             @match.addons.addon3 = true
           end
           @match.addons.save
-		
+
           DeleteGameInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
@@ -133,7 +133,7 @@ class MatchesController < ApplicationController
       respond_to do |format|
         if @match.save
 
-          DeleteGameInviteJob.set(wait: 1.minutes).perform_later(@match)
+          DeleteGameInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "You will be invited to game with #{current_user.nickname}. Go to game!",
@@ -210,7 +210,7 @@ class MatchesController < ApplicationController
         existing_match.player2_id = current_user.id
         existing_match.guild2_id = current_user.guild_id
         @match = existing_match
-		
+
         respond_to do |format|
           if existing_match.save
             format.html { existing_match }
@@ -257,7 +257,7 @@ class MatchesController < ApplicationController
 
   def end_game
     match = Match.find(params[:id])
-    
+
     set_win_loses(match)
     war_score(match, match.guild1, match.guild2, match.addons)
     tournament_score(match)
@@ -295,11 +295,11 @@ class MatchesController < ApplicationController
   def set_rating(match)
     winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
     loser  = (winner == match.player1) ? match.player2 : match.player1
-    
+
     rating = (match.player1_score - match.player2_score).abs
     match.rating = (rating <= loser.score) ? rating : loser.score
     match.save()
-    
+
     if match.rating != 0
       winner.update(score: (winner.score + match.rating))
       loser.update(score: (loser.score - match.rating))
@@ -324,7 +324,7 @@ class MatchesController < ApplicationController
             (war.guild2_id == match.guild2_id && score1 < score2)
         war.update(guild2_wins: (war.guild2_wins + 1))
       end
-      
+
     elsif !guild1.nil? && !guild1.war.nil? &&
           !guild2.nil? && !guild2.war.nil? &&
           guild1.war == guild2.war
@@ -333,15 +333,15 @@ class MatchesController < ApplicationController
           war.addons.addon2 == addons.addon2 &&
           war.addons.addon3 == addons.addon3)
         match.update(war_id: war.id)
-        
+
         if (war.guild1_id == match.guild1_id && score1 > score2) ||
            (war.guild1_id == match.guild2_id && score1 < score2)
-  
+
           war.update(guild1_wins: (war.guild1_wins + 1))
 
         elsif (war.guild2_id == match.guild1_id && score1 > score2) ||
               (war.guild2_id == match.guild2_id && score1 < score2)
-  
+
           war.update(guild2_wins: (war.guild2_wins + 1))
         end
       end
@@ -359,7 +359,7 @@ class MatchesController < ApplicationController
   end
 
   def tournament_score(match)
-    
+
     tourn_match = TournamentMatch.where(match_id: match.id).first.nil?
     if tourn_match.nil?
       return
