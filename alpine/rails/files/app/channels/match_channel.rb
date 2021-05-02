@@ -22,7 +22,6 @@ class MatchChannel < ApplicationCable::Channel
   end
   
   def command(data)
-
     ActionCable.server.broadcast "match_channel_#{params[:match_id]}", { match_id: data["match_id"],
                                                                          player: data["player"],
                                                                          key_code: data["key_code"],

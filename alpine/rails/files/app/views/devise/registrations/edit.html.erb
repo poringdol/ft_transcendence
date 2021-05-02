@@ -38,8 +38,13 @@
           fetch("/users/update_nickname", {
               method : "POST",
               body: new FormData(document.getElementById("up_nick")),
-          }).then(() => {
-            Turbolinks.visit("/profile/0")
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res.error)
+              alert(res.error)
+            else
+              Turbolinks.visit("/profile/0")
           })
         });
       </script>

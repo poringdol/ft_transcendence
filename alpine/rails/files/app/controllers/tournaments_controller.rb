@@ -26,12 +26,12 @@ class TournamentsController < ApplicationController
   end
 
   def join
-	user = TournamentUser.where(tournament_id: params[:tournament_id], user_id: current_user.id).first
-	if user.present?
-		return render json: { error: "You are already in tournament" }, status: :unprocessable_entity
-	end
-	tournament_user = TournamentUser.create(tournament_id: params[:tournament_id], user_id: current_user.id)
-	render json: tournament_user
+    user = TournamentUser.where(tournament_id: params[:tournament_id], user_id: current_user.id).first
+    if user.present?
+      return render json: { error: "You are already in tournament" }, status: :unprocessable_entity
+    end
+    tournament_user = TournamentUser.create(tournament_id: params[:tournament_id], user_id: current_user.id)
+    render json: tournament_user
   end
 
   def create
@@ -41,6 +41,10 @@ class TournamentsController < ApplicationController
 
 	if params[:name] == ''
 		return render json: { error: "Fill the name field" }, status: :unprocessable_entity
+	end
+
+	if params[:name].size > 30
+		return render json: { error: "Name is to long, it should be shorter than 30 " }, status: :unprocessable_entity
 	end
   
   unless Tournament.where(name: params[:name]).empty?

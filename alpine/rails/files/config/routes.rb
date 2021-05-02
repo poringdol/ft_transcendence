@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :tournament_matches
-  resources :tournament_users
   resources :tournaments
   resources :guild_invites
   resources :room_users
@@ -172,4 +170,9 @@ Rails.application.routes.draw do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
     post '/users/auth/marvin/twofa' => 'users/omniauth_callbacks#twofa'
   end
+
+  # def after_sign_in_path_for(resource)
+  #   guilds_path 
+  # end
+  
 end

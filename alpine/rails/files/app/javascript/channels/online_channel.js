@@ -1,13 +1,9 @@
 import consumer from "./consumer"
 
 consumer.subscriptions.create("OnlineChannel", {
-  connected() {
-    // Called when the subscription is ready for use on the server
-  },
+  connected() {},
 
-  disconnected() {
-    // Called when the subscription has been terminated by the server
-  },
+  disconnected() {},
 
   received(data) {
     
@@ -18,14 +14,10 @@ consumer.subscriptions.create("OnlineChannel", {
       for (let i = 0; i < online.length; i++) {
         el = online[i].querySelector(`[data-id="${data.id}"]`)
         if (el != null) {
-          // console.log(el.dataset.id)
-          // console.log(data.id)
           if (el.dataset.id == data.id) {
             if (data.status === "online") {
-              // console.log("ONNNNN")
               online[i].innerHTML = data.html
             } else if (data.status === "offline") {
-              // console.log("OFFFFF")
               online[i].innerHTML = data.html
             }
           }

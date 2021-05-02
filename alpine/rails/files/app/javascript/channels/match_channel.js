@@ -18,6 +18,7 @@ document.addEventListener("turbolinks:load", () => {
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
 		function leave_page() {
 			if (typeof MATCH !== "undefined" && MATCH.player != 0) {
+
 				if (typeof game !== "undefined")
 					game.params.state = "leave";
 
@@ -25,7 +26,10 @@ document.addEventListener("turbolinks:load", () => {
 					MATCH.model.set(`is_player${MATCH.player}_online`, false);
 					MATCH.model.save();
 				
-					if (MATCH.model.get("is_inprogress") == true) {
+					if (MATCH.model.get("is_inprogress") == false && MATCH.model.get("is_end") == false) {
+						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.leave_page, player: MATCH.player });
+					}
+					else if (MATCH.model.get("is_inprogress") == true) {
 						// Если оба игрока покинули страницу с игрой, завершаем игру
 						if (MATCH.model.get("is_player1_online") == false && MATCH.model.get("is_player2_online") == false) {
 							$.post("/matches/end_game", { id: MATCH_ID });
@@ -59,13 +63,32 @@ document.addEventListener("turbolinks:load", () => {
 			},
 	
 			received(data) {
-
 				let key_code = data.key_code;
 				
 				if (key_code == KEYS.start_game) {
 					MATCH.renderGame(true);
 					MATCH.renderOnlineStatus(true, 1);
 					MATCH.renderOnlineStatus(true, 2);
+				}
+				else if (key_code == KEYS.end_game) {
+					if (typeof game !== "undefined")
+						game.params.state = "stop";
+					MATCH.model.set("is_inprogress", false);
+					MATCH.model.set("is_end", true);
+
+					// Если победитель игры онлайн, то он завершает игру
+					if (MATCH.model.get(`is_player${data.player}_online`) == true) {
+						if (MATCH.player == data.player)
+							$.post("/matches/end_game", { id: MATCH_ID });
+					}
+					// Иначе второй игрок матча завершает игру
+					else if (MATCH.player > 0)
+						$.post("/matches/end_game", { id: MATCH_ID });
+					setTimeout(() => {
+						MATCH.model.fetch({
+							success: MATCH.renderResult 
+						}
+					)}, 1000);
 				}
 				else if (typeof game !== "undefined") {
 
@@ -90,26 +113,6 @@ document.addEventListener("turbolinks:load", () => {
 					}
 					else if (key_code == KEYS.visit_page) {
 						MATCH.renderOnlineStatus(true, data.player);
-					}
-					else if (key_code == KEYS.end_game) {
-						game.params.state = "stop";
-						MATCH.model.set("is_inprogress", false);
-						MATCH.model.set("is_end", true);
-
-						// Если победитель игры онлайн, то он завершает игру
-						if (MATCH.model.get(`is_player${data.player}_online`) == true) {
-							if (MATCH.player == data.player)
-								$.post("/matches/end_game", { id: MATCH_ID });
-						}
-						// Иначе второй игрок матча завершает игру
-						else if (MATCH.player > 0)
-							$.post("/matches/end_game", { id: MATCH_ID });
-						
-						setTimeout(() => {
-							MATCH.model.fetch({
-								success: MATCH.renderResult 
-							}
-						)}, 1000);
 					}
 					else if (key_code == KEYS.update_state) {
 						game.params.state = data.state;
@@ -519,10 +522,10 @@ document.addEventListener("turbolinks:load", () => {
 				}
 
 			// // DEBUG
-			const keys = { L: 76, A: 65, M: 77}
+			// const keys = { L: 76, A: 65, M: 77}
 			// if (kCode == keys.L) { console.log(game.params.lastGoalPlayer) }
 			// if (kCode == keys.A) { console.log(game.params.state) }
-			if (kCode == keys.M) { console.log(MATCH.player) }
+			// if (kCode == keys.M) { console.log(MATCH.player) }
 
 			},
 

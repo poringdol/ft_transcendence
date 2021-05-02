@@ -1,2 +1,0 @@
-module GuildInvitesHelper
-end

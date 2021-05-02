@@ -4,11 +4,11 @@ class WarsController < ApplicationController
 
   # GET /wars or /wars.json
   def index
-	@wars = War.all.order("#{:start} desc")
+    @wars = War.all.order("#{:start} desc")
 
-	respond_to do |format|
-        format.html { render :index }
-        format.json { render json: @wars }
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render json: @wars }
     end
   end
 
@@ -33,6 +33,7 @@ class WarsController < ApplicationController
 
   # POST /wars or /wars.json
   def create
+
     guild2 = Guild.where(name: params[:guild2]).first
 
     unless guild2
@@ -47,13 +48,13 @@ class WarsController < ApplicationController
       return render json: { error: 'You can not create match between the same guilds' }, status: :unprocessable_entity
     end
 
-	if params[:prize].to_i > 1000 || params[:prize].to_i < 0
-		return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
-	end
+    if params[:prize].to_i > 1000 || params[:prize].to_i < 0
+      return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
+    end
 
-	if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
-		return render json: { error: 'Invalid date' }, status: :unprocessable_entity
-	end
+    if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
+      return render json: { error: 'Invalid date' }, status: :unprocessable_entity
+    end
 
     date_start = Date.parse params[:date_start]
     time_start = Time.parse params[:time_start]
@@ -67,8 +68,8 @@ class WarsController < ApplicationController
       return render json: { error: 'Dates are invalid' }, status: :unprocessable_entity
     end
 
-    @war = War.new(guild1: current_user.guild, guild2: guild2, start: war_start, end: war_end, prize: params[:prize])
-    
+    @war = War.new(guild1: current_user.guild, guild2: guild2, start: war_start, end: war_end, prize: params[:prize], max_unanswered: params[:max_unanswered])
+
     if @war.save
       if (params[:color] == "disco")
         @war.addons.addon1 = true
@@ -81,11 +82,11 @@ class WarsController < ApplicationController
       end
       @war.addons.save
 
-	  DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
-	  NotificationJob.perform_later({
-		user: @war.guild2.owner,
-		message: "The #{@war.guild1.name} guild has declared war on you",
-		link: "/wars/"
+      DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
+      NotificationJob.perform_later({
+        user: @war.guild2.owner,
+        message: "The #{@war.guild1.name} guild has declared war on you",
+        link: "/wars/"
       })
 
       render json: @war, status: :created
@@ -219,7 +220,7 @@ class WarsController < ApplicationController
     if @match.save
       @match.addons.update(addon3: true)
       
-      UnansweredWarMatchJob.set(wait: 5.minutes).perform_later(@match, @war)
+      UnansweredWarMatchJob.set(wait: 10.seconds).perform_later(@match, @war)
       return render json: @match
     else
       return render json: { error: 'Failed to create match' }, status: :unprocessable_entity

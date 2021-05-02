@@ -40,12 +40,9 @@ class UsersController < ApplicationController
         message: "Nickname changed to #{current_user.nickname}",
         link: ''
       })
+      render json: { }, status: :ok
     else
-      NotificationJob.perform_later({
-        user: current_user,
-        message: "Choose other nickname",
-        link: ''
-      })
+      render json: { error: 'This nickname is already in use' }, status: :unprocessable_entity
     end
   end
 

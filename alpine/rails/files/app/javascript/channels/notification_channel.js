@@ -5,12 +5,6 @@ consumer.subscriptions.create("NotificationChannel", {
   disconnected() {},
   received(data) {
     let notify = document.querySelector("#Notify")
-    // console.log("---------------------")
-    // console.log(data.html)
-    // console.log("11111\n\n\n22222")
-    // console.log(data.html2)
-    // console.log(notify)
-    // console.log("---------------------")
     if (notify) {
       notify.insertAdjacentHTML('beforeend', data.html)
     }

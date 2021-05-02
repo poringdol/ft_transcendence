@@ -119,6 +119,16 @@
 		<%%= addon_type %>
 	</td>
 	<td>
+		<a type='button' class='btn btn-guild' id='AcceptWarBtn' style='display: none'>
+			Accept
+		</a>
+	</td>
+	<td>
+		<a type='button' class='btn btn-guild' id='DeclineWarBtn' style='display: none'>
+			Decline
+		</a>
+	</td>
+	<td>
 		<a type='button' class='btn btn-guild' id='ShowWar' href='/wars/<%%= id %>'>
 			Show
 		</a>
@@ -229,6 +239,11 @@
 			<li class="list-group-item">
 				<form class="row formWars">
 					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
+				</form>
+			</li>
+			<li class="list-group-item">
+				<form class="row formWars">
+					<input placeholder="Max unanswered matches" type="text" class="form-control col formMatchesInput" id="formMaxUnanswered" value="">
 				</form>
 			</li>
 		</div>

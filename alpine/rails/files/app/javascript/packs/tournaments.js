@@ -13,9 +13,7 @@ $(function () {
 // -----------------------------------------
 	App.Models.Tournament = Backbone.Model.extend({
 		urlRoot: "/tournaments",
-		initialize: function () {
-			console.log(this)
-		}
+		initialize: function () {}
 	});
 
 	App.Collections.Tournament = Backbone.Collection.extend({

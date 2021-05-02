@@ -133,7 +133,7 @@ class MatchesController < ApplicationController
       respond_to do |format|
         if @match.save
 
-          DeleteGameInviteJob.set(wait: 1.minutes).perform_later(@match)
+          DeleteGameInviteJob.set(wait: 5.minutes).perform_later(@match)
           NotificationJob.perform_later({
             user: player2,
             message: "You will be invited to game with #{current_user.nickname}. Go to game!",
@@ -289,7 +289,7 @@ class MatchesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def match_params
-    params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild1_id, :guild2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :rating, :is_ranked, :created_at, :updated_at, :war)
+    params.require(:match).permit(:id, :player1_id, :player2_id, :player1_score, :player2_score, :guild1_id, :guild2_id, :addons_id, :is_end, :is_inprogress, :is_player1_online, :is_player2_online, :rating, :is_ranked, :created_at, :updated_at, :war, :current_user, :player1, :player2, :guild1, :guild2, :addons)
   end
 
   def set_rating(match)
@@ -360,7 +360,7 @@ class MatchesController < ApplicationController
 
   def tournament_score(match)
     
-    tourn_match = TournamentMatch.where(match_id: match.id).first.nil?
+    tourn_match = TournamentMatch.where(match_id: match.id).first
     if tourn_match.nil?
       return
     end
@@ -368,8 +368,8 @@ class MatchesController < ApplicationController
     tourn_id = tourn_match.tournament_id
 
     if match.player1_score != match.player2_score
-      user1 = TournamentUser.where(user_id: match.player1.id, tournament_id: tourn_id)
-      user2 = TournamentUser.where(user_id: match.player2.id, tournament_id: tourn_id)
+      user1 = TournamentUser.where(user_id: match.player1.id, tournament_id: tourn_id).first
+      user2 = TournamentUser.where(user_id: match.player2.id, tournament_id: tourn_id).first
 
       if match.player1_score > match.player2_score
         user1.update(wins: (user1.wins + 1))

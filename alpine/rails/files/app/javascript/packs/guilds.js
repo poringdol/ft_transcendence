@@ -213,7 +213,6 @@ $(function () {
 			if (this.model.addon_type == '')
 				this.model.addon_type = 'none'
 			
-			// console.log(this.model.start_date.day)
 			if (this.model.guild1.id != this.guild_id)
 				this.model.enemy = this.model.guild1
 			else
@@ -263,8 +262,6 @@ $(function () {
 					this.$el.append(this.template_accept);
 					this.$el.append(this.template_decline);
 				}
-				// this.$el.append(this.template_accept);
-				// this.$el.append(this.template_decline);
 			}
 
 			return this;
@@ -609,13 +606,13 @@ $(function () {
 				this.$el.append(this.templateLeaveBtn)
 				this.$el.append(this.templateDeleteBtn)
 			}
-			else if (!curr_user.attributes.guild_id)
+			else if (!curr_user.attributes.guild_id && (curr_user.attributes.is_admin || curr_user.attributes.is_moderator))
 				this.$el.html(this.templateJoinBtn)
 			else if (curr_user.attributes.guild_id == this.model.id)
 				this.$el.html(this.templateLeaveBtn)
 			else if (curr_user.attributes.guild_id != this.model.id &&
 					(curr_user.attributes.is_officer ||
-					 curr_user.attributes.guild.owner_id == curr_user.attributes.id))
+						(curr_user.attributes.guild && curr_user.attributes.guild.owner_id == curr_user.attributes.id)))
 				this.$el.html(this.templateWarBtn)
 			else
 				this.$el.html("")
@@ -629,7 +626,6 @@ $(function () {
 			'click #WarGuildBtn':   'warGuild',
 		},
 		deleteGuild: function () {
-			// alert("DELETE");
 			if (confirm('Are you sure you want to DELETE the guild?') == false)
 				return;
 
@@ -721,13 +717,14 @@ $(function () {
 			e.preventDefault();
 			let war = {
 				guild2:	this.guild2,
-				date_start: $(e.currentTarget).find('input[id=formWarDateStart]').val(),
-				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
-				date_end:	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
-				time_end:	$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
-				color:		$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
-				boost:		$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
-				prize:		$(e.currentTarget).find('input[id=formPrize]').val(),
+				date_start: 	$(e.currentTarget).find('input[id=formWarDateStart]').val(),
+				time_start: 	$(e.currentTarget).find('input[id=formWarTimeStart]').val(),
+				date_end:		$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
+				time_end:		$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
+				color:			$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
+				boost:			$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
+				prize:			$(e.currentTarget).find('input[id=formPrize]').val(),
+				max_unanswered:	$(e.currentTarget).find('input[id=formMaxUnanswered]').val(),
 			}
 			if (war.prize == '')
 				war.prize = 0
