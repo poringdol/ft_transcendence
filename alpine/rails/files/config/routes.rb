@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
-  get '*unmatched_route', to: 'application#raise_not_found'
+  # get '*unmatched_route', to: 'application#raise_not_found'
 
   post '/notification/destroy' => 'notification#destroy'
 # ------------------
