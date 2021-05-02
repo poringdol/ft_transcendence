@@ -358,7 +358,6 @@ body {
 	text-align: center;
 	font-weight: lighter;
 	vertical-align: -moz-middle-with-baseline
-
 }
 
 .matchesTablePhotos {
@@ -375,10 +374,6 @@ body {
 
 .formMatchesInput {
 	border: 1px solid #fff0;
-}
-
-#MatchCreationForm {
-	height: 250px;
 }
 
 .GameWrapper	{
@@ -439,6 +434,42 @@ body {
 
 .WarParams {
 	margin-bottom: 20px;
+}
+
+.center_align {
+	text-align: center;
+}
+
+.CreationBtn {
+	font-weight: lighter;
+	width: 300px;
+	margin-bottom: 30px;
+}
+
+.TablePicText {
+	width:100px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-top: 12px;
+}
+.NavbarText {
+	font-weight: lighter;
+	font-size: large;
+	text-transform: capitalize
+}
+
+.MatchesCreationList {
+	border-width: 0px;
+}
+
+#WarInfo {
+	min-width: 1200px
+}
+
+.titletext {
+	text-align: center;
+	font-weight: lighter;
 }
 
 // Светящийся текст нотификаций

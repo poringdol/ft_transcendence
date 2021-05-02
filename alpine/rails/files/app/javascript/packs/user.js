@@ -10,9 +10,9 @@ $(function () {
 	};
 
 
-	// -----------------------------------------
-	//  USER              MODEL
-	// -----------------------------------------
+// -----------------------------------------
+//  USER              MODEL
+// -----------------------------------------
 	App.Models.User = Backbone.Model.extend({
 		initialize: function (data) {
 			this.id = data.user.id
@@ -771,7 +771,7 @@ $(function () {
 			$("#UserMatches").html(template)
 
 			this.n = 0
-			if (this.collection.length <= 3) {
+			if (this.collection.length <= 4) {
 				$("#accordionFlushMatches").css({ 'display': 'none' })
 				$("#MatchesCard").css({ 'border-bottom': '0px' })
 				if (this.collection.length == 0)

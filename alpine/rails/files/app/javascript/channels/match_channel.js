@@ -16,7 +16,6 @@ document.addEventListener("turbolinks:load", () => {
 	let subscribe = 0;
 
 	if (typeof MATCH_ID !== "undefined" && MATCH_ID > 0) {
-		
 		function leave_page() {
 			if (typeof MATCH !== "undefined" && MATCH.player != 0) {
 				if (typeof game !== "undefined")
@@ -38,11 +37,10 @@ document.addEventListener("turbolinks:load", () => {
 					}
 				}
 			}
-			$("body").off();
 			consumer.subscriptions.remove(subscribe);
+			$("body").off();
 			return true;
 		}
-
 		subscribe = consumer.subscriptions.create({ channel: "MatchChannel", match_id: MATCH_ID}, {
 
 			connected() {
@@ -57,6 +55,7 @@ document.addEventListener("turbolinks:load", () => {
 			disconnected() {
 				if (MATCH_ID > 0)
 					console.log(`Disconnected from match ${MATCH_ID}`);
+				consumer.subscriptions.remove(subscribe);
 			},
 	
 			received(data) {
@@ -155,6 +154,10 @@ document.addEventListener("turbolinks:load", () => {
 			},
 			
 			init: function () {
+
+				$("a").on("click", leave_page);
+				$(window).on("beforeunload", leave_page);
+
 				// Если игра завершена - рисуем результаты
 				if (this.model.get("is_end") == true) {
 					this.renderResult();
@@ -175,9 +178,6 @@ document.addEventListener("turbolinks:load", () => {
 						subscribe.perform("command", { match_id: MATCH_ID, key_code: KEYS.visit_page, player: this.player });
 					})
 				}
-				
-				$("a").on("click", leave_page);
-				// $(window).on("beforeunload", leave_page);
 
 				if (this.model.get("is_inprogress") == true) {
 					this.renderGame(false);

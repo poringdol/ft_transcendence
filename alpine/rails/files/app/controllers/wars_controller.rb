@@ -4,6 +4,12 @@ class WarsController < ApplicationController
 
   # GET /wars or /wars.json
   def index
+	@wars = War.all.order("#{:start} desc")
+
+	respond_to do |format|
+        format.html { render :index }
+        format.json { render json: @wars }
+    end
   end
 
   # GET /wars/1 or /wars/1.json
@@ -41,6 +47,14 @@ class WarsController < ApplicationController
       return render json: { error: 'You can not create match between the same guilds' }, status: :unprocessable_entity
     end
 
+	if params[:prize].to_i > 1000 || params[:prize].to_i < 0
+		return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
+	end
+
+	if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
+		return render json: { error: 'Invalid date' }, status: :unprocessable_entity
+	end
+
     date_start = Date.parse params[:date_start]
     time_start = Time.parse params[:time_start]
     war_start = DateTime.new(date_start.year, date_start.month, date_start.day, time_start.hour, time_start.min) - 3.hour
@@ -56,13 +70,22 @@ class WarsController < ApplicationController
     @war = War.new(guild1: current_user.guild, guild2: guild2, start: war_start, end: war_end, prize: params[:prize])
     
     if @war.save
-      @war.addons.update(addon3: true)
+      if (params[:color] == "disco")
+        @war.addons.addon1 = true
+      elsif (params[:color] == "epilepsy")
+        @war.addons.addon2 = true
+      end
 
-      DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
-      NotificationJob.perform_later({
-        user: @war.guild2.owner,
-        message: "The #{@war.guild1.name} guild has declared war on you",
-        link: "/wars/"
+      if (params[:boost] == "boost")
+        @war.addons.addon3 = true
+      end
+      @war.addons.save
+
+	  DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
+	  NotificationJob.perform_later({
+		user: @war.guild2.owner,
+		message: "The #{@war.guild1.name} guild has declared war on you",
+		link: "/wars/"
       })
 
       render json: @war, status: :created
@@ -168,28 +191,28 @@ class WarsController < ApplicationController
   def create_war_match
     @war = War.where(id: params[:id]).first
 
-############ Проверки
+    ############ Проверки ############
     if @war.nil?
       return render json: { error: 'War doesn\'t exist' }, status: :unprocessable_entity
-# Война не принята или принята, но не началась
+    # Война не принята или принята, но не началась
     elsif @war.is_accepted == false || (@war.is_inprogress == false && @war.is_end == false)
       return render json: { error: 'The war has not started yet' }, status: :unprocessable_entity
-# Война закончилась
+    # Война закончилась
     elsif @war.is_end == true
       return render json: { error: 'The war is already end' }, status: :unprocessable_entity
-# Пользователь не находится в гильдии, которая участвует в войне
+    # Пользователь не находится в гильдии, которая участвует в войне
     elsif current_user.guild.nil? || !(current_user.guild == @war.guild1 || current_user.guild == @war.guild2)
       return render json: { error: 'Your guild isn\'t participating in this war' }, status: :unprocessable_entity
     end
-#
+
     war_matches = Match.where(war_id: params[:id])
-# Есть другие матчи войны в данный момент
+    # Есть другие матчи войны в данный момент
     war_matches.each do |wm|
       if wm.is_inprogress == true || (wm.is_inprogress == false && wm.is_end == false)
         return render json: { error: 'There is already another match in your war' }, status: :unprocessable_entity
       end
-    end #do loop
-    ############
+    end
+    ####################################
 
     guild2_id = (current_user.guild.id == @war.guild1.id) ? @war.guild2.id : @war.guild1.id
     @match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, guild2_id: guild2_id, is_ranked: true, war_id: @war.id)

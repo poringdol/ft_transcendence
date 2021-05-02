@@ -257,7 +257,10 @@ class MatchesController < ApplicationController
 
   def end_game
     match = Match.find(params[:id])
+    
+    set_win_loses(match)
     war_score(match, match.guild1, match.guild2, match.addons)
+    tournament_score(match)
 
     if match.is_ranked?
       set_rating(match)
@@ -343,6 +346,45 @@ class MatchesController < ApplicationController
         end
       end
     end
+  end
+
+  def set_win_loses(match)
+    if (match.player1_score > match.player2_score)
+      match.player1.update(wins: (match.player1.wins + 1))
+      match.player2.update(loses: (match.player1.loses + 1))
+    elsif (match.player1_score < match.player2_score)
+      match.player1.update(loses: (match.player1.loses + 1))
+      match.player2.update(wins: (match.player1.wins + 1))
+    end
+  end
+
+  def tournament_score(match)
+    
+    tourn_match = TournamentMatch.where(match_id: match.id).first.nil?
+    if tourn_match.nil?
+      return
+    end
+
+    tourn_id = tourn_match.tournament_id
+
+    if match.player1_score != match.player2_score
+      user1 = TournamentUser.where(user_id: match.player1.id, tournament_id: tourn_id)
+      user2 = TournamentUser.where(user_id: match.player2.id, tournament_id: tourn_id)
+
+      if match.player1_score > match.player2_score
+        user1.update(wins: (user1.wins + 1))
+        user1.update(score: (user1.score + 1))
+
+        user2.update(loses: (user2.loses + 1))
+
+      else
+        user2.update(wins: (user2.wins + 1))
+        user2.update(score: (user2.score + 1))
+
+        user1.update(loses: (user1.loses + 1))
+      end
+    end
+
   end
 
 end

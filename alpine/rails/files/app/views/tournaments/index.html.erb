@@ -1,8 +1,8 @@
-<div class='WarsContent' style='min-width: 1000px'>
+<div class='TournamentsContent' style='min-width: 1000px'>
 	<div class='row'>
 		<div class='col-2'></div>
-		<% if current_user.guild_id? && (current_user.guild.owner_id == current_user.id || current_user.is_officer) %>
-		<div id='WarCreationForm' class='col' style='min-width: 340px'></div>
+		<% if current_user.is_admin || current_user.is_moderator %>
+		<div id='TournamentCreationForm' class='col' style='min-width: 340px'></div>
 		<% end %>
 		<div class='col-2'></div>
 	</div>
@@ -15,39 +15,36 @@
 					<ul class="nav nav-tabs" id="myTab" role="tablist">
 						<li class="nav-item" role="presentation">
 							<button class="nav-link active" id="current-tab" data-bs-toggle="tab"
-								data-bs-target="#current" type="button" role="tab" aria-controls="current"
-								aria-selected="true">Current Wars</button>
+								data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Current Tournaments</button>
 						</li>
 						<li class="nav-item" role="presentation">
 							<button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned"
-								type="button" role="tab" aria-controls="planned" aria-selected="false">Planned
-								Wars</button>
+								type="button" role="tab" aria-controls="planned" aria-selected="false">Planned Tournaments</button>
 						</li>
 						<li class="nav-item" role="presentation">
 							<button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
-								type="button" role="tab" aria-controls="history" aria-selected="false">History
-								Wars</button>
+								type="button" role="tab" aria-controls="history" aria-selected="false">History Tournaments</button>
 						</li>
 					</ul>
 					<div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade show active" id="current" role="tabpanel"
 							aria-labelledby="current-tab">
-							<div class='row' id='CurrentWars'>
+							<div class='row' id='CurrentTournaments'>
 							</div>
 						</div>
 						<div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
-							<div class='row' id='PlannedWars'>
+							<div class='row' id='PlannedTournaments'>
 							</div>
 						</div>
 						<div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
-							<div class='row' id='HistoryWars'>
+							<div class='row' id='HistoryTournaments'>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row ">
-				<div class="col-2 mt-3 btn btn-outline-secondary" id="WarsTableRefresh" style='font-weight: lighter;'>REFRESH</div>
+				<div class="col-2 mt-3 btn btn-outline-secondary" id="TournamentsTableRefresh" style='font-weight: lighter;'>REFRESH</div>
 			</div>
 		</div>
 		<div class='col-1'></div>
@@ -58,14 +55,13 @@
 <!--
 	TABLE TEMPLATE
 -->
-<script type="text/template" id="WarsTableTemplate">
-	<table class="table table-striped matchesTable" id='<%%= type %>WarsTable'>
-		<thead id='WarsTableThead'>
+<script type="text/template" id="TournamentsTableTemplate">
+	<table class="table table-striped matchesTable" id='<%%= type %>TournamentsTable'>
+		<thead id='TournamentsTableThead'>
 			<tr class='tableHeader'>
-				<th scope="col" class='tableHeader'>Guild-1</th>
-				<th scope="col" class='tableHeader'>Guild-2</th>
+				<th scope="col" class='tableHeader'>Name</th>
 				<th scope="col" class='tableHeader'>Prize</th>
-				<th scope="col" class='tableHeader'>Score</th>
+				<th scope="col" class='tableHeader'>Members</th>
 				<th scope="col" class='tableHeader'>Start date</th>
 				<th scope="col" class='tableHeader'>Start time</th>
 				<th scope="col" class='tableHeader'>End date</th>
@@ -80,29 +76,11 @@
 <!--
 	TABLE ROW TEMPLATE
 -->
-<script type="text/template" id="WarsRowTemplate">
-	<td>
-		<div class="row justify-content-md-center">
-			<div class='col-lg-2 matchesTablePhotos'>
-				<img width="50" height="50" class="rounded-circle" src=<%%= guild1.logo.url %>>
-			</div>
-			<div class='col-lg-2 TablePicText'>
-				<%%= guild1.anagram %>
-			</div>
-		</div>
-	</td>
-	<td>
-		<div class="row justify-content-md-center">
-			<div class='col-lg-2 matchesTablePhotos'>
-				<img width="50" height="50" class="rounded-circle" src=<%%= guild2.logo.url %>>
-			</div>
-			<div class='col-lg-2 TablePicText'>
-				<%%= guild2.anagram %>
-			</div>
-		</div>
-	</td>
+<script type="text/template" id="TournamentsRowTemplate">
+
+	<td><%%= name %></td>
 	<td><%%= prize %></td>
-	<td><%%= guild1_wins %> - <%%= guild2_wins %></td>
+	<td><%%= members.count %></td>
 	<td>
 		<%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %>
 	</td>
@@ -119,8 +97,13 @@
 		<%%= addon_type %>
 	</td>
 	<td>
-		<a type='button' class='btn btn-guild' id='ShowWar' href='/wars/<%%= id %>'>
+		<a type='button' class='btn btn-guild' id='ShowTournament' href='/tournaments/<%%= id %>'>
 			Show
+		</a>
+	</td>
+	<td id='<%%= type %>JoinTournament' style='display: none'>
+		<a type='button' class='btn btn-guild' id='JoinTournament'>
+			Join
 		</a>
 	</td>
 </script>
@@ -129,17 +112,16 @@
 <!--
 	CREATION FORM TEMPLATE
 -->
-<script type="text/template" id="WarCreateTemplate">
+<script type="text/template" id="TournamentCreateTemplate">
 	<div class='card col mb-3'>
 		<div class="card-body center_align">
-			<h3 class="card-title" style='font-weight: lighter;'>NEW GUILD WAR</h3>
+			<h3 class="card-title" style='font-weight: lighter;'>NEW TOURNAMENT</h3>
 		</div>
 		<div class="list-group list-group-flush" id="list-tab" role="tablist">
 
 			<li class="list-group-item">
-				<form class="row formWars">
-					<select class="form-control col formMatchesInput" id="formGuild2Name"></select>
-					<%# <input placeholder="Guildname of your opponent" type="text" class="form-control col formMatchesInput" id="formGuild2Name" value=""> %>
+				<form class="row formTournaments">
+					<input placeholder="Tournament name" type="text" class="form-control col formMatchesInput" id="formTournamentName" value="">
 				</form>
 			</li>
 
@@ -151,8 +133,8 @@
 								Date start
 							</div>
 							<div class="col">
-								<form class="row formWars">
-									<input type="date" class="form-control col formMatchesInput" id="formWarDateStart" value="">
+								<form class="row formTournaments">
+									<input type="date" class="form-control col formMatchesInput" id="formTournamentDateStart" value="">
 								</form>
 							</div>
 						</div>
@@ -161,8 +143,8 @@
 								Time start
 							</div>
 							<div class="col">
-								<form class="row formWars">
-									<input type="time" class="form-control col formMatchesInput" id="formWarTimeStart" value="">
+								<form class="row formTournaments">
+									<input type="time" class="form-control col formMatchesInput" id="formTournamentTimeStart" value="">
 								</form>
 							</div>
 						</div>
@@ -173,8 +155,8 @@
 								Date end
 							</div>
 							<div class="col">
-								<form class="row formWars">
-									<input type="date" class="form-control col formMatchesInput" id="formWarDateEnd" value="">
+								<form class="row formTournaments">
+									<input type="date" class="form-control col formMatchesInput" id="formTournamentDateEnd" value="">
 								</form>
 							</div>
 						</div>
@@ -183,8 +165,8 @@
 								Time end
 							</div>
 							<div class="col">
-								<form class="row formWars">
-									<input type="time" class="form-control col formMatchesInput" id="formWarTimeEnd" value="">
+								<form class="row formTournaments">
+									<input type="time" class="form-control col formMatchesInput" id="formTournamentTimeEnd" value="">
 								</form>
 							</div>
 						</div>
@@ -227,17 +209,17 @@
 				</div>
 			</li>
 			<li class="list-group-item">
-				<form class="row formWars">
+				<form class="row formTournaments">
 					<input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
 				</form>
 			</li>
 		</div>
 	</div>
 	<div class='row' style='text-align: center'>
-		<form class="formWars">
+		<form class="formTournaments">
 			<input type="submit" class="btn btn-outline-secondary CreationBtn" value="CREATE">
 		</form>
 	</div>
 </script>
 
-<%= javascript_pack_tag 'wars' %>
+<%= javascript_pack_tag 'tournaments' %>

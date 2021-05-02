@@ -172,11 +172,9 @@ $(function () {
 			return this;
 		},
 		addOne: function (war) {
-			// var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
 			// Обычному члену гильдии показываются только принятые войны
 			if (war.attributes.is_accepted == true || curr_user.attributes.id == this.view.guild.owner_id ||
 				(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id)) {
-				// var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
 				var warView = new App.Views.GuildWar({ model: war.attributes, guild_id: this.guild_id });
 				this.$el.append(warView.render().el);
 
@@ -186,11 +184,6 @@ $(function () {
 					var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this, warView: warView });
 					this.$el.append(warViewBtn.render().el);
 				}
-			// }
-			// if (war.attributes.is_accepted == false && (curr_user.attributes.id == this.view.guild.owner_id ||
-			// 	(curr_user.attributes.is_officer == true && curr_user.attributes.guild_id == this.view.guild_id))) {
-			// 	var warViewBtn = new App.Views.GuildWarBtn({ model: war, view: this.view, parent: this });
-			// 	this.$el.append(warViewBtn.render().el);
 			}
 		}
 	})
@@ -210,6 +203,16 @@ $(function () {
 			// this.model.start_date = new Date(this.model.start).toUTCString()
 			this.model.start_date = new Date(this.model.start)
 			this.model.end_date = new Date(this.model.end)
+			this.model.addon_type = ''
+			if (this.model.addons.addon3 == true)
+				this.model.addon_type = 'boost '
+			if (this.model.addons.addon1 == true)
+				this.model.addon_type += 'disco'
+			else if (this.model.addons.addon2 == true)
+				this.model.addon_type += 'epilepsy'
+			if (this.model.addon_type == '')
+				this.model.addon_type = 'none'
+			
 			// console.log(this.model.start_date.day)
 			if (this.model.guild1.id != this.guild_id)
 				this.model.enemy = this.model.guild1
@@ -722,9 +725,12 @@ $(function () {
 				time_start: $(e.currentTarget).find('input[id=formWarTimeStart]').val(),
 				date_end:	$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
 				time_end:	$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
-				addons:		$(e.currentTarget).find('input[id=formAddons]').val(),
+				color:		$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
+				boost:		$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
 				prize:		$(e.currentTarget).find('input[id=formPrize]').val(),
 			}
+			if (war.prize == '')
+				war.prize = 0
 			fetch("/wars", {
 				method: "POST",
 				headers: {

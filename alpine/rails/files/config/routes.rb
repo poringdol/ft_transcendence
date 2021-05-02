@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :tournament_matches
+  resources :tournament_users
+  resources :tournaments
   resources :guild_invites
   resources :room_users
   resources :blocklists
@@ -41,6 +44,8 @@ Rails.application.routes.draw do
   get 'guilds/do_owner/:id' => 'guilds#do_owner'
   get 'guilds/do_officer/:id' => 'guilds#do_officer'
   get 'guilds/undo_officer/:id' => 'guilds#undo_officer'
+
+  get '/guilds_list' => 'guilds#guilds_list'
 
 # ------------------
 #   GUILDS INVITES
@@ -145,9 +150,15 @@ Rails.application.routes.draw do
   get 'wars/guild_wars/:id' => 'wars#guild_wars'
   get 'wars/decline/:id' => 'wars#decline'
   get 'wars/accept/:id' => 'wars#accept'
-
+  
   post 'create_war_match' => 'wars#create_war_match'
   post '/wars/join_match' => 'wars#join_match'
+  
+# ------------------
+# TOURNAMENTS
+# ------------------
+  get '/tournaments/result/:id' => 'tournaments#result'
+  post '/tournaments/join' => 'tournaments#join'
 
 # --------------------
 #    AUTHENTIFICATION

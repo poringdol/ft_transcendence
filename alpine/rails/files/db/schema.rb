@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_182507) do
+ActiveRecord::Schema.define(version: 2021_05_01_150653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,42 @@ ActiveRecord::Schema.define(version: 2021_04_30_182507) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
+  create_table "tournament_matches", force: :cascade do |t|
+    t.bigint "tournament_id", null: false
+    t.bigint "match_id", null: false
+    t.boolean "is_rating1", default: false
+    t.boolean "is_rating2", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["match_id"], name: "index_tournament_matches_on_match_id"
+    t.index ["tournament_id"], name: "index_tournament_matches_on_tournament_id"
+  end
+
+  create_table "tournament_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "tournament_id", null: false
+    t.integer "wins", default: 0
+    t.integer "loses", default: 0
+    t.integer "score", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tournament_id"], name: "index_tournament_users_on_tournament_id"
+    t.index ["user_id"], name: "index_tournament_users_on_user_id"
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.string "name"
+    t.integer "prize", default: 0
+    t.datetime "start"
+    t.datetime "end"
+    t.boolean "is_inprogress", default: false
+    t.boolean "is_end", default: false
+    t.bigint "addons_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["addons_id"], name: "index_tournaments_on_addons_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "avatar"
     t.string "email", default: "", null: false
@@ -244,6 +280,11 @@ ActiveRecord::Schema.define(version: 2021_04_30_182507) do
   add_foreign_key "matches", "users", column: "player2_id"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
+  add_foreign_key "tournament_matches", "matches"
+  add_foreign_key "tournament_matches", "tournaments"
+  add_foreign_key "tournament_users", "tournaments"
+  add_foreign_key "tournament_users", "users"
+  add_foreign_key "tournaments", "addons", column: "addons_id"
   add_foreign_key "war_matches", "matches"
   add_foreign_key "war_matches", "wars"
   add_foreign_key "wars", "addons", column: "addons_id"
