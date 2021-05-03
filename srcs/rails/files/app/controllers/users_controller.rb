@@ -109,7 +109,8 @@ class UsersController < ApplicationController
   end
 
   def users_list
-    @user = User.select(:id, :nickname, :encrypted_otp_secret).order(:nickname)
+    # @user = User.select(:id, :nickname, :encrypted_otp_secret).order(:nickname)
+	@user = User.select(:id, :nickname, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).order(:nickname)
     render json: @user
   end
 
