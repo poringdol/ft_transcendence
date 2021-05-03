@@ -11,8 +11,8 @@ class Tournament < ApplicationRecord
 
   after_destroy {
     addon = Addon.where(id: self.addons_id).first
-	if addon.present?
-		addon.destroy
-	end
+	  if addon.present?
+	  	addon.destroy
+	  end
   }
 end
