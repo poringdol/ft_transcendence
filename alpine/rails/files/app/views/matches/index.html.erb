@@ -7,8 +7,8 @@
 			</div>
 			<div class="list-group list-group-flush" id="list-tab" role="tablist">
 				<form class="form-group formMatches" id='MatchCreationForm'>
-					
-					<%# <li class="list-group-item">	
+
+					<%# <li class="list-group-item">
 						<input class="form-control col formMatchesInput" type="text" name="Player2Nickname" id="formPlayer2Nickname" value="" placeholder="Nickname of your opponent" >
 					</li> %>
 
@@ -21,7 +21,7 @@
 
 					<li class="list-group-item MatchesCreationList">
 						<div class="row">
-					
+
 							<div class="col-6">
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
@@ -79,6 +79,7 @@
 		<% if current_user.guild_id? && (current_user.guild.owner_id == current_user.id || current_user.is_officer) %>
 			<div id='WarCreationForm'></div>
 		<% end %>
+
 	<%# class='card col %>
 	</div>
 
@@ -115,6 +116,16 @@
     <div class="row ">
       <div class="col-2 mt-3 btn btn-outline-secondary titletext" id="MatchesTableRefresh">REFRESH</div>
     </div>
+	<div class="row ">
+	  <div class="col-2 mt-3 btn btn-outline-secondary" id="openRules" onclick="openRules()">Rules</div>
+    </div>
+	<span id="rules" style="display: none; margin-top: 20px; background: rgba(0, 0, 0, 0.15)">
+        It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
+        The game continues until 7 points. <br>
+        If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
+        When creating a game you can choose different addons.<br>
+        If you see a bug, then this is a feature. You know? :)
+    </span>
   </div>
 	<div class='col-1'></div>
 </div>
@@ -210,3 +221,15 @@
 </script>
 
 <%= javascript_pack_tag 'matches' %>
+
+<script type="text/javascript">
+  function openRules() {
+    $(`#rules`).css("display", "block")
+    document.getElementById(`openRules`).setAttribute( "onclick", "closeRules();");
+  };
+  function closeRules() {
+    $(`#rules`).css("display", "none")
+    document.getElementById(`openRules`).setAttribute( "onclick", "openRules();");
+  };
+</script>
+

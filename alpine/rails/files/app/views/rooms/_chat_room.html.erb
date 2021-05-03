@@ -15,7 +15,7 @@
           <%end %>
 
       </div>
-        <% if @room.owner_id == current_user.id || current_user.is_admin %>
+        <% if @room.owner_id == current_user.id || current_user.is_admin || current_user.is_moderator %>
           <div class="btn-group col-8">
             <div>
             <%= form_with model: @room, url: "change_pass", id: "ch_pass", method: :post do |form| %>

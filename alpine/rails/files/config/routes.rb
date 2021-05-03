@@ -13,6 +13,9 @@ Rails.application.routes.draw do
 
   # get '*unmatched_route', to: 'application#raise_not_found'
 
+  # root 'users#edit'
+  root 'welcome#index'
+  get 'welcome/index'
   post '/notification/destroy' => 'notification#destroy'
 # ------------------
 #    GUILDS PAGE
@@ -57,7 +60,6 @@ Rails.application.routes.draw do
 # ------------------
 #    PROFILE PAGE
 # ------------------
-
   get '/user' => "profile#index"
   get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
   get 'profile/get_curr_user' => "profile#get_curr_user"
@@ -103,10 +105,6 @@ Rails.application.routes.draw do
   get 'friends/delete_from_friends/:id' => 'friends#delete_from_friends'
   get 'friends/unfollow_user/:id' => 'friends#unfollow_user'
 
-
-  get 'welcome/index'
-  root 'welcome#index'
-
 # ------------------
 #    CHAT PAGE
 # ------------------
@@ -148,10 +146,10 @@ Rails.application.routes.draw do
   get 'wars/guild_wars/:id' => 'wars#guild_wars'
   get 'wars/decline/:id' => 'wars#decline'
   get 'wars/accept/:id' => 'wars#accept'
-  
+
   post 'create_war_match' => 'wars#create_war_match'
   post '/wars/join_match' => 'wars#join_match'
-  
+
 # ------------------
 # TOURNAMENTS
 # ------------------

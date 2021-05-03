@@ -825,13 +825,13 @@ $(function () {
 		},
 		online: function() {
 			this.each((friend) => {
-				$(`#ProfileOnlineStatus${this.current_user_id}`).css("color", "#0ec82d");
+				$(`#ProfileOnlineStatus${this.current_user_id}`).css("color", "#37d00a");
 				$(`#ProfileOnlineStatus${this.current_user_id}`).html("online");
-				
-				$(`#FriendOnlineStatus${friend.get("id")}`).css("background", "#0ec82d")
-				
+
+				$(`#FriendOnlineStatus${friend.get("id")}`).css("background", "#37d00a")
+
 				if (friend.get("id") == this.profile_id) {
-					$(`#ProfileOnlineStatus${this.profile_id}`).css("color", "#0ec82d");
+					$(`#ProfileOnlineStatus${this.profile_id}`).css("color", "#37d00a");
 					$(`#ProfileOnlineStatus${this.profile_id}`).html("online");
 				}
 			})
