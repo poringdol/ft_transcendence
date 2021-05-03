@@ -1,0 +1,104 @@
+{
+  "application.js": "/packs/js/application-6542c8a6f5dd9f7e131d.js",
+  "application.js.map": "/packs/js/application-6542c8a6f5dd9f7e131d.js.map",
+  "auth.js": "/packs/js/auth-dbbb974e0981b298ccd4.js",
+  "auth.js.map": "/packs/js/auth-dbbb974e0981b298ccd4.js.map",
+  "entrypoints": {
+    "application": {
+      "js": [
+        "/packs/js/application-6542c8a6f5dd9f7e131d.js"
+      ],
+      "js.map": [
+        "/packs/js/application-6542c8a6f5dd9f7e131d.js.map"
+      ]
+    },
+    "auth": {
+      "js": [
+        "/packs/js/auth-dbbb974e0981b298ccd4.js"
+      ],
+      "js.map": [
+        "/packs/js/auth-dbbb974e0981b298ccd4.js.map"
+      ]
+    },
+    "guilds": {
+      "js": [
+        "/packs/js/guilds-6fed0984f625fe3a814f.js"
+      ],
+      "js.map": [
+        "/packs/js/guilds-6fed0984f625fe3a814f.js.map"
+      ]
+    },
+    "index": {
+      "js": [
+        "/packs/js/index-bf40db4e4d9088bda056.js"
+      ],
+      "js.map": [
+        "/packs/js/index-bf40db4e4d9088bda056.js.map"
+      ]
+    },
+    "leaderboard": {
+      "js": [
+        "/packs/js/leaderboard-589d0e62f4900d2a2474.js"
+      ],
+      "js.map": [
+        "/packs/js/leaderboard-589d0e62f4900d2a2474.js.map"
+      ]
+    },
+    "matches": {
+      "js": [
+        "/packs/js/matches-83126771506a4d1efc48.js"
+      ],
+      "js.map": [
+        "/packs/js/matches-83126771506a4d1efc48.js.map"
+      ]
+    },
+    "tournaments": {
+      "js": [
+        "/packs/js/tournaments-f69a8c3d7bbe3e9373c8.js"
+      ],
+      "js.map": [
+        "/packs/js/tournaments-f69a8c3d7bbe3e9373c8.js.map"
+      ]
+    },
+    "user": {
+      "js": [
+        "/packs/js/user-5e0f0e0a0e25164012b0.js"
+      ],
+      "js.map": [
+        "/packs/js/user-5e0f0e0a0e25164012b0.js.map"
+      ]
+    },
+    "war": {
+      "js": [
+        "/packs/js/war-6a058997d2739ccd2dcb.js"
+      ],
+      "js.map": [
+        "/packs/js/war-6a058997d2739ccd2dcb.js.map"
+      ]
+    },
+    "wars": {
+      "js": [
+        "/packs/js/wars-0f73902d71f519fe8ea7.js"
+      ],
+      "js.map": [
+        "/packs/js/wars-0f73902d71f519fe8ea7.js.map"
+      ]
+    }
+  },
+  "guilds.js": "/packs/js/guilds-6fed0984f625fe3a814f.js",
+  "guilds.js.map": "/packs/js/guilds-6fed0984f625fe3a814f.js.map",
+  "index.js": "/packs/js/index-bf40db4e4d9088bda056.js",
+  "index.js.map": "/packs/js/index-bf40db4e4d9088bda056.js.map",
+  "leaderboard.js": "/packs/js/leaderboard-589d0e62f4900d2a2474.js",
+  "leaderboard.js.map": "/packs/js/leaderboard-589d0e62f4900d2a2474.js.map",
+  "matches.js": "/packs/js/matches-83126771506a4d1efc48.js",
+  "matches.js.map": "/packs/js/matches-83126771506a4d1efc48.js.map",
+  "tournaments.js": "/packs/js/tournaments-f69a8c3d7bbe3e9373c8.js",
+  "tournaments.js.map": "/packs/js/tournaments-f69a8c3d7bbe3e9373c8.js.map",
+  "user.js": "/packs/js/user-5e0f0e0a0e25164012b0.js",
+  "user.js.map": "/packs/js/user-5e0f0e0a0e25164012b0.js.map",
+  "war.js": "/packs/js/war-6a058997d2739ccd2dcb.js",
+  "war.js.map": "/packs/js/war-6a058997d2739ccd2dcb.js.map",
+  "wars.js": "/packs/js/wars-0f73902d71f519fe8ea7.js",
+  "wars.js.map": "/packs/js/wars-0f73902d71f519fe8ea7.js.map"
+}
