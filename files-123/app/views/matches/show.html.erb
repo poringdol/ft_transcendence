@@ -1,0 +1,139 @@
+<div id="MatchID" data-MatchID="<%= @match.id %>"></div>
+<!--
+<p id="notice"><%= notice %></p>
+-->
+
+<div class="row" id='CurrentGamePage'>
+
+  <div id="MatchUser1Profile" class="col"></div>
+  <div id="GameWrapper" class="col"></div>
+  <div id="MatchUser2Profile" class="col"></div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-2"></div>
+  <div id="FinishedGame" class="col"></div>
+  <div class="col-2"></div>
+
+</div>
+
+<%# ШАБЛОНЫ %>
+
+<%# СТАРТ ИГРЫ %>
+<script type="text/template" id="GameStartTemplate">
+  <canvas id="gameCanvas" width="960" height="600"></canvas>
+  <div class="gameDescription">
+    <dl>
+      <dt>W</dt> <dd>- up</dd>
+      <dt>S</dt> <dd>- down</dd> <br>
+      <dt>C</dt> <dd>- change paddle color </dd> <br>
+      <dt>Enter</dt> <dd>- ball launch</dd> <br>
+      <dt id="openRules" class="rulesButtonChangeColor" onclick="openRules()">Rules</dt>
+      <span id="rules" style="display: none">
+        It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
+        The game continues until 7 points. <br>
+        If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
+        When creating a game you can choose different addons.<br>
+        If you see a bug, then this is a feature. You know? :)
+      </span>
+    </dl>
+  </div>
+</script>
+
+<%# ПОЛЬЗОВАТЕЛЬ 1 %>
+<script type="text/template" id="MatchUser1ProfileTemplate">
+  <p>
+    <a href='/profile/<%%= player1.id %>'>
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>>
+    </a>
+  </p>
+  <p>
+    Nickname: <%%= player1.nickname %>
+  </p>
+  <p>
+    Guild:
+    <%%= (guild1 == null) ? "none" : guild1.name %>
+  </p>
+  <p>
+    Score: <span id="MatchPlayer1Score"><%%= player1_score %></span>
+  </p>
+  <p id="MatchPlayer1Online"></p>
+</script>
+
+<%# ПОЛЬЗОВАТЕЛЬ 2 %>
+<script type="text/template" id="MatchUser2ProfileTemplate">
+  <p>
+  <% if @match.player2.present? %>
+  <a href='/profile/<%%= player2.id %>'>
+  <% end %>
+    <img width='50px' height='50px' class='rounded-circle' src='<%%= player2 == null ? "/assets/default-avatar1.jpg" : player2.avatar.url %>'> 
+    </a>
+  </p>
+  <p>
+    <%%= (player2 == null) ? "Waiting for the second player " : ("Nickname: " + player2.nickname) %>
+  </p>
+  <p>
+    Guild: <%%= (guild2 == null) ? "none" : guild2.name %>
+  </p>
+  <p>
+    Score: <span id="MatchPlayer2Score"><%%= player2_score %></span>
+  </p>
+  <p id="MatchPlayer2Online"></p>
+</script>
+
+<%# РЕЗУЛЬТАТ ПОСЛЕ ОКОНЧАНИЯ ИГРЫ %>
+<script type="text/template" id="MatchResultTemplate">
+
+  <div class="row m-3 titletext">
+  	<h4>FINISHED</h4>
+  </div>
+
+  <div class="row titletext">
+    <div class="col">
+		<h4 class="titletext"><%%= player1.nickname %></h4>
+      <p>
+        <a href='/profile/<%%= player1.id %>'>
+          <img width="300px" height="300px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+        </a>
+      </p>
+      <p>
+        Guild: <%%= (guild1 == null) ? "none" : guild1.name %>
+      </p>
+      <p>
+        <h4><%%= player1_score %></h4>
+      </p>
+      <p id="Player1Rating"></p>
+    </div>
+    <div class="col">
+		<h4 class="titletext"><%%= (player2 == null) ? "No one answered the invitation to this match " : (player2.nickname) %></h4>
+      <p>
+	  	<% if @match.player2.present? %>
+			<a href='/profile/<%%= player2.id %>'>
+	  	<% end %>
+          <img width='300px' height='300px' class='rounded-circle' src='<%%= player2 == null ? "/assets/default-avatar1.jpg" : player2.avatar.url %>'> 
+        </a>
+      </p>
+      <p>
+        Guild: <%%= (guild2 == null) ? "none" : guild2.name %> 
+      </p>
+      <p>
+        <h4><%%= player2_score %></h4>
+      </p>
+      <p id="Player2Rating"></p>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+  function openRules() {
+    $(`#rules`).css("display", "block")
+    document.getElementById(`openRules`).setAttribute( "onclick", "closeRules();");
+  };
+  function closeRules() {
+    $(`#rules`).css("display", "none")
+    document.getElementById(`openRules`).setAttribute( "onclick", "openRules();");
+  };
+</script>
+

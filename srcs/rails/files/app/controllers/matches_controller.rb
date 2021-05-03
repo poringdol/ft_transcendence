@@ -1,6 +1,7 @@
 class MatchesController < ApplicationController
   before_action :set_match, only: %i[ show edit update match_users_update ]
-
+  # protect_from_forgery
+  skip_before_action :verify_authenticity_token
   # GET /matches or /matches.json
   def index
     @matches = Match.where("player2_id IS NOT NULL").order("#{:id} desc")

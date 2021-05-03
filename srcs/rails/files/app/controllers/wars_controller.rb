@@ -1,5 +1,6 @@
 class WarsController < ApplicationController
   before_action :set_war, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /wars or /wars.json
   def index

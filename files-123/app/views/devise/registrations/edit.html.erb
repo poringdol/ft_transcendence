@@ -1,0 +1,95 @@
+<div class='row titletext' style='text-align: center;'>
+	<h1 class='titletext' style='margin: 20px 0px'>Edit profile - <%= current_user.nickname %></h1>
+	<div class='col'></div>
+	<div class='col-4'>
+		<br>
+
+		<h5 class='titletext'>Enable 2 factor authentication</h5>
+		<% if !current_user.otp_required_for_login %>
+		<%= form_with model: @user, url: "enable_otp", method: :post do |f| %>
+			<div>
+			<%= f.submit "Enable 2FA", :class => "btn btn-outline-secondary CreationBtn loginBtn" %>
+			</div>
+		<% end %>
+		<% end %>
+		<% if current_user.otp_required_for_login %>
+		<%= form_with model: @user, url: "disable_otp", method: :post do |f| %>
+			<div>
+			<%= f.submit "Disable 2FA", class: "btn btn-outline-secondary CreationBtn loginBtn" %>
+			</div>
+		<% end %>
+		<div class="col-4 text-center">
+			<%= current_user.otp_qr_code.html_safe %>
+		</div>
+		<br>
+		<% end %>
+
+		<br>
+		<br>
+
+		<h5 class='titletext'>Change nickname</h5>
+		<%= form_with model: @user, url: "update_nickname", id: "up_nick", method: :post do |f| %>
+			<div class="row">
+				<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+				<div style='text-align: center'>
+					<%= f.text_field :nickname, class: 'form-control nickTextField' %>
+					<div class="input-group-append">
+						<%= f.submit "Update nickname", id: "update_nickname_btn", class: "btn btn-outline-secondary CreationBtn loginBtn" %>
+						<script type="text/javascript">
+							$("#update_nickname_btn").on('click', function(event) {
+							event.preventDefault();
+							fetch("/users/update_nickname", {
+								method : "POST",
+								body: new FormData(document.getElementById("up_nick")),
+							})
+							.then(res => res.json())
+							.then(res => {
+								if (res.error)
+								alert(res.error)
+								else
+								Turbolinks.visit("/profile/0")
+							})
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+		<% end %>
+
+		<br>
+		<br>
+
+		<h5 class='titletext'>Change avatar</h5>
+		<%= form_with model: @user, url: "update_avatar", id: "up_av", method: :post, html: { multipart: true } do |f| %>
+		<div class="row">
+
+		<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+		<div>
+
+			<label class="btn btn-outline-secondary CreationBtn loginBtn">
+			Choose file
+			<span style="display:none;">
+			<%= f.file_field :avatar %>
+			</span>
+		</label>
+		<div>
+			<%= f.submit "Update avatar", id: "update_avatar_btn", class: "btn btn-outline-secondary CreationBtn loginBtn" %>
+			<script type="text/javascript">
+				$("#update_avatar_btn").on('click', function(event) {
+				event.preventDefault();
+				fetch("/users/update_avatar", {
+					method : "POST",
+					body: new FormData(document.getElementById("up_av")),
+				}).then(() => {
+					Turbolinks.visit("/profile/0")
+				})
+				});
+			</script>
+			</div>
+		</div>
+		</div>
+		<% end %>
+
+	</div>
+	<div class='col'></div>
+</div>

@@ -1,0 +1,54 @@
+<% if !@room.is_direct || (@room.is_direct && RoomUser.where(room_id: @room.id, user_id: current_user.id).size() > 0) %>
+  <div class = "chat-room">
+    <nav class = "navbar navbar-light">
+    <span class = "navbar-brand">
+      <b><%= @room.name %></b>
+    </span>
+    </nav>
+
+    <div class="row">
+      <div class="mb-3 col-2">
+          <%= form_with model: @room, url: "leave", method: :post do |form| %>
+              <%= form.hidden_field :room_id, value: @room.id %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <%= form.submit "Leave from chat", class: "btn btn-outline-primary" %>
+          <%end %>
+
+      </div>
+        <% if @room.owner_id == current_user.id || current_user.is_admin || current_user.is_moderator %>
+          <div class="btn-group col-8">
+            <div>
+            <%= form_with model: @room, url: "change_pass", id: "ch_pass", method: :post do |form| %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <%= form.hidden_field :room_id, value: @room.id %>
+              <%= form.password_field :password, class: 'form-control', id: 'room_password_change', placeholder: "New password", title: "New password or empy for remove", autocomplete: "new-password" %>
+            </div>
+            <div>
+              <%= form.submit "Change pass", class: "btn btn-outline-primary", id: "btnChangePass", data: { disable_with: false } %>
+              <script type="text/javascript">
+                $( "#btnChangePass" ).on("click", function(event) {
+                  event.preventDefault();
+                  fetch("/change_pass", {
+                    method: 'POST',
+                    body: new FormData(document.getElementById("ch_pass")),
+                  }).then((resp) => {
+                    this.reset();
+                  })
+                });
+              </script>
+            </div>
+            <%end %>
+        </div>
+        <% end %>
+    </div>
+
+    <div id = "messages">
+    <% @room.messages.each do |message| %>
+      <%= render 'messages/message', message: message %>
+    <% end %>
+    </div>
+    <div class = "chat-box">
+    <%= render 'messages/form', message: Message.new, room: @room %>
+    </div>
+  </div>
+<% end %>

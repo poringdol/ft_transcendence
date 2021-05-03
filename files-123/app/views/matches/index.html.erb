@@ -1,0 +1,232 @@
+<div class='MatchesContent row'>
+  <div class='col-1'></div>
+  <div class="col-3" style='min-width: 340px'>
+    <div class='card col mb-3'>
+      <div class="card-body">
+        <h5 class="card-title titletext">NEW FRIENDLY MATCH</h5>
+      </div>
+      <div class="list-group list-group-flush" id="list-tab" role="tablist">
+        <form class="form-group formMatches" id='MatchCreationForm'>
+
+          <li class="list-group-item MatchesCreationList">
+            <div class="form-group">
+              <select class="form-control" id="formPlayer2Nickname"></select>
+            </div>
+          </li>
+
+          <li class="list-group-item MatchesCreationList">
+            <div class="row">
+
+              <div class="col-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
+                  <label class="form-check-label" for="AddonColorNone">
+                    None
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="disco">
+                  <label class="form-check-label" for="AddonColorDisco">
+                    Disco
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="epilepsy">
+                  <label class="form-check-label" for="AddonColorEpilepsy">
+                    Epilepsy
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="boost">
+                  <label class="form-check-label" for="AddonBoost">
+                    Boost
+                  </label>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="list-group-item MatchesCreationList">
+            <div class="row">
+              <input type="submit" class="btn btn-outline-secondary col titletext" value="CREATE">
+            </div>
+          </li>
+        </form>
+      </div>
+    </div>
+
+    <div class='card col mb-3' id='RandomMatchCreationForm'>
+      <div class="card-body">
+        <h5 class="card-title titletext">NEW RATING MATCH</h5>
+      </div>
+      <div class="list-group list-group-flush" id="list-tab" role="tablist" style="border-top: 0px;">
+        <li class="list-group-item">
+          <div class="row formMatches">
+            <span id="RandomMatchCreationButton" class="btn btn-outline-secondary col titletext">CREATE</span>
+          </div>
+        </li>
+      </div>
+    </div>
+    <div id='TournamentCreationForm'></div>
+    <% if current_user.guild_id? && (current_user.guild.owner_id == current_user.id || current_user.is_officer) %>
+      <div id='WarCreationForm'></div>
+    <% end %>
+
+  <%# class='card col %>
+  </div>
+
+  <div class='col-7' style='min-width: 660px'>
+    <div class="row">
+      <div class='card p-0' style='width: 98%'>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Current Matches</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="planned-tab" data-bs-toggle="tab" data-bs-target="#planned" type="button" role="tab" aria-controls="planned" aria-selected="false">Planned Matches</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">History Matches</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
+            <div class='row' id='CurrentMatches'>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="planned" role="tabpanel" aria-labelledby="planned-tab">
+            <div class='row' id='PlannedMatches'>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
+            <div class='row' id='HistoryMatches'>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+		<div style='text-align: center'>
+			<div class="col-4 mt-3 btn btn-outline-secondary titletext" id="MatchesTableRefresh">REFRESH</div>
+			<div class="col-4 mt-3 btn btn-outline-secondary titletext" id="openRules" onclick="openRules()">RULES</div>
+		</div>
+    </div>
+  	<div id="rules" style="display: none; margin-top: 20px;" class='card titletext'>
+		<div>
+			It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
+			The game continues until 7 points. <br>
+			If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
+			When creating a game you can choose different addons.<br>
+			If you see a bug, then this is a feature. You know? :)
+		</div>
+    </div>
+  </div>
+  <div class='col-1'></div>
+</div>
+
+
+<!--
+  TABLE TEMPLATE
+-->
+<script type="text/template" id="MatchesTableTemplate">
+  <table class="table table-striped matchesTable" id='<%%= type %>MatchesTable'>
+    <thead id='MatchesTableThead'>
+      <tr class='tableHeader'>
+        <th scope="col" class='tableHeader'>Player-1</th>
+        <th scope="col" class='tableHeader'>Player-2</th>
+        <th scope="col" class='tableHeader'>Score</th>
+        <th scope="col" class='tableHeader'>Guild-1</th>
+        <th scope="col" class='tableHeader'>Guild-2</th>
+        <th scope="col" class='tableHeader'>Addons</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+  </table>
+</script>
+
+<!--
+  TABLE ROW TEMPLATE
+-->
+<script type="text/template" id="MatchesRowTemplate">
+  <td>
+    <div class="row justify-content-md-center">
+      <div class='col-lg-2 matchesTablePhotos'>
+        <a href='/profile/<%%= player1.id %>'>
+          <img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>>
+        </a>
+      </div>
+      <div class='col-lg-2 shortText'>
+        <%%= player1.nickname %>
+      </div>
+    </div>
+  </td>
+  <td>
+    <div class="row justify-content-md-center">
+      <div class='col-lg-2 matchesTablePhotos'>
+        <a href='/profile/<%%= player2.id %>'>
+          <img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
+        </a>
+      </div>
+      <div class='col-lg-2 shortText'>
+        <%%= player2.nickname %>
+      </div>
+    </div>
+  </td>
+  <td><%%= player1_score %> - <%%= player2_score %></td>
+  <td>
+    <div class='row justify-content-md-center'>
+      <div class='col-lg-2 matchesTablePhotos'>
+        <a href='/guilds'>
+          <img width="30" height="30" class="rounded-circle" src=<%%= (guild1 == null) ? "/assets/default-avatar.jpg" : guild1.logo.url %>>
+        </a>
+      </div>
+      <div class='col-lg-2 shortText' style="width: 70px">
+        <%%= (guild1 == null) ? "none" : guild1.anagram %>
+      </div>
+    </div>
+  </td>
+  <td>
+    <div class='row justify-content-md-center'>
+      <div class='col-lg-2 matchesTablePhotos'>
+        <a href='/guilds'>
+          <img width="30" height="30" class="rounded-circle" src=<%%= (guild2 == null) ? "/assets/default-avatar.jpg" : guild2.logo.url %>>
+        </a>
+      </div>
+      <div class='col-lg-2 shortText' style="width: 70px">
+        <%%= (guild2 == null) ? "none" : guild2.anagram %>
+      </div>
+    </div>
+  </td>
+  <td>
+    <%%= addon_type %>
+  </td>
+  <td>
+    <a type='button' class='btn btn-guild' id='ShowMatch' href='/matches/<%%= id %>'>
+      Show
+    </a>
+  </td>
+  <% if current_user.is_admin? || current_user.is_moderator? %>
+    <td>
+      <button type='button' class='btn btn-guild' id='DeleteMatch'>
+        Delete
+      </button>
+    </td>
+  <% end %>
+</script>
+
+<%= javascript_pack_tag 'matches' %>
+
+<script type="text/javascript">
+  function openRules() {
+    $(`#rules`).css("display", "block")
+    document.getElementById(`openRules`).setAttribute( "onclick", "closeRules();");
+  };
+  function closeRules() {
+    $(`#rules`).css("display", "none")
+    document.getElementById(`openRules`).setAttribute( "onclick", "openRules();");
+  };
+</script>
+

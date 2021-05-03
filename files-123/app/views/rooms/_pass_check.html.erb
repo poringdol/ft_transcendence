@@ -1,0 +1,9 @@
+<%= form_with model: @room, url: "pass_check", method: :post do |f| %>
+	<div class="row">
+		<%= f.hidden_field :id, value: @room.id %>
+	<div class="col-3">
+		<%= f.password_field :password, class: 'form-control', placeholder: "Password", :autocomplete => :off %>
+	<div class="col-3">
+		<%= f.submit "Enter room", class: "btn btn-outline-primary" %>
+	</div>
+<% end %>

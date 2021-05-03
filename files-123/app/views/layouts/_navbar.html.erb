@@ -1,0 +1,89 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="HeaderMenu">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	  	<li class="nav-item">
+    	  <a class="navbar-brand" href="/matches" style='display: block; '>FT_TRANSCENDENCE</a>
+	    </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/matches">Game</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link lightText" aria-current="page" href="/leaderboard">Leaderboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link lightText" aria-current="page" href="/guilds">Guilds</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link lightText" aria-current="page" href="/wars">Wars</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link lightText" aria-current="page" href="/tournaments">Tournaments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link lightText" aria-current="page" href="/rooms">Chat</a>
+        </li>
+        <li class="nav-item dropdown lightText">
+          <% @notify = Notification.where(user_id: current_user.id) %>
+          <% if @notify.empty? %>
+            <a class="nav-link dropdown-toggle" id="N-Notify" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+              Notifications
+            </a>
+          <% else %>
+            <a class="nav-link dropdown-toggle" id="N-Notify-pulsate" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+              Notifications
+            </a>
+          <% end %>
+          <ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
+            <% if @notify.empty? %>
+              <li><a id="emptyNotify" style="color: #d7d7d7; margin-left: 15px">empty</a></li>
+            <% end %>
+            <% @notify.each do |notify| %>
+                <%= render 'layouts/notification', message: notify.message, link: notify.link, id: notify.id %>
+              <% end %>
+            <div id="Notify">
+            </div>
+          </ul>
+        </li>
+        <li class="nav-item dropdown lightText">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+            <%= current_user.nickname + (current_user.is_admin ? "(admin)" : current_user.is_moderator ? "(moderator)" : "") %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
+          </a>
+          <ul class="dropdown-menu lightText" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item lightText" aria-current="page" href="/profile/0">Profile</a></li>
+            <li><a class="dropdown-item lightText" aria-current="page" href="/users/edit/">Edit profile</a></li>
+            <li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link lightText", :class => "dropdown-item" %></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script type="text/javascript">
+  function deleteNotify(id) {
+    const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
+    fetch("/notification/destroy", {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": TOKEN,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: id })
+    })
+    $(`#notify-msg-${id}`).remove()
+    if (document.querySelectorAll(".notifyAll").length == 0) {
+      document.querySelector("#Notify").insertAdjacentHTML("beforeend", '<li><a id="emptyNotify" style="color: #d7d7d7; text-align: center; margin-left: 15px">empty</a></li>')
+      let puls = document.getElementById(`N-Notify-pulsate`)
+      if (puls) {
+        puls.setAttribute("id", "N-Notify");
+      }
+    }
+    return true
+  };
+</script>

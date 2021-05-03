@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, with: :not_found
   rescue_from ActionController::RoutingError, with: :not_found
 
-  # protect_from_forgery with: :null_session
-
   def raise_not_found
     raise ActionController::RoutingError.new("No route matches #{params[:unmatched_route]}")
   end

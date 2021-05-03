@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   root 'users#edit'
   # root 'welcome#index'
-  get 'welcome/index'
+  get 'welcome' => 'welcome#index'
 # ------------------
 #    GUILDS PAGE
 # ------------------

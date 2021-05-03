@@ -1,0 +1,476 @@
+<!-- 
+  PAGE STRUCTURE (GUILD CREATION FORM)
+-->
+<div class="row justify-content-center">
+  <% if current_user.guild_id? %>
+    <div id="GuildForm", style="display: none" class="col-3">
+    </div>
+  <% else %>
+    <div id="GuildForm" class="col-3">
+    </div>
+  <% end %>
+  <div class="col-4"></div>
+  <div class="col-4"></div>
+</div>
+
+
+<!-- 
+  PAGE STRUCTURE
+-->
+<div class="row justify-content-center">
+  <h2 class="col-3 titletext">Guilds list</h2>
+  <div class="col-4"></div>
+  <div class="col-4"></div>
+</div>
+<div class="row justify-content-center PageBody" style="min-width: 1050px">
+  <div class="col-3" id="GuildList"></div>
+  <div class="col-4" id="GuildCard"></div>
+  <div class="col-4" id="GuildContent"></div>
+</div>
+
+
+<!-- 
+  GUILD LIST ELEMENT TEMPLATE
+-->
+<script type="text/template" id="GuildListElTemplate">
+  <div id="GuildNameList" style="padding: 10px" class='row'>
+    <div class='col-1'>
+		<a style="margin-right: 5px">
+		<%%= rating %>. 
+		</a>
+	</div>
+	<div class='col'>
+		<img width="30" height="30" class="rounded-circle" src=<%%= logo.url %>> 
+		<%%= name %>
+	</div>
+	<div class='col-3 titletext'>
+		<%%= score %>
+	</div>
+</script>
+
+
+<!-- 
+  MEMBER LIST ELEMENT TEMPLATE
+-->
+<script type="text/template" id="GuildMemberListTemplate">
+  <div id="GuildMemberList">
+    <img width="30" height="30" class="rounded-circle" src=<%%= avatar.url %>> 
+    <%%= nickname %>
+  </div>
+</script>
+
+<!-- 
+  WAR LIST ELEMENT TEMPLATE
+-->
+<script type="text/template" id="GuildWarListTemplate">
+  <div id="GuildWarList" class='row' style='text-align: center'>
+    <div class='col-1 MiddleVerticalAlign'>
+      <img width="30" height="30" class="rounded-circle" src=<%%= enemy.logo.url %>> 
+    </div>
+    <div class='col-2 MiddleVerticalAlign'>
+      <%%= enemy.anagram %>
+    </div>
+    <div class='col-2 MiddleVerticalAlign'>
+      <%%= prize %>
+    </div>
+    <div class='col' style='text-align: center'>
+      <div class='col-12' style='text-align: center'>
+        <%%= start_date.getDate() %>-<%%= start_date.toLocaleString('default', {month: 'short'}) %>-<%%= start_date.getFullYear() %> <%%= start_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
+      </div>
+      <div class='col-12' style='text-align: center'>
+        <%%= end_date.getDate() %>-<%%= end_date.toLocaleString('default', {month: 'short'}) %>-<%%= end_date.getFullYear() %> <%%= end_date.toLocaleTimeString('default', {timeZone: "Europe/Moscow", hour: '2-digit', minute:'2-digit'}) %> 
+      </div>
+    </div>
+    <div class='col-2 MiddleVerticalAlign'>
+      <%%= addon_type %>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="GuildWarListHeaderTemplate">
+  <a class='list-group-item' style='text-align: center'>
+  <div id="GuildWarList" class='row'>
+    <div class='col-3'>
+      Enemy
+    </div>
+    <div class='col-2'>
+      Prize
+    </div>
+    <div class='col'>
+      Sart/End Date
+    </div>
+    <div class='col-2'>
+      Addons
+    </div>
+  </div>
+  </a>
+</script>
+
+<!-- 
+  MEMBER LIST ADMIN BUTTONS TEMPLATE
+-->
+<script type="text/template" id="AdminGuildPanelTemplate">
+  <div class="nav-item dropdown">
+    <a class="btn card-link btn-guild dropdown-toggle" id="AdminGuildDropdown" type="button" data-bs-toggle="dropdown">
+      Admin options
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="AdminGuildDropdown">
+      <li><a class="dropdown-item" aria-current="page" href="#" id='AdminExitMember'>Remove</a></li>
+      <li><a class="dropdown-item" aria-current="page" href="#" id='AdminDoOfficer'>Do officer</a></li>
+      <li><a class="dropdown-item" aria-current="page" href="#" id='AdminDoOwner'>Do owner</a></li>
+    </ul>
+  </div>
+</script>
+
+
+
+<!-- 
+  GUILD CARD TEMPLATE
+-->
+<script type="text/template" id="GuildCardTemplate">
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title" style='font-weight: 300'><%%= name %></h3>
+      <h6 class="card-subtitle mb-2 text-muted"><%%= anagram %></h6>
+      <img width="200" height="200" class="rounded-circle" src=<%%= logo.url %>>
+    </div>
+      <div class="list-group list-group-flush" id="list-tab" role="tablist">
+        <li class="list-group-item" id ="GuildCardOwner">
+			<a style='font-weight: 200'>Owner: </a>
+			<a style='font-weight: 400'><%%= owner_nickname %></a>
+		</li>
+        <li class="list-group-item">
+            <a style='font-weight: 200'>Score:</a>
+            <a style='font-weight: 400'><%%= score %></a>
+		</li>
+        <li class="list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardMembers" data-bs-toggle="list" style='font-weight: 200'>
+          Members
+          <span class="badge" id="GuildCardBadge">ᐳ</span>
+        </li>
+        <li class="titletext list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardOfficers" data-bs-toggle="list" style='font-weight: 200'>
+          Officers
+          <span class="badge" id="GuildCardBadge">ᐳ</span>
+        </li>
+        <li class="titletext list-group-item list-group-item-action d-flex justify-content-between" id="GuildCardWars" data-bs-toggle="list" style='font-weight: 200'>
+          Wars
+          <span class="badge" id="GuildCardBadge">ᐳ</span>
+        </li>
+      </div>
+  </div>
+  <div id="GuildCardBtn" class="card-body">
+  </div>
+</script>
+
+
+<!-- 
+  MEMBER LIST ADMIN BUTTONS TEMPLATE
+-->
+<script type="text/template" id="AdminExitMemberBtnTemplate">
+  <button id='AdminExitMember' type="button" class="btn card-link btn-guild col">
+    remove
+  </button>
+</script>
+
+<script type="text/template" id="AdminDoOfficerBtnTemplate">
+  <button id='AdminDoOfficer' type="button" class="btn card-link btn-guild col">
+    do officer
+  </button>
+</script>
+
+<script type="text/template" id="AdminUndoOfficerBtnTemplate">
+  <button id='AdminUndoOfficer' type="button" class="btn card-link btn-guild col">
+    undo officer
+  </button>
+</script>
+
+<script type="text/template" id="AdminDoOwnerBtnTemplate">
+  <button id='AdminDoOwner' type="button" class="btn card-link btn-guild col">
+    do owner
+  </button>
+</script>
+
+<!-- 
+  WAR LIST BUTTONS TEMPLATE
+-->
+
+<script type="text/template" id="AcceptWarBtnTemplate">
+  <button id='AcceptWarBtn' type="button" class="btn card-link btn-guild" style='width: 40%'>
+    Accept
+  </button>
+</script>
+
+<script type="text/template" id="DeclineWarBtnTemplate">
+  <button id='DeclineWarBtn' type="button" class="btn card-link btn-guild" style='width: 40%'>
+    Decline
+  </button>
+</script>
+
+<script type="text/template" id="VaitingWarBtnTemplate">
+  <div id='VaitingWarBtn' class="btn btn-guild" style='width: 80%; cursor: default;'>
+    Waiting for answer
+  </div>
+</script>
+
+<!-- 
+  EDIT BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildEditBtnTemplate">
+  <button type="button" class="btn btn-guild card-link" id="EditGuildBtn">Edit</a>
+</script>
+
+<!-- 
+  LEAVE BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildLeaveBtnTemplate">
+  <button type="button" class="btn btn-guild card-link" id="LeaveGuildBtn">Leave</a>
+</script>
+
+<!-- 
+  DELETE BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildDelBtnTemplate">
+  <button type="button" class="btn card-link btn-guild" id="DelGuildBtn">Delete</a>
+</script>
+
+<!-- 
+  WAR BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildWarBtnTemplate">
+  <button type="button" class="btn card-link btn-guild" id="WarGuildBtn">Declare a war</a>
+</script>
+
+<!-- 
+  JOIN BUTTON TEMPLATE
+-->
+<script type="text/template" id="GuildJoinBtnTemplate">
+  <button type="button" class="btn btn-guild card-link" id="JoinGuildBtn">Join</a>
+</script>
+
+
+<!-- 
+  GUILD CREATION FORM TEMPLATE
+-->
+<script type="text/template" id="GuildFormTemplate">
+  <div class='row' style='margin: auto'>
+    <form class="row">
+      <%# <label for="userFromIntra" class="visually-hidden">Guild name</label> %>
+      <input placeholder="Guild name" type="text" class="form-control col" id="guildFormName" value="">
+    </form>
+    <form class="row">
+      <%# <label for="userFromNick" class="visually-hidden">Anagram</label> %>
+      <input placeholder="Anagram (5 symbols)" type="text" class="form-control col" id="guildFormAnagram" value="">
+    </form>
+    <form class="row">
+      <input type="submit" class="btn btn-outline-dark mb-3 col" value="create">
+    </form>
+  </div>
+</script>
+
+<!-- 
+  WAR CREATION FORM
+-->
+<script type="text/template" id="WarCreateTemplate">
+  <div class='card col mb-3'>
+    <div class="card-body">
+      <h6 class="card-title">New guild war</h6>
+    </div>
+    <div class="list-group list-group-flush" id="list-tab" role="tablist">
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-4 FormDateTitle">
+            Date start
+          </div>
+          <div class="col">
+            <form class="row formMatches">
+              <input type="date" class="form-control col formMatchesInput" id="formWarDateStart" value="">
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 FormDateTitle">
+            Time start
+          </div>
+          <div class="col">
+            <form class="row formMatches">
+              <input type="time" class="form-control col formMatchesInput" id="formWarTimeStart" value="">
+            </form>
+          </div>
+        </div>
+      </li>
+
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-4 FormDateTitle">
+            Date end
+          </div>
+          <div class="col">
+            <form class="row formMatches">
+              <input type="date" class="form-control col formMatchesInput" id="formWarDateEnd" value="">
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 FormDateTitle">
+            Time end
+          </div>
+          <div class="col">
+            <form class="row formMatches">
+              <input type="time" class="form-control col formMatchesInput" id="formWarTimeEnd" value="">
+            </form>
+          </div>
+        </div>
+      </li>
+
+      <li class="list-group-item">
+        Addons
+        <div class="row">
+          <div class="col-6">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioColor" id="AddonColorNone" value="" checked>
+              <label class="form-check-label" for="AddonColorNone">
+                None
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioColor" id="AddonColorDisco" value="disco">
+              <label class="form-check-label" for="AddonColorDisco">
+                Disco
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioColor" id="AddonColorEpilepsy" value="epilepsy">
+              <label class="form-check-label" for="AddonColorEpilepsy">
+                Epilepsy
+              </label>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="checkboxBoost" id="AddonBoost" value="boost">
+              <label class="form-check-label" for="AddonBoost">
+                Boost
+              </label>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item">
+        Options
+        <div class="row">
+          <div class="col-6">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="checkboxIsRating" id="WarIsRating" value="is_rating">
+              <label class="form-check-label" for="WarIsRating">
+                Include rating matches
+              </label>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <form class="row formMatches">
+          <input placeholder="Prize" type="text" class="form-control col formMatchesInput" id="formPrize" value="">
+        </form>
+      </li>
+      <li class="list-group-item">
+        <form class="row formMatches">
+          <input placeholder="Max unanswered matches" type="text" class="form-control col formMatchesInput" id="formMaxUnanswered" value="">
+        </form>
+      </li>
+      <li class="list-group-item">
+        <form class="row formMatches">
+          <input type="submit" class="btn btn-outline-secondary col" value="create">
+        </form>
+      </li>
+    </div>
+  </div>
+</script>
+
+
+
+
+<!-- 
+  EDIT GUILD CARD TEMPLATE
+-->
+<script type="text/template" id="GuildEditTemplate">
+  <div class="card">
+    <div class="card-body">
+    <h5 class="card-title">Guild edit page</h5>
+      <div class="list-group">
+
+        <div class="list-group-item">
+          <h6 class="card-title">Change name</h6>
+          <%= form_with model: @guild, id: "GuildNameChange", url: "guilds/update_name" do |f| %>
+          <div class="row">
+            <div class="col-9">
+              <%= f.text_field :name %>
+              <%= f.hidden_field :id, value: 0 %>
+            </div>
+            <div class="col-3">
+              <%= f.submit %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+      
+        <div class="list-group-item">
+          <h6 class="card-title">Change anagram</h6>
+          <%= form_with model: @guild, id: "GuildAnagramChange", url: "guilds/update_anagram" do |f| %>
+          <div class="row">
+            <div class="col-9">
+              <%= f.text_field :anagram %>
+              <%= f.hidden_field :id, value: 0 %>
+            </div>
+            <div class="col-3">
+              <%= f.submit %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+      
+      <div class="list-group-item">
+        <%= form_with model: @guild, id: "GuildLogoChange", url: "guilds/update_logo" do |f| %>
+          <h6 class="card-title">Change logo</h6>
+          <div class="row">
+            <div class="col-9">
+              <%= f.file_field :logo %>
+              <%= f.hidden_field :id, value: 0 %>
+            </div>
+            <div  class="col-3">
+              <%= f.submit %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+      </div>
+
+      <script type="text/javascript">										// перехватываем все отправки форм для подстановки id гильдии
+        var form_name = document.getElementById('GuildNameChange');
+        var form_anag = document.getElementById('GuildAnagramChange');
+        var form_avat = document.getElementById('GuildLogoChange');
+      
+        form_name.addEventListener("submit", function (e) {				// перехватываем отправку формы f.submit
+          e.preventDefault();
+          event.target.id.value = current_guild_id;					// заменяем значение id в поле f.hidden_field
+          return true;												// отправляем форму f
+        })
+      
+        form_anag.addEventListener("submit", function (e) {
+          e.preventDefault();
+          event.target.id.value = current_guild_id;
+          return true;
+        })
+
+        form_avat.addEventListener("submit", function (e) {
+          e.preventDefault();
+          event.target.id.value = current_guild_id;
+          return true;
+        })
+      </script>
+    
+    </div>
+  </div>
+</script>
+
+
+<%= javascript_pack_tag 'guilds' %>

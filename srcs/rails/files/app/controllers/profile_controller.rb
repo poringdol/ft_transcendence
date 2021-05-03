@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  skip_before_action :verify_authenticity_token
   def index
     @user = current_user
     respond_to do |format|

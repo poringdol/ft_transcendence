@@ -1,0 +1,19 @@
+<h2>Create new guild</h2>
+<%= form_for @guild do |form| %>
+    <p>
+      <%= form.label :name %><br>
+      <%= form.text_field :name %>
+      <% @guild.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </p>
+
+    <p>
+      <%= form.label :anagram %><br>
+      <%= form.text_field :anagram %>
+    </p>
+
+    <p>
+        <%= form.submit %>
+    </p>
+  <% end %>
