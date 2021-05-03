@@ -37,7 +37,7 @@ document.addEventListener("turbolinks:before-visit", function () {
 
 $(document).on('turbolinks:load', function(){
     const CSRF_TOKEN1 = document.querySelector('meta[name="csrf-token"]').content;
-    console.log("ajax: " + CSRF_TOKEN1)
+    // console.log("ajax: " + CSRF_TOKEN1)
     $.ajaxSetup({
         headers: {'X-CSRFToken': CSRF_TOKEN1}
     });
@@ -45,7 +45,7 @@ $(document).on('turbolinks:load', function(){
     var oldSync = Backbone.sync;
     Backbone.sync = function(method, model, options){
         const CSRF_TOKEN2 = document.querySelector('meta[name="csrf-token"]').content;
-        console.log("sync: " + CSRF_TOKEN2)
+        // console.log("sync: " + CSRF_TOKEN2)
         options.beforeSend = function(xhr){
             xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN2);
         };

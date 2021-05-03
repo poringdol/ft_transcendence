@@ -229,23 +229,27 @@ class RoomsController < ApplicationController
   end
 
   def do_admin
-    user = RoomUser.where(user_id: params[:room][:user_id]).first
+    user = RoomUser.where(user_id: params[:room][:user_id], room_id: params[:room][:room_id]).first
+    room = Room.find(params[:room][:room_id])
+    us = User.find(params[:room][:user_id])
     user.is_admin = true
     user.save
     NotificationJob.perform_later({
-      user: user,
-      message: "Now you is room #{params[:room]} admin",
+      user: us,
+      message: "Now you are room #{room.name} admin",
       link: ""
     })
   end
 
   def rm_admin
-    user = RoomUser.where(user_id: params[:room][:user_id]).first
+    user = RoomUser.where(user_id: params[:room][:user_id], room_id: params[:room][:room_id]).first
+    room = Room.find(params[:room][:room_id])
+    us = User.find(params[:room][:user_id])
     user.is_admin = false
     user.save
     NotificationJob.perform_later({
-      user: user,
-      message: "Now you is not room #{params[:room]} admin",
+      user: us,
+      message: "Now you are not room #{room.name} admin",
       link: ""
     })
   end

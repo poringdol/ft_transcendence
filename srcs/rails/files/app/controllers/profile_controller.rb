@@ -20,7 +20,7 @@ class ProfileController < ApplicationController
 
   def ban_user
     user = User.find(params[:id])
-    if (user && current_user.is_admin == true)
+    if (user && (current_user.is_admin == true || current_user.is_moderator == true))
       user.is_banned = true
       respond_to do |format|
         if user.save
@@ -34,7 +34,7 @@ class ProfileController < ApplicationController
 
   def unban_user
     user = User.find(params[:id])
-    if (user && current_user.is_admin == true && user.is_banned == true)
+    if (user && (current_user.is_admin == true || current_user.is_moderator == true) && user.is_banned == true)
       user.is_banned = false
       respond_to do |format|
         if user.save
