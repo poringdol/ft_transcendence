@@ -513,6 +513,25 @@ body {
 	margin-bottom: 10px;
 }
 
+.rulesLink {
+	color: #328ba6d6;
+	text-decoration: none;
+}
+
+.RulesCard {
+	min-height: 510px;
+	min-width: 373px
+}
+
+.RulesRow {
+	width: 1190px;
+	margin: auto
+}
+
+.RulesCardLi {
+	text-align: justify
+}
+
 // Светящийся текст нотификаций
 @-webkit-keyframes pulsate {
   50% { color: #2fff2f; }
