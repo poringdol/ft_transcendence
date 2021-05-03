@@ -31,7 +31,7 @@
   <div class="col-3">
     <%= f.text_field :nickname, class: 'form-control' %>
   <div class="col-3 input-group-append">
-    <%= f.submit "Update nickname", id: "update_nickname_btn",class: "btn btn-primary" %>
+    <%= f.submit "Update nickname", id: "update_nickname_btn", class: "btn btn-primary" %>
       <script type="text/javascript">
         $("#update_nickname_btn").on('click', function(event) {
           event.preventDefault();
@@ -70,14 +70,13 @@
     </span>
   </label>
   <div class="col-3">
-    <%= f.submit "Update avatar", class: "btn btn-primary" %>
+    <%= f.submit "Update avatar", id: "update_avatar_btn", class: "btn btn-primary" %>
       <script type="text/javascript">
-        $("#up_av").submit(function(event) {
+        $("#update_avatar_btn").on('click', function(event) {
           event.preventDefault();
           fetch("/users/update_avatar", {
               method : "POST",
               body: new FormData(document.getElementById("up_av")),
-
           }).then(() => {
             Turbolinks.visit("/profile/0")
           })

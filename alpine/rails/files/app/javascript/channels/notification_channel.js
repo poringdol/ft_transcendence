@@ -4,17 +4,20 @@ consumer.subscriptions.create("NotificationChannel", {
   connected() {},
   disconnected() {},
   received(data) {
+
+    let emptyNotify = document.querySelector("#emptyNotify")
+    if (emptyNotify) {
+      emptyNotify.remove()
+    }
+
     let notify = document.querySelector("#Notify")
     if (notify) {
-      notify.insertAdjacentHTML('beforeend', data.html)
+      notify.insertAdjacentHTML("beforeend", data.html)
     }
-    let count = $('#N-Notify')
-    if (count) {
-      count.html(data.html2)
+
+    let nNotify = $("#N-Notify")
+    if (nNotify) {
+      nNotify.html(data.html2)
     }
-    // let count = $(`#N-Notify`);
-    // if (count) {
-    //   count.css("color", "#2fff2f");
-    // }
   }
 });

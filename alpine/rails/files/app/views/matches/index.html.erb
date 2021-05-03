@@ -113,7 +113,7 @@
       </div>
     </div>
     <div class="row ">
-      <div class="col-2 mt-3 btn btn-outline-secondary" id="MatchesTableRefresh">Refresh</div>
+      <div class="col-2 mt-3 btn btn-outline-secondary titletext" id="MatchesTableRefresh">REFRESH</div>
     </div>
   </div>
 	<div class='col-1'></div>
@@ -150,7 +150,7 @@
 					<img width="30" height="30" class="rounded-circle" src=<%%= player1.avatar.url %>>
 				</a>
 			</div>
-			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+			<div class='col-lg-2 shortText'>
 				<%%= player1.nickname %>
 			</div>
 		</div>
@@ -162,7 +162,7 @@
 					<img width="30" height="30" class="rounded-circle" src=<%%= player2.avatar.url %>>
 				</a>
 			</div>
-			<div class='col-lg-2' style="width:100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+			<div class='col-lg-2 shortText'>
 				<%%= player2.nickname %>
 			</div>
 		</div>
@@ -175,7 +175,7 @@
 					<img width="30" height="30" class="rounded-circle" src=<%%= (guild1 == null) ? "/assets/default-avatar.jpg" : guild1.logo.url %>>
 				</a>
 			</div>
-			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+			<div class='col-lg-2 shortText' style="width: 70px">
 				<%%= (guild1 == null) ? "none" : guild1.anagram %>
 			</div>
 		</div>
@@ -187,7 +187,7 @@
 					<img width="30" height="30" class="rounded-circle" src=<%%= (guild2 == null) ? "/assets/default-avatar.jpg" : guild2.logo.url %>>
 				</a>
 			</div>
-			<div class='col-lg-2' style="width:70px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden">
+			<div class='col-lg-2 shortText' style="width: 70px">
 				<%%= (guild2 == null) ? "none" : guild2.anagram %>
 			</div>
 		</div>

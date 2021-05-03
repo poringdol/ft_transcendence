@@ -3,14 +3,21 @@
 <p id="notice"><%= notice %></p>
 -->
 
-<div class="row">
+<div class="row" id='CurrentGamePage'>
 
-  <div id="MatchUser1Profile" class="col-2"></div>
-  <div id="GameWrapper" class="col-8"></div>
-  <div id="MatchUser2Profile" class="col-2"></div>
+  <div id="MatchUser1Profile" class="col"></div>
+  <div id="GameWrapper" class="col"></div>
+  <div id="MatchUser2Profile" class="col"></div>
 
 </div>
 
+<div class="row">
+
+  <div class="col-2"></div>
+  <div id="FinishedGame" class="col"></div>
+  <div class="col-2"></div>
+
+</div>
 
 <%# ШАБЛОНЫ %>
 
@@ -19,10 +26,18 @@
   <canvas id="gameCanvas" width="960" height="600"></canvas>
   <div class="gameDescription">
     <dl>
-      <dt>W</dt> <dd>- вверх</dd>
-      <dt>S</dt> <dd>- вниз</dd> <br>
-      <dt>C</dt> <dd>- цвет ракетки</dd> <br>
-      <dt>Enter</dt> <dd>- пуск шарика</dd>
+      <dt>W</dt> <dd>- up</dd>
+      <dt>S</dt> <dd>- down</dd> <br>
+      <dt>C</dt> <dd>- change paddle color </dd> <br>
+      <dt>Enter</dt> <dd>- ball launch</dd> <br>
+      <dt id="openRules" class="rulesButtonChangeColor" onclick="openRules()">Rules</dt>
+      <span id="rules" style="display: none">
+        It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
+        The game continues until 7 points. <br>
+        If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
+        When creating a game you can choose different addons.<br>
+        If you see a bug, then this is a feature. You know? :)
+      </span>
     </dl>
   </div>
 </script>
@@ -31,11 +46,11 @@
 <script type="text/template" id="MatchUser1ProfileTemplate">
   <p>
     <a href='/profile/<%%= player1.id %>'>
-      <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>> 
+      <img width="50px" height="50px" class="rounded-circle" src=<%%= player1.avatar.url %>>
     </a>
   </p>
   <p>
-    Nickname: <%%= player1.nickname %> 
+    Nickname: <%%= player1.nickname %>
   </p>
   <p>
     Guild:
@@ -60,7 +75,7 @@
     <%%= (player2 == null) ? "Waiting for the second player " : ("Nickname: " + player2.nickname) %>
   </p>
   <p>
-    Guild: <%%= (guild2 == null) ? "none" : guild2.name %> 
+    Guild: <%%= (guild2 == null) ? "none" : guild2.name %>
   </p>
   <p>
     Score: <span id="MatchPlayer2Score"><%%= player2_score %></span>
@@ -110,3 +125,15 @@
     </div>
   </div>
 </script>
+
+<script type="text/javascript">
+  function openRules() {
+    $(`#rules`).css("display", "block")
+    document.getElementById(`openRules`).setAttribute( "onclick", "closeRules();");
+  };
+  function closeRules() {
+    $(`#rules`).css("display", "none")
+    document.getElementById(`openRules`).setAttribute( "onclick", "openRules();");
+  };
+</script>
+
