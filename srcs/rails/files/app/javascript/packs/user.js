@@ -8,7 +8,7 @@ $(function () {
 		Collections: {},
 		Router: {}
 	};
-
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 
 // -----------------------------------------
 //  USER              MODEL
@@ -690,6 +690,7 @@ $(function () {
 			fetch("/rooms/create", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},

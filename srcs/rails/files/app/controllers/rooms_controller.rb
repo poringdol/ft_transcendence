@@ -1,6 +1,5 @@
 class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :edit, :update, :destroy]
-  skip_before_action :verify_authenticity_token, only: [:create]
   require 'bcrypt'
 
   # GET /rooms
@@ -258,20 +257,27 @@ class RoomsController < ApplicationController
     if room.owner_id == user.id || us.is_admin || us.is_moderator
       NotificationJob.perform_later({
         user: current_user,
-        message: "You can't mute chat owner",
+        message: "You can't mute or ban chat owner",
         link: ""
       })
       return
     end
 
-    user.is_muted = true
-    user.save
-    NotificationJob.perform_later({
-      user: us,
-      message: "You muted for 1 min in room #{room.name}",
-      link: ""
-    })
-    MuteJob.set(wait: 1.minutes).perform_later(user)
+    if params[:room][:ban] == 'unban'
+      user.is_muted = false
+      user.save
+    else
+      user.is_muted = true
+      user.save
+    end
+    if params[:room][:ban].nil?
+      NotificationJob.perform_later({
+        user: us,
+        message: "You muted for 1 min in room #{room.name}",
+        link: ""
+      })
+      MuteJob.set(wait: 1.minutes).perform_later(user)
+    end
   end
 
   private

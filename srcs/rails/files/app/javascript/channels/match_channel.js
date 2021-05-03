@@ -42,7 +42,7 @@ document.addEventListener("turbolinks:load", () => {
 				}
 			}
 			consumer.subscriptions.remove(subscribe);
-			$("body").off();
+			$(window).off();
 			return true;
 		}
 		subscribe = consumer.subscriptions.create({ channel: "MatchChannel", match_id: MATCH_ID}, {

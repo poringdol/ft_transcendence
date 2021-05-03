@@ -60,6 +60,9 @@ srcs/rails/files/test/*
 # Ignore avatar
 srcs/rails/files/public/*
 
+!srcs/rails/files/public/404.html
+!srcs/rails/files/public/422.html
+!srcs/rails/files/public/500.html
 !srcs/rails/files/public/uploads
 srcs/rails/files/public/uploads/*
 !srcs/rails/files/public/uploads/user

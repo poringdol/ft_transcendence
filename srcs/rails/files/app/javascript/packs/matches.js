@@ -54,6 +54,7 @@ $(function () {
 			fetch("/matches/new_match", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -106,7 +107,7 @@ $(function () {
 	});
 
 
-	
+
 /*
 ** VIEW OF TABLE
 */
@@ -195,6 +196,8 @@ $(function () {
 /*
 ** MAIN
 */
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
+
 	var col = new App.Collections.Match()
 	new App.Views.FormMatches
 	new App.Views.RandomMatches

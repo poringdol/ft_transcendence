@@ -95,7 +95,7 @@ $(function () {
 			this.fetch();
 		}
 	});
-	
+
 
 	// -----------------------------------------
 	// GUILD_MEMBERS     MODEL and COLLECTION
@@ -212,7 +212,7 @@ $(function () {
 				this.model.addon_type += 'epilepsy'
 			if (this.model.addon_type == '')
 				this.model.addon_type = 'none'
-			
+
 			if (this.model.guild1.id != this.guild_id)
 				this.model.enemy = this.model.guild1
 			else
@@ -345,7 +345,7 @@ $(function () {
 			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
-			
+
 			return this;
 		},
 		remove: function () {
@@ -645,6 +645,7 @@ $(function () {
 			fetch("/guilds/join", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -667,6 +668,7 @@ $(function () {
 			fetch("/guilds/exit", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -722,15 +724,18 @@ $(function () {
 				date_end:		$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
 				time_end:		$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
 				color:			$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
-				boost:			$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
+				boost:			$('#AddonBoost').is(':checked') ? 'boost' : '',
+				is_rating:		$('#WarIsRating').is(':checked') ? 'true' : 'false',
 				prize:			$(e.currentTarget).find('input[id=formPrize]').val(),
 				max_unanswered:	$(e.currentTarget).find('input[id=formMaxUnanswered]').val(),
+
 			}
 			if (war.prize == '')
 				war.prize = 0
 			fetch("/wars", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -777,7 +782,7 @@ $(function () {
 			'submit': 'submit'
 		},
 		render: function () {
-			this.$el.html(this.template) 
+			this.$el.html(this.template)
 			$('#GuildForm').html(this.el);
 		},
 		submit: function (e) {
@@ -834,7 +839,7 @@ $(function () {
 				$(".content").html("<h3>You account was blocked by administrator</h3>")
 		}
 	})
-
+	const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
 	// -----------------------------------------
 	// MAIN
 	// -----------------------------------------

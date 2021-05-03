@@ -7,13 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 	  	<li class="nav-item">
-    	<a class="navbar-brand" href="/" style='display: block; '>FT_TRANSCENDENCE</a>
-	</li>
+    	  <a class="navbar-brand" href="/matches" style='display: block; '>FT_TRANSCENDENCE</a>
+	    </li>
         <li class="nav-item">
-          <a class="nav-link lightText" aria-current="page" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link lightText" aria-current="page" href="/matches">Game</a>
+          <a class="nav-link" aria-current="page" href="/matches">Game</a>
         </li>
         <li class="nav-item">
           <a class="nav-link lightText" aria-current="page" href="/leaderboard">Leaderboard</a>
@@ -69,9 +66,11 @@
 
 <script type="text/javascript">
   function deleteNotify(id) {
+    const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
     fetch("/notification/destroy", {
       method: "POST",
       headers: {
+        "X-CSRF-Token": TOKEN,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },

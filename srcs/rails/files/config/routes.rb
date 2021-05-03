@@ -11,12 +11,9 @@ Rails.application.routes.draw do
   resources :rooms
   resources :guilds
 
-  # get '*unmatched_route', to: 'application#raise_not_found'
-
-  # root 'users#edit'
-  root 'welcome#index'
+  root 'users#edit'
+  # root 'welcome#index'
   get 'welcome/index'
-  post '/notification/destroy' => 'notification#destroy'
 # ------------------
 #    GUILDS PAGE
 # ------------------
@@ -33,7 +30,6 @@ Rails.application.routes.draw do
   post 'guilds/delete_member'
   get 'get_guilds' => "guilds#get_guilds", as: 'get_guilds'
   get 'get_curr_user' => "guilds#get_curr_user", as: 'get_curr_user'
-  resources :guilds
   post 'guilds/update_name' => "guilds#update_name"
   post 'guilds/update_anagram' => "guilds#update_anagram"
   post 'guilds/update_logo' => "guilds#update_logo"
@@ -61,7 +57,7 @@ Rails.application.routes.draw do
 #    PROFILE PAGE
 # ------------------
   get '/user' => "profile#index"
-  get '/user/:id' => "users#show" # для теста, отдает json с юзером по, user/1 например
+  get '/user/:id' => "users#show"
   get 'profile/get_curr_user' => "profile#get_curr_user"
   get 'profile/:id' => "profile#index"
   get 'profile/get_user/:id' => "profile#get_user"
@@ -78,19 +74,16 @@ Rails.application.routes.draw do
   get 'blocklists/is_blocked/:id' => 'blocklists#is_blocked'
 
   get 'users' => "users#edit"
-  # я хз почему с страницы профиля и захода напрямую вызываются разные пост запросы для users#update_
   post 'users/update_avatar' => "users#update_avatar"
   post 'users/edit/update_avatar' => "users#update_avatar"
   post 'users/update_nickname' => "users#update_nickname"
   post 'users/edit/update_nickname' => "users#update_nickname"
-  # block/unblock in chat
   post 'users/block_user' => 'users#block_user'
   post 'rooms/block_user' => 'users#block_user'
   post 'users/unblock_user' => 'users#unblock_user'
   post 'rooms/unblock_user' => 'users#unblock_user'
 
   get 'users/online' => 'users#online'
-
   get '/leaderboard' => 'users#index'
   get '/users_list' => 'users#users_list'
 
@@ -110,7 +103,6 @@ Rails.application.routes.draw do
 # ------------------
   post 'rooms/pass_check' => 'rooms#pass_check'
   post 'rooms/create' => 'rooms#create'
- # post 'create' => 'rooms#create' # ПОДУМОЙ
   post 'rooms/leave' => 'rooms#leave'
   post 'rooms/change_pass' => 'rooms#change_pass'
   post 'change_pass' => 'rooms#change_pass'
@@ -125,7 +117,6 @@ Rails.application.routes.draw do
 # ------------------
 #    GAME PAGE
 # ------------------
-  # post 'matches/move_bracket/:id' => 'matches#move_bracket'
   get 'matches/match_users/:id' => 'matches#match_users'
   put 'matches/match_users/:id' => 'matches#match_users_update'
 
@@ -175,8 +166,6 @@ Rails.application.routes.draw do
     post '/users/auth/marvin/twofa' => 'users/omniauth_callbacks#twofa'
   end
 
-  # def after_sign_in_path_for(resource)
-  #   guilds_path 
-  # end
-  
+  post '/notification/destroy' => 'notification#destroy'
+  get '*unmatched_route', to: 'application#raise_not_found'
 end

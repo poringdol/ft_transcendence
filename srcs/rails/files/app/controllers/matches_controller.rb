@@ -1,8 +1,6 @@
 class MatchesController < ApplicationController
   before_action :set_match, only: %i[ show edit update match_users_update ]
 
-  skip_before_action :verify_authenticity_token
-
   # GET /matches or /matches.json
   def index
     @matches = Match.where("player2_id IS NOT NULL").order("#{:id} desc")
@@ -328,10 +326,12 @@ class MatchesController < ApplicationController
     elsif !guild1.nil? && !guild1.war.nil? &&
           !guild2.nil? && !guild2.war.nil? &&
           guild1.war == guild2.war
+
       war = guild1.war
-      if (war.addons.addon1 == addons.addon1 &&
+      if ((war.addons.addon1 == addons.addon1 &&
           war.addons.addon2 == addons.addon2 &&
-          war.addons.addon3 == addons.addon3)
+          war.addons.addon3 == addons.addon3)) ||
+          (war.is_ranked && match.is_ranked)
         match.update(war_id: war.id)
 
         if (war.guild1_id == match.guild1_id && score1 > score2) ||
@@ -359,7 +359,7 @@ class MatchesController < ApplicationController
   end
 
   def tournament_score(match)
-    
+
     tourn_match = TournamentMatch.where(match_id: match.id).first
     if tourn_match.nil?
       return

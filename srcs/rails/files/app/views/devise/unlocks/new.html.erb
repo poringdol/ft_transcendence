@@ -5,6 +5,7 @@
 
   <div class="field">
     <%= f.label :email %><br />
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
   </div>
 
