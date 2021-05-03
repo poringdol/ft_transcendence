@@ -261,12 +261,12 @@
         <div class='col-12'>
           <img width="70px" height="70px" class="rounded-circle" style="margin-top: 10px;" src=<%%= inviter.avatar.url %>>
         </div>
-        <div class='col-12'>
+        <div class='col-12 lightText'>
           <%%= inviter.nickname %>
         </div>
       </div>
     </a>
-    <div class='col GuildInviteTitle'>
+    <div class='col GuildInviteTitle lightText'>
       invited you in
     </div>
     <a class='col SimpleHref' style="margin-bottom: 10px;" id='BlocklistHref<%%= id %>'>
@@ -274,7 +274,7 @@
         <div class='col-12'>
           <img width="70px" height="70px" class="rounded-circle" style="margin-top: 10px;" src=<%%= guild.logo.url %>>
         </div>
-        <div class='col-12'>
+        <div class='col-12 lightText'>
           <%%= guild.anagram %>
         </div>
       </div>
@@ -322,16 +322,17 @@
           <div class='col'><%%= score %></div>
         </div>
       </li>
-      <li class="list-group-item">
-        <div class='row'>
-          <div class='col-4 UserInfoField InfoFieldText lightText'>Loses:</div>
-          <div class='col'><%%= loses %></div>
-        </div>
-      </li>
+      
       <li class="list-group-item">
         <div class='row'>
           <div class='col-4 UserInfoField InfoFieldText lightText'>Wins:</div>
           <div class='col'><%%= wins %></div>
+        </div>
+      </li>
+	  <li class="list-group-item">
+        <div class='row'>
+          <div class='col-4 UserInfoField InfoFieldText lightText'>Loses:</div>
+          <div class='col'><%%= loses %></div>
         </div>
       </li>
       <li class="list-group-item" id='LastBlockUserInfo'>

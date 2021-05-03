@@ -28,7 +28,7 @@ $(function () {
     // Leaderboard          COLLECTION VIEW
     // -----------------------------------------
     App.Views.Leaderboard = Backbone.View.extend({
-        // className: 'list-group',
+		template: _.template($("#LeaderboardHeaderTemplate").html()),
 		initialize: function() {
 			this.collection.on('sync', this.render, this)
 		},
@@ -37,6 +37,7 @@ $(function () {
 			this.$el.html("")
 
 			this.position = 1;
+			this.$el.append(this.template())
             this.collection.each(this.addOne, this);
             $('#Leaderboard').html(this.el);
             return this;

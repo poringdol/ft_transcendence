@@ -7,25 +7,28 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	  	<li class="nav-item">
+    	<a class="navbar-brand" href="/" style='display: block; '>FT_TRANSCENDENCE</a>
+	</li>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="/matches">Game</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/leaderboard">Leaderboard</a>
+          <a class="nav-link lightText" aria-current="page" href="/leaderboard">Leaderboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/guilds">Guilds</a>
+          <a class="nav-link lightText" aria-current="page" href="/guilds">Guilds</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/wars">Wars</a>
+          <a class="nav-link lightText" aria-current="page" href="/wars">Wars</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/tournaments">Tournaments</a>
+          <a class="nav-link lightText" aria-current="page" href="/tournaments">Tournaments</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/rooms">Chat</a>
+          <a class="nav-link lightText" aria-current="page" href="/rooms">Chat</a>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown lightText">
           <% @notify = Notification.where(user_id: current_user.id) %>
           <% if @notify.empty? %>
             <a class="nav-link dropdown-toggle" id="N-Notify" role="button" data-bs-toggle="dropdown" aria-expanded="true">
@@ -47,14 +50,14 @@
             </div>
           </ul>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown lightText">
           <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
             <%= current_user.nickname + (current_user.is_admin ? "(admin)" : current_user.is_moderator ? "(moderator)" : "") %> <img width="30" height="30" class="rounded-circle" src=<%= current_user.avatar.url %>>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" aria-current="page" href="/profile/0">Profile</a></li>
-            <li><a class="dropdown-item" aria-current="page" href="/users/edit/">Edit profile</a></li>
-            <li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link", :class => "dropdown-item" %></li>
+          <ul class="dropdown-menu lightText" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item lightText" aria-current="page" href="/profile/0">Profile</a></li>
+            <li><a class="dropdown-item lightText" aria-current="page" href="/users/edit/">Edit profile</a></li>
+            <li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete, :class => "nav-link lightText", :class => "dropdown-item" %></li>
           </ul>
         </li>
       </ul>

@@ -1,5 +1,5 @@
 class TournamentMatchSerializer < ActiveModel::Serializer
-  attributes :id, :is_rating1, :is_rating2
+  attributes :id
   has_one :tournament
   has_one :match
 

@@ -292,7 +292,7 @@ class MatchesController < ApplicationController
   end
 
   def set_rating(match)
-    winner = (match.player1_score - match.player2_score > 0) ? match.player1 : match.player2
+    winner = (match.player1_score > match.player2_score) ? match.player1 : match.player2
     loser  = (winner == match.player1) ? match.player2 : match.player1
 
     rating = (match.player1_score - match.player2_score).abs
@@ -327,10 +327,12 @@ class MatchesController < ApplicationController
     elsif !guild1.nil? && !guild1.war.nil? &&
           !guild2.nil? && !guild2.war.nil? &&
           guild1.war == guild2.war
+          
       war = guild1.war
-      if (war.addons.addon1 == addons.addon1 &&
+      if ((war.addons.addon1 == addons.addon1 &&
           war.addons.addon2 == addons.addon2 &&
-          war.addons.addon3 == addons.addon3)
+          war.addons.addon3 == addons.addon3)) ||
+          (war.is_ranked && match.is_ranked)
         match.update(war_id: war.id)
 
         if (war.guild1_id == match.guild1_id && score1 > score2) ||
@@ -350,10 +352,10 @@ class MatchesController < ApplicationController
   def set_win_loses(match)
     if (match.player1_score > match.player2_score)
       match.player1.update(wins: (match.player1.wins + 1))
-      match.player2.update(loses: (match.player1.loses + 1))
+      match.player2.update(loses: (match.player2.loses + 1))
     elsif (match.player1_score < match.player2_score)
       match.player1.update(loses: (match.player1.loses + 1))
-      match.player2.update(wins: (match.player1.wins + 1))
+      match.player2.update(wins: (match.player2.wins + 1))
     end
   end
 
@@ -370,18 +372,17 @@ class MatchesController < ApplicationController
       user1 = TournamentUser.where(user_id: match.player1.id, tournament_id: tourn_id).first
       user2 = TournamentUser.where(user_id: match.player2.id, tournament_id: tourn_id).first
 
+	  user1.update(score: (user1.score + match.player1_score))
+	  user2.update(score: (user2.score + match.player2_score))
+
       if match.player1_score > match.player2_score
         user1.update(wins: (user1.wins + 1))
-        user1.update(score: (user1.score + 1))
-
         user2.update(loses: (user2.loses + 1))
-
-      else
+	  elsif match.player1_score < match.player2_score
         user2.update(wins: (user2.wins + 1))
-        user2.update(score: (user2.score + 1))
-
         user1.update(loses: (user1.loses + 1))
       end
+
     end
 
   end

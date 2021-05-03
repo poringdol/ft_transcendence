@@ -8,13 +8,8 @@
       <div class="list-group list-group-flush" id="list-tab" role="tablist">
         <form class="form-group formMatches" id='MatchCreationForm'>
 
-          <%# <li class="list-group-item">
-            <input class="form-control col formMatchesInput" type="text" name="Player2Nickname" id="formPlayer2Nickname" value="" placeholder="Nickname of your opponent" >
-          </li> %>
-
           <li class="list-group-item MatchesCreationList">
             <div class="form-group">
-              <%# <label for="exampleSelect1">Opponent nickname</label> %>
               <select class="form-control" id="formPlayer2Nickname"></select>
             </div>
           </li>
@@ -113,19 +108,21 @@
         </div>
       </div>
     </div>
-    <div class="row ">
-      <div class="col-2 mt-3 btn btn-outline-secondary titletext" id="MatchesTableRefresh">REFRESH</div>
+    <div>
+		<div style='text-align: center'>
+			<div class="col-4 mt-3 btn btn-outline-secondary titletext" id="MatchesTableRefresh">REFRESH</div>
+			<div class="col-4 mt-3 btn btn-outline-secondary titletext" id="openRules" onclick="openRules()">RULES</div>
+		</div>
     </div>
-  <div class="row ">
-    <div class="col-2 mt-3 btn btn-outline-secondary" id="openRules" onclick="openRules()">Rules</div>
+  	<div id="rules" style="display: none; margin-top: 20px;" class='card titletext'>
+		<div>
+			It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
+			The game continues until 7 points. <br>
+			If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
+			When creating a game you can choose different addons.<br>
+			If you see a bug, then this is a feature. You know? :)
+		</div>
     </div>
-  <span id="rules" style="display: none; margin-top: 20px; background: rgba(0, 0, 0, 0.15)">
-        It's a <a href="https://en.wikipedia.org/wiki/Pong" target="_blank">pong game</a> from 1972.<br>
-        The game continues until 7 points. <br>
-        If match is rating the difference in points will be counted as a rating. <a href="/leaderboard" target="_blank">Leaderboard</a>.<br>
-        When creating a game you can choose different addons.<br>
-        If you see a bug, then this is a feature. You know? :)
-    </span>
   </div>
   <div class='col-1'></div>
 </div>

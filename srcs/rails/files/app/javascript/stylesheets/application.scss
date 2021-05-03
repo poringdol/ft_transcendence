@@ -499,6 +499,19 @@ body {
 	overflow: auto;
 }
 
+.loginBtn {
+	max-width: 150px;
+}
+
+.loginFields {
+	margin-bottom: 20px;
+}
+
+.nickTextField {
+	max-width: 150px;
+	margin: auto;
+	margin-bottom: 10px;
+}
 
 // Светящийся текст нотификаций
 @-webkit-keyframes pulsate {

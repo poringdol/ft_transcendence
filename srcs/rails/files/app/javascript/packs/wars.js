@@ -204,7 +204,8 @@ $(function () {
 				date_end: 		$(e.currentTarget).find('input[id=formWarDateEnd]').val(),
 				time_end: 		$(e.currentTarget).find('input[id=formWarTimeEnd]').val(),
 				color:			$(e.currentTarget).find('input[name="radioColor"]:checked').val(),
-				boost:			$('#AddonBoost').is(':checked') ? $('#AddonBoost').val() : '',
+				boost:			$('#AddonBoost').is(':checked') ? 'boost' : '',
+				is_rating:		$('#WarIsRating').is(':checked') ? 'true' : 'false',
 				prize: 			$(e.currentTarget).find('input[id=formPrize]').val(),
 				max_unanswered: $(e.currentTarget).find('input[id=formMaxUnanswered]').val(),
 			}
