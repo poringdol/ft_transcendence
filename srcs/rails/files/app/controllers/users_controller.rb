@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  # skip_before_action :verify_authenticity_token
-
   def enable_otp
     current_user.otp_secret = User.generate_otp_secret
     current_user.otp_required_for_login = true

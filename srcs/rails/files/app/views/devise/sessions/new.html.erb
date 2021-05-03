@@ -19,7 +19,7 @@
 			<%= f.label :otp_attempt %><br />
 			<%= f.text_field :otp_attempt %>
 		</div>
-
+		<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 		<% if devise_mapping.rememberable? %>
 			<div class="field">
 			<%= f.check_box :remember_me %>

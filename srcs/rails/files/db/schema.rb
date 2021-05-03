@@ -163,8 +163,6 @@ ActiveRecord::Schema.define(version: 2021_05_01_150653) do
   create_table "tournament_matches", force: :cascade do |t|
     t.bigint "tournament_id", null: false
     t.bigint "match_id", null: false
-    t.boolean "is_rating1", default: false
-    t.boolean "is_rating2", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["match_id"], name: "index_tournament_matches_on_match_id"

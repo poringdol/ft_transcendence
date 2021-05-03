@@ -1,6 +1,5 @@
 class MatchesController < ApplicationController
   before_action :set_match, only: %i[ show edit update match_users_update ]
-  # skip_before_action :verify_authenticity_token
 
   # GET /matches or /matches.json
   def index
@@ -327,7 +326,7 @@ class MatchesController < ApplicationController
     elsif !guild1.nil? && !guild1.war.nil? &&
           !guild2.nil? && !guild2.war.nil? &&
           guild1.war == guild2.war
-          
+
       war = guild1.war
       if ((war.addons.addon1 == addons.addon1 &&
           war.addons.addon2 == addons.addon2 &&

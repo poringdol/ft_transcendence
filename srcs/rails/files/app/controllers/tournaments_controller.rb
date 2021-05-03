@@ -1,6 +1,5 @@
 class TournamentsController < ApplicationController
   before_action :set_tournament, only: %i[ show edit update destroy ]
-  # skip_before_action :verify_authenticity_token
 
   # GET /tournaments or /tournaments.json
   def index

@@ -1,11 +1,7 @@
 class GuildsController < ApplicationController
-  # skip_before_action :verify_authenticity_token
-  # skip_forgery_protection
-
   before_action :check_nickname, only: [:add_officer]
   before_action :set_guild, only: [:destroy, :update]
   before_action :check_guild, only: [:join, :add_officer, :delete_officer, :delete_member]
-
 
   def index
     @guilds = Guild.order(:score).reverse
