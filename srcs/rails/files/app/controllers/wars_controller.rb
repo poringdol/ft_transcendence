@@ -1,6 +1,6 @@
 class WarsController < ApplicationController
   before_action :set_war, only: %i[ show edit update destroy ]
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
 
   # GET /wars or /wars.json
   def index
@@ -149,16 +149,16 @@ class WarsController < ApplicationController
 
   def accept
     @war = War.where(id: params[:id]).first
-    
+
     if @war.nil? || @war.start < DateTime.now
       return render json: { error: 'You are late to accept the war' }, status: :unprocessable_entity
     end
-    
+
     guild1 = @war.guild1
     guild2 = @war.guild2
 
     if current_user.id == guild2.owner_id || (current_user.guild == guild2 && current_user.is_officer == true)
-     
+
       all_wars = War.where(guild1: guild1, is_accepted: true)
              .or(War.where(guild2: guild1, is_accepted: true))
              .or(War.where(guild1: guild2, is_accepted: true))
@@ -167,7 +167,7 @@ class WarsController < ApplicationController
       same_time_wars = all_wars.where(start: @war.start..@war.end)    # Начало текущей войны находится во время другой принятой войны
                    .or(all_wars.where(end: @war.start..@war.end))  # Конец текущей войны находится во время другой принятой войны
                    .or(all_wars.where(start: DateTime.new(2021,1,1,0,0)..@war.start, end: @war.end..DateTime::Infinity.new)) # Начало раньше, конец позже другой принятой войны
-      
+
       if same_time_wars.empty?
         @war.update(is_accepted: true)
 
@@ -217,16 +217,16 @@ class WarsController < ApplicationController
 
     guild2_id = (current_user.guild.id == @war.guild1.id) ? @war.guild2.id : @war.guild1.id
     @match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, guild2_id: guild2_id, is_ranked: true, war_id: @war.id)
-    
+
     if @match.save
       @match.addons.update(addon3: true)
-      
+
       UnansweredWarMatchJob.set(wait: 10.seconds).perform_later(@match, @war)
       return render json: @match
     else
       return render json: { error: 'Failed to create match' }, status: :unprocessable_entity
     end
-    
+
   end
 
   def join_match

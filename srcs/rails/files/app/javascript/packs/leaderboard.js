@@ -70,6 +70,7 @@ $(function () {
             return this;
         },
     })
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 
 	var coll = new App.Collections.Leaderboard()
 	new App.Views.Leaderboard({collection: coll})

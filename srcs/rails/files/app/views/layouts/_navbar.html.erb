@@ -64,9 +64,11 @@
 
 <script type="text/javascript">
   function deleteNotify(id) {
+    const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
     fetch("/notification/destroy", {
       method: "POST",
       headers: {
+        "X-CSRF-Token": TOKEN,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },

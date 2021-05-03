@@ -1,5 +1,5 @@
 $(function () {
-
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 	const war_el = $("#WarID");
 	const WAR_ID = parseInt(war_el.attr("data-WarID"));
 
@@ -99,6 +99,7 @@ $(function () {
 			fetch("/wars/join_match", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -109,7 +110,7 @@ $(function () {
 				if (res.error)
 					alert(res.error)
 				else
-					Turbolinks.visit("/matches/" + this.model.get('id')) 
+					Turbolinks.visit("/matches/" + this.model.get('id'))
 			})
 		}
 	});
@@ -118,6 +119,7 @@ $(function () {
 		fetch("/create_war_match", {
 			method: "POST",
 			headers: {
+				"X-CSRF-Token": TOKEN,
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
@@ -136,9 +138,9 @@ $(function () {
 
 	fetch("/profile/get_curr_user")
 	.then(res => res.ok ? res.json() : Promise.reject(res))
-	.then(function (res) { 
+	.then(function (res) {
 		window.current_user = res
-	
+
 		col = new App.Collections.WarMatch()
 		new App.Views.TableMatches({ collection: col })
 		$("#WarMatchRefresh").on("click", function() { col.fetch(); })
