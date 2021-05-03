@@ -328,10 +328,12 @@ class MatchesController < ApplicationController
     elsif !guild1.nil? && !guild1.war.nil? &&
           !guild2.nil? && !guild2.war.nil? &&
           guild1.war == guild2.war
+          
       war = guild1.war
-      if (war.addons.addon1 == addons.addon1 &&
+      if ((war.addons.addon1 == addons.addon1 &&
           war.addons.addon2 == addons.addon2 &&
-          war.addons.addon3 == addons.addon3)
+          war.addons.addon3 == addons.addon3)) ||
+          (war.is_ranked && match.is_ranked)
         match.update(war_id: war.id)
 
         if (war.guild1_id == match.guild1_id && score1 > score2) ||

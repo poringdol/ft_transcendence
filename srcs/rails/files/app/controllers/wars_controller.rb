@@ -33,7 +33,6 @@ class WarsController < ApplicationController
 
   # POST /wars or /wars.json
   def create
-
     guild2 = Guild.where(name: params[:guild2]).first
 
     unless guild2
@@ -81,6 +80,10 @@ class WarsController < ApplicationController
         @war.addons.addon3 = true
       end
       @war.addons.save
+
+      if (params[:is_rating] == "true")
+        @war.update(is_ranked: true)
+      end
 
       DeleteWarJob.set(wait_until: @war.start).perform_later(@war)
       NotificationJob.perform_later({
@@ -248,6 +251,6 @@ class WarsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def war_params
-      params.require(:@war).permit(:guild1_id, :guild2_id, :start, :end, :prize, :max_unanswered, :addons_id, :guild1_wins, :guild2_wins)
+      params.require(:@war).permit(:guild1_id, :guild2_id, :start, :end, :prize, :max_unanswered, :addons_id, :guild1_wins, :guild2_wins, :is_ranked)
     end
 end
