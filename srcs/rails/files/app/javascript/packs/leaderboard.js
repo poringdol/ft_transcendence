@@ -42,7 +42,6 @@ $(function () {
             return this;
         },
 		addOne: function (Leaderboard) {
-			console.log(Leaderboard)
             var LeaderboardView = new App.Views.LeaderboardListEl({ model: Leaderboard, position: this.position });
 			this.$el.append(LeaderboardView.render().el);
 			this.position += 1;

@@ -38,7 +38,7 @@ class WarsController < ApplicationController
 
     unless guild2
       return render json: { error: 'There is no such a guild' }, status: :unprocessable_entity
-	  end
+    end
 
     unless current_user.guild_id
       return render json: { error: 'You are not in guild' }, status: :unprocessable_entity
@@ -133,12 +133,12 @@ class WarsController < ApplicationController
       #   format.json { render :show, status: :ok, location: @war }
       # end
     #   render json: 1
-	  respond_to do |format|
-		if @war.destroy()
-        	format.json { render json: 1, status: :ok, location: @war }
-		else
-			format.json { render json: { error: 'Unexpected error' }, status: :unprocessable_entity}
-		end
+      respond_to do |format|
+        if @war.destroy()
+          format.json { render json: 1, status: :ok, location: @war }
+        else
+          format.json { render json: { error: 'Unexpected error' }, status: :unprocessable_entity}
+        end
       end
     else
       respond_to do |format|
@@ -160,9 +160,9 @@ class WarsController < ApplicationController
     if current_user.id == guild2.owner_id || (current_user.guild == guild2 && current_user.is_officer == true)
      
       all_wars = War.where(guild1: guild1, is_accepted: true)
-                .or(War.where(guild2: guild1, is_accepted: true))
-                .or(War.where(guild1: guild2, is_accepted: true))
-                .or(War.where(guild2: guild2, is_accepted: true))
+             .or(War.where(guild2: guild1, is_accepted: true))
+             .or(War.where(guild1: guild2, is_accepted: true))
+             .or(War.where(guild2: guild2, is_accepted: true))
 
       same_time_wars = all_wars.where(start: @war.start..@war.end)    # Начало текущей войны находится во время другой принятой войны
                    .or(all_wars.where(end: @war.start..@war.end))  # Конец текущей войны находится во время другой принятой войны
@@ -217,6 +217,7 @@ class WarsController < ApplicationController
 
     guild2_id = (current_user.guild.id == @war.guild1.id) ? @war.guild2.id : @war.guild1.id
     @match = Match.new(player1_id: current_user.id, guild1_id: current_user.guild_id, guild2_id: guild2_id, is_ranked: true, war_id: @war.id)
+    
     if @match.save
       @match.addons.update(addon3: true)
       

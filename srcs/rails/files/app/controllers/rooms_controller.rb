@@ -45,7 +45,7 @@ class RoomsController < ApplicationController
     if direct_room_exists.present?
       respond_to do |format|
         format.html { redirect_to "/rooms/#{direct_room_exists.id}" }
-		    format.json { render json: direct_room_exists }
+        format.json { render json: direct_room_exists }
       end
     else
 

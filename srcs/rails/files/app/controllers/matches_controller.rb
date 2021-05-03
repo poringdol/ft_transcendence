@@ -196,7 +196,7 @@ class MatchesController < ApplicationController
       else
         format.json { render json: @match.errors, status: :unprocessable_entity }
       end
-  	end
+    end
   end
 
   def create_random_match

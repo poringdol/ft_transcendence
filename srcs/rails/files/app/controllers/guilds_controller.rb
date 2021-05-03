@@ -17,12 +17,12 @@ class GuildsController < ApplicationController
   end
 
   def guilds_list
-	guilds_names = Guild.all.select(:name).order(:name)
-	render json: guilds_names
+  guilds_names = Guild.all.select(:name).order(:name)
+  render json: guilds_names
   end
 
   def get_owner_nick
-	guild = Guild.find(params[:id])
+    guild = Guild.find(params[:id])
     owner = User.find(guild.owner_id)
     render json: owner
   end
@@ -34,14 +34,14 @@ class GuildsController < ApplicationController
 
 
   def get_guild
-	  guild = Guild.find(params[:id])
-	  render json: guild
+    guild = Guild.find(params[:id])
+    render json: guild
   end
 
   def get_guild_users
   # Костыль(?) из-за 2ф авторизации без :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt ничего не работает
   # guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])
-	  guild_users = User.all.where(guild_id: params[:id])
+    guild_users = User.all.where(guild_id: params[:id])
     render json: guild_users, each_serializer: GuildUserSerializer
   end
 
@@ -51,7 +51,7 @@ class GuildsController < ApplicationController
 
   def get_guilds
     @guilds = Guild.all
-	  render json: @guilds
+    render json: @guilds
   end
 
 
@@ -88,7 +88,7 @@ class GuildsController < ApplicationController
   def exit_user
 
     # if ((current_user.is_admin == true) ||
-	# 	(current_user.is_officer == true))
+  # (current_user.is_officer == true))
     user = User.find(params[:id])
 
     unless user.guild_id?
@@ -119,39 +119,34 @@ class GuildsController < ApplicationController
       if guild_members
         new_owner = User.all.find(guild.owner_id)
         render json: new_owner
-      #   redirect_to '/guilds'
       else
         render json: 0
-      #   redirect_to '/guilds'
       end
-  #   end
     end
   end
 
   def do_officer
-	  user = User.find(params[:id])
+    user = User.find(params[:id])
     user.is_officer = true
     if user.save
       render json: 1
-    #   redirect_to '/guilds'
     end
   end
 
   def undo_officer
-	  user = User.find(params[:id])
+    user = User.find(params[:id])
     user.is_officer = false
     if user.save
       render json: 1
-    #   redirect_to '/guilds'
     end
   end
 
 
   def do_owner
-	# if current_user.is_admin != true
-	  user = User.find(params[:id])
+  # if current_user.is_admin != true
+    user = User.find(params[:id])
     unless user.guild_id?
-		  redirect_and_responce("User not in guild")
+      redirect_and_responce("User not in guild")
     else
       guild = Guild.find(user.guild_id)
       if guild.owner_id == current_user.id || current_user.is_admin == true || current_user.is_moderator == true
@@ -184,15 +179,10 @@ class GuildsController < ApplicationController
 
     respond_to do |format|
       unless @guild.save
-        # format.html { redirect_to '/guilds', notice: @guild.errors.full_messages.join("; ") }
         format.html { render json: @guild.errors.full_messages.join("; "), status: :unprocessable_entity}
-        # format.json { render json: @guild.errors, status: :unprocessable_entity }
-        # render json: @guild.errors, status: :unprocessable_entity
       else
         format.html { render json: @guild, status: :created, location: @guild}
-        # current_user.guild_id = @guild.id
         current_user.save
-		    # render json: @guild
       end
     end
   end
@@ -202,7 +192,7 @@ class GuildsController < ApplicationController
   end
 
   def update
-	  @guild.update(guilds_params)
+    @guild.update(guilds_params)
   end
 
   def join
@@ -214,7 +204,7 @@ class GuildsController < ApplicationController
       member.save
       current_user.guild_id = guild.id
       current_user.save
-	  render json: 0
+      render json: 0
     end
   end
 
@@ -225,7 +215,7 @@ class GuildsController < ApplicationController
     else
       guild_id = current_user.guild_id
       current_user.guild_id = nil
-	  current_user.is_officer = false
+      current_user.is_officer = false
       current_user.save
       guild = Guild.all.find(guild_id)
       guild_members = User.all.find_by(guild_id: guild_id)
@@ -233,10 +223,10 @@ class GuildsController < ApplicationController
       unless guild_members
         guild.destroy
 
-		guild_invites = GuildInvite.where(guild_id: guild_id)
-		for guild_invite in guild_invites
-		  guild_invite.destroy
-		end
+        guild_invites = GuildInvite.where(guild_id: guild_id)
+        for guild_invite in guild_invites
+          guild_invite.destroy
+        end
 
       else
         if current_user.id == guild.owner_id
@@ -347,7 +337,7 @@ class GuildsController < ApplicationController
 
   private
 
-  	def set_guild
+    def set_guild
       @guild = Guild.find(params[:id])
     end
 
@@ -366,7 +356,7 @@ class GuildsController < ApplicationController
 
       respond_to do |f|
         f.html { redirect_to '/guilds', notice: responce }
-	    	f.json { render json: responce }
+        f.json { render json: responce }
       end
     end
 

@@ -6,7 +6,7 @@ class TournamentsController < ApplicationController
   def index
     @tournaments = Tournament.all
 
-	respond_to do |format|
+    respond_to do |format|
         format.html { render :index }
         format.json { render json: @tournaments }
     end
@@ -14,20 +14,20 @@ class TournamentsController < ApplicationController
 
   # GET /tournaments/1 or /tournaments/1.json
   def show
-	respond_to do |format|
+    respond_to do |format|
         format.html { render :show }
         format.json { render json: @tournament }
     end
   end
 
   def members
-	members = TournamentUser.where(tournament_id: params[:id]).order(wins: :desc, loses: :asc, score: :desc)
-	render json: members
+    members = TournamentUser.where(tournament_id: params[:id]).order(wins: :desc, loses: :asc, score: :desc)
+    render json: members
   end
 
   def matches
-	matches = TournamentMatch.where(tournament_id: params[:id])
-	render json: matches
+    matches = TournamentMatch.where(tournament_id: params[:id])
+    render json: matches
   end
 
   # GET /tournaments/new
@@ -40,12 +40,12 @@ class TournamentsController < ApplicationController
   end
 
   def curr_user_is_in_tournament
-	user = TournamentUser.where(tournament_id: params[:id], user_id: current_user.id).first
-	if user.present?
-		return render json: 1
-	else
-		return render json: 0
-	end
+  user = TournamentUser.where(tournament_id: params[:id], user_id: current_user.id).first
+  if user.present?
+    return render json: 1
+  else
+    return render json: 0
+  end
   end
 
   def join
@@ -61,16 +61,16 @@ class TournamentsController < ApplicationController
     tournament = Tournament.where(id: params[:id]).first
 
     if tournament.nil?
-        return render json: { error: "The tournament isn't exist" }, status: :unprocessable_entity
+      return render json: { error: "The tournament isn't exist" }, status: :unprocessable_entity
     elsif tournament.is_inprogress?
-        return render json: { error: "The tournament has already started, you cannot leave" }, status: :unprocessable_entity
+      return render json: { error: "The tournament has already started, you cannot leave" }, status: :unprocessable_entity
     else
-        user = TournamentUser.where(tournament_id: params[:id], user_id: current_user.id).first
-        if user.nil?
-            return render json: { error: "You are not in the tournament" }, status: :unprocessable_entity
-        end
-        user.destroy
-        return render json: { }, status: :ok
+      user = TournamentUser.where(tournament_id: params[:id], user_id: current_user.id).first
+      if user.nil?
+          return render json: { error: "You are not in the tournament" }, status: :unprocessable_entity
+      end
+      user.destroy
+      return render json: { }, status: :ok
     end
 end
 
@@ -79,29 +79,29 @@ end
       return render json: { error: "You don't have enough rights!" }, status: :unprocessable_entity
     end
 
-	if params[:name] == ''
-		return render json: { error: "Fill the name field" }, status: :unprocessable_entity
-	end
+  if params[:name] == ''
+    return render json: { error: "Fill the name field" }, status: :unprocessable_entity
+  end
 
-	if params[:name].size > 30
-		return render json: { error: "Name is to long, it should be shorter than 30 " }, status: :unprocessable_entity
-	end
+  if params[:name].size > 30
+    return render json: { error: "Name is to long, it should be shorter than 30 " }, status: :unprocessable_entity
+  end
   
-  	unless Tournament.where(name: params[:name]).empty?
-   		return render json: { error: "This name is already in use" }, status: :unprocessable_entity
-  	end
+    unless Tournament.where(name: params[:name]).empty?
+       return render json: { error: "This name is already in use" }, status: :unprocessable_entity
+    end
 
-   	if params[:name].size > 30
+     if params[:name].size > 30
         return render json: { error: "Name is to long, it should be shorter than 30 " }, status: :unprocessable_entity
     end
 
-	if params[:prize].to_i > 1000 || params[:prize].to_i < 0
-		return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
-	end
+    if params[:prize].to_i > 1000 || params[:prize].to_i < 0
+      return render json: { error: 'Prize should be between 0 and 1000 points' }, status: :unprocessable_entity
+    end
 
-	if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
-		return render json: { error: 'Invalid date' }, status: :unprocessable_entity
-	end
+    if params[:date_end] == '' || params[:date_start] == '' || params[:time_end] == '' || params[:time_start] == ''
+      return render json: { error: 'Invalid date' }, status: :unprocessable_entity
+    end
 
     date_start = Date.parse params[:date_start]
     time_start = Time.parse params[:time_start]
@@ -115,7 +115,7 @@ end
       return render json: { error: 'Dates are invalid' }, status: :unprocessable_entity
     end
 
-	@tournament = Tournament.new(name: params[:name], start: tournament_start, end: tournament_end, prize: params[:prize])
+    @tournament = Tournament.new(name: params[:name], start: tournament_start, end: tournament_end, prize: params[:prize])
     
     if @tournament.save
       if (params[:color] == "disco")
@@ -129,12 +129,12 @@ end
       end
       @tournament.addons.save
 
-	  TournamentUpdateJob.set(wait_until: @tournament.start).perform_later(@tournament, "start")
+    TournamentUpdateJob.set(wait_until: @tournament.start).perform_later(@tournament, "start")
     TournamentUpdateJob.set(wait_until: @tournament.end).perform_later(@tournament, "end")
-	#   NotificationJob.perform_later({
-	# 	user: @tournament.guild2.owner,
-	# 	message: "The #{@tournament.guild1.name} guild has declared tournament on you",
-	# 	link: "/tournaments/"
+  #   NotificationJob.perform_later({
+  #   user: @tournament.guild2.owner,
+  #   message: "The #{@tournament.guild1.name} guild has declared tournament on you",
+  #   link: "/tournaments/"
     #   })
       render json: @tournament, status: :created
     else

@@ -4,7 +4,7 @@ class GuildInvitesController < ApplicationController
   # GET /guild_invites or /guild_invites.json
   def index
     @guild_invites = GuildInvite.all
-	  render json: @guild_invites
+    render json: @guild_invites
   end
 
   # GET /guild_invites/1 or /guild_invites/1.json
@@ -33,8 +33,8 @@ class GuildInvitesController < ApplicationController
   end
 
   def accept_invitation
-    @guild_invite	= GuildInvite.find(params[:id])
-    guild			= Guild.find(@guild_invite.guild_id)
+    @guild_invite = GuildInvite.find(params[:id])
+    guild = Guild.find(@guild_invite.guild_id)
 
     if (@guild_invite && guild && @guild_invite.invited_id == current_user.id)
       current_user.guild_id = @guild_invite.guild_id
@@ -49,7 +49,7 @@ class GuildInvitesController < ApplicationController
   end
 
   def decline_invitation
-    @guild_invite	= GuildInvite.find(params[:id])
+    @guild_invite = GuildInvite.find(params[:id])
 
     if (@guild_invite && @guild_invite.invited_id == current_user.id)
       if (@guild_invite.destroy)
@@ -63,9 +63,9 @@ class GuildInvitesController < ApplicationController
   end
 
   def invite_to_guild
-    inviter_id	= current_user.id
-    invited		= User.find(params[:id])
-    guild		= Guild.find(current_user.guild_id)
+    inviter_id = current_user.id
+    invited = User.find(params[:id])
+    guild = Guild.find(current_user.guild_id)
 
     guild_invite_cur = GuildInvite.find_by(inviter_id: inviter_id, invited_id: invited.id, guild_id: guild.id)
     if (guild_invite_cur)
