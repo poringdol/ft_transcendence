@@ -1,112 +1,112 @@
 .devcontainer
 *.DS_Store
 .vscode
-alpine/rails/files/*.rbc
-alpine/rails/files/capybara-*.html
-alpine/rails/files/.rspec
-alpine/rails/files/db/*.sqlite3
-alpine/rails/files/db/*.sqlite3-journal
-alpine/rails/files/db/*.sqlite3-[0-9]*
-alpine/rails/files/public/system
-alpine/rails/files/coverage/
-alpine/rails/files/spec/tmp
-alpine/rails/files/*.orig
-alpine/rails/files/rerun.txt
-alpine/rails/files/pickle-email-*.html
+srcs/rails/files/*.rbc
+srcs/rails/files/capybara-*.html
+srcs/rails/files/.rspec
+srcs/rails/files/db/*.sqlite3
+srcs/rails/files/db/*.sqlite3-journal
+srcs/rails/files/db/*.sqlite3-[0-9]*
+srcs/rails/files/public/system
+srcs/rails/files/coverage/
+srcs/rails/files/spec/tmp
+srcs/rails/files/*.orig
+srcs/rails/files/rerun.txt
+srcs/rails/files/pickle-email-*.html
 
 # Ignore all logfiles and tempfiles.
-alpine/rails/files/log/*
-alpine/rails/files/tmp/*
-!alpine/rails/files/log/.keep
-!alpine/rails/files/tmp/.keep
+srcs/rails/files/log/*
+srcs/rails/files/tmp/*
+!srcs/rails/files/log/.keep
+!srcs/rails/files/tmp/.keep
 
 # dotenv, dotenv-rails
 # TODO Comment out these rules if environment variables can be committed
-alpine/rails/files/.env
-alpine/rails/files/.env.*
+srcs/rails/files/.env
+srcs/rails/files/.env.*
 
 ## Environment normalization:
-alpine/rails/files/.bundle
-alpine/rails/files/vendor/bundle
+srcs/rails/files/.bundle
+srcs/rails/files/vendor/bundle
 
 # these should all be checked in to normalize the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
-alpine/rails/files/.rvmrc
+srcs/rails/files/.rvmrc
 
 # Ignore Byebug command history file.
-alpine/rails/files/.byebug_history
+srcs/rails/files/.byebug_history
 
 # Ignore node_modules
-alpine/rails/files/node_modules/
+srcs/rails/files/node_modules/
 
 # Ignore precompiled javascript packs
-alpine/rails/files/public/packs
-alpine/rails/files/public/packs-test
-alpine/rails/files/public/assets
+srcs/rails/files/public/packs
+srcs/rails/files/public/packs-test
+srcs/rails/files/public/assets
 
 # Ignore yarn files
-alpine/rails/files/yarn-error.log
-alpine/rails/files/yarn-debug.log*
-alpine/rails/files/.yarn-integrity
+srcs/rails/files/yarn-error.log
+srcs/rails/files/yarn-debug.log*
+srcs/rails/files/.yarn-integrity
 
 # Ignore uploaded files in development
-alpine/rails/files/storage/*
-!alpine/rails/files/storage/.keep
+srcs/rails/files/storage/*
+!srcs/rails/files/storage/.keep
 
-alpine/rails/files/test/*
+srcs/rails/files/test/*
 
 # Ignore avatar
-alpine/rails/files/public/*
+srcs/rails/files/public/*
 
-!alpine/rails/files/public/uploads
-alpine/rails/files/public/uploads/*
-!alpine/rails/files/public/uploads/user
-alpine/rails/files/public/uploads/user/*
-!alpine/rails/files/public/uploads/user/avatar
-alpine/rails/files/public/uploads/user/avatar/*
-!alpine/rails/files/public/uploads/user/avatar/1
-alpine/rails/files/public/uploads/user/avatar/1/*
-!alpine/rails/files/public/uploads/user/avatar/1/girl.jpg
-!alpine/rails/files/public/uploads/user/avatar/2
-alpine/rails/files/public/uploads/user/avatar/2/*
-!alpine/rails/files/public/uploads/user/avatar/2/dog.jpg
-!alpine/rails/files/public/uploads/user/avatar/3
-alpine/rails/files/public/uploads/user/avatar/3/*
-!alpine/rails/files/public/uploads/user/avatar/3/cat.jpg
-!alpine/rails/files/public/uploads/user/avatar/4
-alpine/rails/files/public/uploads/user/avatar/4/*
-!alpine/rails/files/public/uploads/user/avatar/4/splinter.jpg
-!alpine/rails/files/public/uploads/user/avatar/5
-alpine/rails/files/public/uploads/user/avatar/5/*
-!alpine/rails/files/public/uploads/user/avatar/5/leo.jpg
-!alpine/rails/files/public/uploads/user/avatar/6
-alpine/rails/files/public/uploads/user/avatar/6/*
-!alpine/rails/files/public/uploads/user/avatar/6/don.jpg
-!alpine/rails/files/public/uploads/user/avatar/7
-alpine/rails/files/public/uploads/user/avatar/7/*
-!alpine/rails/files/public/uploads/user/avatar/7/raph.jpg
-!alpine/rails/files/public/uploads/user/avatar/8
-alpine/rails/files/public/uploads/user/avatar/8/*
-!alpine/rails/files/public/uploads/user/avatar/8/mike.jpg
-!alpine/rails/files/public/uploads/user/avatar/9
-alpine/rails/files/public/uploads/user/avatar/9/*
-!alpine/rails/files/public/uploads/user/avatar/9/rick.jpg
-!alpine/rails/files/public/uploads/user/avatar/10
-alpine/rails/files/public/uploads/user/avatar/10/*
-!alpine/rails/files/public/uploads/user/avatar/10/morty.jpg
+!srcs/rails/files/public/uploads
+srcs/rails/files/public/uploads/*
+!srcs/rails/files/public/uploads/user
+srcs/rails/files/public/uploads/user/*
+!srcs/rails/files/public/uploads/user/avatar
+srcs/rails/files/public/uploads/user/avatar/*
+!srcs/rails/files/public/uploads/user/avatar/1
+srcs/rails/files/public/uploads/user/avatar/1/*
+!srcs/rails/files/public/uploads/user/avatar/1/girl.jpg
+!srcs/rails/files/public/uploads/user/avatar/2
+srcs/rails/files/public/uploads/user/avatar/2/*
+!srcs/rails/files/public/uploads/user/avatar/2/dog.jpg
+!srcs/rails/files/public/uploads/user/avatar/3
+srcs/rails/files/public/uploads/user/avatar/3/*
+!srcs/rails/files/public/uploads/user/avatar/3/cat.jpg
+!srcs/rails/files/public/uploads/user/avatar/4
+srcs/rails/files/public/uploads/user/avatar/4/*
+!srcs/rails/files/public/uploads/user/avatar/4/splinter.jpg
+!srcs/rails/files/public/uploads/user/avatar/5
+srcs/rails/files/public/uploads/user/avatar/5/*
+!srcs/rails/files/public/uploads/user/avatar/5/leo.jpg
+!srcs/rails/files/public/uploads/user/avatar/6
+srcs/rails/files/public/uploads/user/avatar/6/*
+!srcs/rails/files/public/uploads/user/avatar/6/don.jpg
+!srcs/rails/files/public/uploads/user/avatar/7
+srcs/rails/files/public/uploads/user/avatar/7/*
+!srcs/rails/files/public/uploads/user/avatar/7/raph.jpg
+!srcs/rails/files/public/uploads/user/avatar/8
+srcs/rails/files/public/uploads/user/avatar/8/*
+!srcs/rails/files/public/uploads/user/avatar/8/mike.jpg
+!srcs/rails/files/public/uploads/user/avatar/9
+srcs/rails/files/public/uploads/user/avatar/9/*
+!srcs/rails/files/public/uploads/user/avatar/9/rick.jpg
+!srcs/rails/files/public/uploads/user/avatar/10
+srcs/rails/files/public/uploads/user/avatar/10/*
+!srcs/rails/files/public/uploads/user/avatar/10/morty.jpg
 
-!alpine/rails/files/public/uploads/guild
-alpine/rails/files/public/uploads/guild/*
-!alpine/rails/files/public/uploads/guild/logo
-alpine/rails/files/public/uploads/guild/logo/*
-!alpine/rails/files/public/uploads/guild/logo/1
-alpine/rails/files/public/uploads/guild/logo/1/*
-!alpine/rails/files/public/uploads/guild/logo/1/cat_mem.jpg
-!alpine/rails/files/public/uploads/guild/logo/2
-alpine/rails/files/public/uploads/guild/logo/2/*
-!alpine/rails/files/public/uploads/guild/logo/2/tmnt.jpg
-!alpine/rails/files/public/uploads/guild/logo/3
-alpine/rails/files/public/uploads/guild/logo/3/*
-!alpine/rails/files/public/uploads/guild/logo/3/rick_morty.jpg
+!srcs/rails/files/public/uploads/guild
+srcs/rails/files/public/uploads/guild/*
+!srcs/rails/files/public/uploads/guild/logo
+srcs/rails/files/public/uploads/guild/logo/*
+!srcs/rails/files/public/uploads/guild/logo/1
+srcs/rails/files/public/uploads/guild/logo/1/*
+!srcs/rails/files/public/uploads/guild/logo/1/cat_mem.jpg
+!srcs/rails/files/public/uploads/guild/logo/2
+srcs/rails/files/public/uploads/guild/logo/2/*
+!srcs/rails/files/public/uploads/guild/logo/2/tmnt.jpg
+!srcs/rails/files/public/uploads/guild/logo/3
+srcs/rails/files/public/uploads/guild/logo/3/*
+!srcs/rails/files/public/uploads/guild/logo/3/rick_morty.jpg
