@@ -49,8 +49,8 @@ $(function () {
 			return this
 		},
 	})
-	
-	
+
+
 	// -----------------------------------------
 	//  VIEW OF INNER OF ONE TABLE
 	// -----------------------------------------
@@ -64,7 +64,7 @@ $(function () {
 		render: function () {
 			this.collection.each(this.addOne, this)
 			$("#" + this.type + "WarsTable").append(this.el)
-	
+
 			return this
 		},
 		addOne: function (war) {
@@ -209,6 +209,7 @@ $(function () {
 				prize: 			$(e.currentTarget).find('input[id=formPrize]').val(),
 				max_unanswered: $(e.currentTarget).find('input[id=formMaxUnanswered]').val(),
 			}
+
 			if (war.prize == '')
 				war.prize = 0
 			if (war.max_unanswered == '')
@@ -216,6 +217,7 @@ $(function () {
 			fetch("/wars", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -244,7 +246,7 @@ $(function () {
 					currentTable = new App.Views.TableWars({ collection: col, type: 'Current', curr_user: this.attributes })
 					plannedTable = new App.Views.TableWars({ collection: col, type: 'Planned', curr_user: this.attributes })
 					historyTable = new App.Views.TableWars({ collection: col, type: 'History', curr_user: this.attributes })
-					
+
 					var guild_list = new App.Collections.AllGuilds()
 					new App.Views.AllGuilds({ collection: guild_list });
 					$("#WarsTableRefresh").on("click", function() { col.fetch(); })
@@ -256,6 +258,6 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                            MAIN
 // ---------------------------------------------------------------------------------------------------------------------------
-
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 	curr_user = new App.Models.CurrentUser()
 }());

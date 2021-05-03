@@ -35,15 +35,20 @@ document.addEventListener("turbolinks:before-visit", function () {
 	Turbolinks.clearCache();
 })
 
-Notification.requestPermission().then(function (result) {})
+$(document).on('turbolinks:load', function(){
+    const CSRF_TOKEN1 = document.querySelector('meta[name="csrf-token"]').content;
+    console.log(CSRF_TOKEN1)
+    $.ajaxSetup({
+        headers: {'X-CSRFToken': CSRF_TOKEN1}
+    });
 
-//$(document).on('turbolinks:load', function(){ $.rails.refreshCSRFTokens(); });
-
-// debugger
-
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-//
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
+    var oldSync = Backbone.sync;
+    Backbone.sync = function(method, model, options){
+        const CSRF_TOKEN2 = document.querySelector('meta[name="csrf-token"]').content;
+        console.log("sync" + CSRF_TOKEN2)
+        options.beforeSend = function(xhr){
+            xhr.setRequestHeader('X-CSRFToken', CSRF_TOKEN2);
+        };
+        return oldSync(method, model, options);
+    };
+});

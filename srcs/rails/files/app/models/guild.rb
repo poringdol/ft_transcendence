@@ -5,7 +5,6 @@ class Guild < ApplicationRecord
 
   mount_uploader :logo, GuildAvatarUploader
 
-  # has_many :user, dependent: :nullify #после удаления гильдии у всех пользователей этой гильдии обнуляется guild_id
   belongs_to :owner, class_name: 'User', foreign_key: 'owner_id'
   belongs_to :war, class_name: 'War', foreign_key: 'war_id', optional: true
 
@@ -13,16 +12,14 @@ class Guild < ApplicationRecord
   has_many :guild_officers
   has_many :members, :through => :guild_members, :source => :user
   has_many :officers, :through => :guild_officers, :source => :user
-  
+
   has_many :guild1, class_name: 'Match', foreign_key: 'guild1_id', dependent: :nullify
   has_many :guild2, class_name: 'Match', foreign_key: 'guild2_id', dependent: :nullify
 
   after_create {
-    # назначаем владельца гильдии
     user = User.where(id: self.owner_id)
     user.update(guild_id: self.id)
 
-    # добавляем владельца в список мемберов
     GuildMember.create(user_id: owner_id, guild_id: id)
   }
 
@@ -48,5 +45,4 @@ class Guild < ApplicationRecord
       u.save
     end
   }
-
 end

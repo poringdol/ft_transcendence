@@ -95,7 +95,7 @@ $(function () {
 			this.fetch();
 		}
 	});
-	
+
 
 	// -----------------------------------------
 	// GUILD_MEMBERS     MODEL and COLLECTION
@@ -212,7 +212,7 @@ $(function () {
 				this.model.addon_type += 'epilepsy'
 			if (this.model.addon_type == '')
 				this.model.addon_type = 'none'
-			
+
 			if (this.model.guild1.id != this.guild_id)
 				this.model.enemy = this.model.guild1
 			else
@@ -345,7 +345,7 @@ $(function () {
 			this.$el.attr({ 'href': ("/profile/" + this.model.id) });
 			var template = this.templateList(this.model);
 			this.$el.append(template);
-			
+
 			return this;
 		},
 		remove: function () {
@@ -645,7 +645,7 @@ $(function () {
 			fetch("/guilds/join", {
 				method: "POST",
 				headers: {
-					// "X-CSRF-Token": TOKEN,
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -668,7 +668,7 @@ $(function () {
 			fetch("/guilds/exit", {
 				method: "POST",
 				headers: {
-					// "X-CSRF-Token": TOKEN,
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -735,7 +735,7 @@ $(function () {
 			fetch("/wars", {
 				method: "POST",
 				headers: {
-					// "X-CSRF-Token": TOKEN,
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -782,7 +782,7 @@ $(function () {
 			'submit': 'submit'
 		},
 		render: function () {
-			this.$el.html(this.template) 
+			this.$el.html(this.template)
 			$('#GuildForm').html(this.el);
 		},
 		submit: function (e) {
@@ -839,7 +839,7 @@ $(function () {
 				$(".content").html("<h3>You account was blocked by administrator</h3>")
 		}
 	})
-
+	const TOKEN = document.querySelector('meta[name="csrf-token"]').content;
 	// -----------------------------------------
 	// MAIN
 	// -----------------------------------------

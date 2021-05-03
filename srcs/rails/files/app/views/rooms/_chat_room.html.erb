@@ -10,7 +10,7 @@
       <div class="mb-3 col-2">
           <%= form_with model: @room, url: "leave", method: :post do |form| %>
               <%= form.hidden_field :room_id, value: @room.id %>
-              <%= form.hidden_field :authenticity_token, value: form_authenticity_token %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
               <%= form.submit "Leave from chat", class: "btn btn-outline-primary" %>
           <%end %>
 

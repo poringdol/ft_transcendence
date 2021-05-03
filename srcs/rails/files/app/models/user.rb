@@ -2,24 +2,6 @@ class User < ApplicationRecord
   devise :two_factor_authenticatable,
          :otp_secret_encryption_key => ENV['OTP_KEY']
 
-  validates :nickname, presence: true, uniqueness: true
-
-  # callback-функции. Будут исполняться после наступления определенного события
-
-  after_create {
-    unless guild_id.nil? || guild_id == 0
-      GuildMember.create(user_id: id, guild_id: guild_id)
-    end
-  } # User.create()
-
-  # after_update {} # User.update(), User.save()
-  # after_destroy {} # User.destroy()
-  # after_initialize { код } # User.new()
-  # after_save {} # User.save(), User.create()
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-
   devise :registerable,
          :recoverable, :rememberable, :validatable, :trackable,
          :omniauthable, :uid, omniauth_providers: [:marvin]
@@ -27,9 +9,14 @@ class User < ApplicationRecord
   mount_uploader :avatar, AvatarUploader
 
   belongs_to :guild, class_name: 'Guild', foreign_key: 'guild_id', optional: true
-  # has_many :messages, dependent: :destroy
-  # has_many :friends, dependent: :destroy
-  # has_many :users, class_name: "Friend", dependent: :destroy
+
+  validates :nickname, presence: true, uniqueness: true
+
+  after_create {
+    unless guild_id.nil? || guild_id == 0
+      GuildMember.create(user_id: id, guild_id: guild_id)
+    end
+  }
 
   def otp_qr_code
     issuer = 'PingPongApp'
@@ -56,5 +43,4 @@ class User < ApplicationRecord
     ids = ActionCable.server.pubsub.redis_connection_for_subscriptions.smembers "online"
     where(id: ids)
   end
-
 end

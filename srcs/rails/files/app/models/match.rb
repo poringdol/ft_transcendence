@@ -1,5 +1,4 @@
 class Match < ApplicationRecord
-
   belongs_to :current_user, class_name: 'User', foreign_key: 'current_user_id', optional: true
   belongs_to :player1, class_name: 'User', foreign_key: 'player1_id'
   belongs_to :player2, class_name: 'User', foreign_key: 'player2_id', optional: true
@@ -14,12 +13,11 @@ class Match < ApplicationRecord
     if self.addons.nil?
       self.addons = Addon.create()
     end
-    
+
     self.guild1 = self.player1.guild
     unless self.player2.nil?
       self.guild2 = self.player2.guild
     end
     self.save()
   }
-
 end

@@ -1,6 +1,6 @@
 class TournamentsController < ApplicationController
   before_action :set_tournament, only: %i[ show edit update destroy ]
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
 
   # GET /tournaments or /tournaments.json
   def index
@@ -86,7 +86,7 @@ end
   if params[:name].size > 30
     return render json: { error: "Name is to long, it should be shorter than 30 " }, status: :unprocessable_entity
   end
-  
+
     unless Tournament.where(name: params[:name]).empty?
        return render json: { error: "This name is already in use" }, status: :unprocessable_entity
     end
@@ -116,7 +116,7 @@ end
     end
 
     @tournament = Tournament.new(name: params[:name], start: tournament_start, end: tournament_end, prize: params[:prize])
-    
+
     if @tournament.save
       if (params[:color] == "disco")
         @tournament.addons.addon1 = true
@@ -167,7 +167,7 @@ end
   def result
     @tournament = TournamentUser.where(tournament_id: params[:id]).order(wins: :desc, loses: :asc, score: :desc)
     render json: @tournament
-  end 
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

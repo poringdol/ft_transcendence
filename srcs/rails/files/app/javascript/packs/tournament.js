@@ -79,6 +79,7 @@ $(function () {
 			fetch("/tournaments/join", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -110,14 +111,14 @@ $(function () {
 				}, this))
 		}
 	})
-	
+
 
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                             TOURNAMENT    MEMBERS
 // ---------------------------------------------------------------------------------------------------------------------------
-	
+
 	App.Models.Members = Backbone.Model.extend({
 		urlRoot: "/tournaments/members/",
 		initialize: function () {
@@ -132,7 +133,7 @@ $(function () {
 			this.fetch()
 		}
 	});
-	
+
 	App.Views.MembersTable = Backbone.View.extend({
 		template: _.template($("#TournamentsMembersTableTemplate").html()),
 		initialize: function () {
@@ -174,7 +175,7 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                             TOURNAMENT  MATCHES
 // ---------------------------------------------------------------------------------------------------------------------------
-		
+
 	App.Models.Matches = Backbone.Model.extend({
 		urlRoot: "/tournaments/matches/",
 		initialize: function () {
@@ -189,14 +190,14 @@ $(function () {
 			this.fetch()
 		}
 	});
-	
+
 	App.Views.CardMatches = Backbone.View.extend({
 		template: _.template($("#MatchesCardTemplate").html()),
 		initialize: function () {
 			$("#TournamentMatches").html(this.template())
 		}
 	})
-	
+
 	App.Views.TableMatches = Backbone.View.extend({
 		template: _.template($("#MatchesTableTemplate").html()),
 		initialize: function (data) {
@@ -213,7 +214,7 @@ $(function () {
 			return this
 		},
 	})
-	
+
 	App.Views.Matches = Backbone.View.extend({
 		tagName: 'tbody',
 		initialize: function (data) {
@@ -269,7 +270,7 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                             TOURNAMENT  WINNER
 // ---------------------------------------------------------------------------------------------------------------------------
-	
+
 	App.Views.TournamentWinner = Backbone.View.extend({
 		template: _.template($("#TournamentWinnerTemplate").html()),
 		initialize: function (data) {
@@ -282,11 +283,12 @@ $(function () {
 				$("#TournamentWinner").html(this.template(this.collection.models[0].attributes))
 		}
 	})
-	
+
 
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                            MAIN
 // ---------------------------------------------------------------------------------------------------------------------------
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 
 	const urlArray 		 = window.jQuery.ajaxSettings.url.split('/')
 	window.tournament_id = urlArray[urlArray.length - 1]
@@ -299,7 +301,7 @@ $(function () {
 	tournamentTitle 	 = new App.Views.TournamentTitle()
 	tournamentCard		 = new App.Views.TournamentCard({ model: tournament, members: members })
 	tournamentMembers 	 = new App.Views.MembersTable({ collection: members })
-	
+
 	MatchesCard			 = new App.Views.CardMatches({})
 	currentMatchesTable	 = new App.Views.TableMatches({ collection: matches, type: 'Current' })
 	plannedMatchesTable  = new App.Views.TableMatches({ collection: matches, type: 'Planned' })

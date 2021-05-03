@@ -1,5 +1,5 @@
 class GuildsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
   # skip_forgery_protection
 
   before_action :check_nickname, only: [:add_officer]
@@ -39,8 +39,6 @@ class GuildsController < ApplicationController
   end
 
   def get_guild_users
-  # Костыль(?) из-за 2ф авторизации без :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt ничего не работает
-  # guild_users = User.select(:id, :nickname, :avatar, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt).where(guild_id: params[:id])
     guild_users = User.all.where(guild_id: params[:id])
     render json: guild_users, each_serializer: GuildUserSerializer
   end
@@ -59,18 +57,6 @@ class GuildsController < ApplicationController
     @guild.destroy
   end
 
-  # def is_officer
-  #   user = User.find(params[:id])
-  #   if (user && user.guild_id)
-  #     officer = GuildOfficer.find_by(user_id: user.id, guild_id: user.guild_id)
-  #     if (officer)
-  #       render json: 1, status: :created
-  #     else
-  #       render json: 0, status: :created
-  #     end
-  #   end
-  # end
-
   def is_owner
     user = User.find(params[:id])
     if (user && user.guild_id)
@@ -86,9 +72,6 @@ class GuildsController < ApplicationController
   end
 
   def exit_user
-
-    # if ((current_user.is_admin == true) ||
-  # (current_user.is_officer == true))
     user = User.find(params[:id])
 
     unless user.guild_id?
@@ -143,7 +126,6 @@ class GuildsController < ApplicationController
 
 
   def do_owner
-  # if current_user.is_admin != true
     user = User.find(params[:id])
     unless user.guild_id?
       redirect_and_responce("User not in guild")

@@ -47,8 +47,8 @@ $(function () {
 			return this
 		},
 	})
-	
-	
+
+
 	// -----------------------------------------
 	//  VIEW OF INNER OF ONE TABLE
 	// -----------------------------------------
@@ -125,6 +125,7 @@ $(function () {
 			fetch("/tournaments/join", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -199,6 +200,7 @@ $(function () {
 			fetch("/tournaments", {
 				method: "POST",
 				headers: {
+					"X-CSRF-Token": TOKEN,
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
@@ -219,13 +221,13 @@ $(function () {
 // ---------------------------------------------------------------------------------------------------------------------------
 //                                            MAIN
 // ---------------------------------------------------------------------------------------------------------------------------
-
+	const TOKEN = document.querySelector("[name='csrf-token']").content;
 	var col = new App.Collections.Tournament()
 	new App.Views.FormTournament({ collection: col })
 	window.currentTable = new App.Views.TableTournaments({ collection: col, type: 'Current' })
 	window.plannedTable = new App.Views.TableTournaments({ collection: col, type: 'Planned' })
 	window.historyTable = new App.Views.TableTournaments({ collection: col, type: 'History' })
-	
+
 	var guild_list = new App.Collections.AllGuilds()
 	new App.Views.AllGuilds({ collection: guild_list });
 	$("#TournamentsTableRefresh").on("click", function () { col.fetch(); })
