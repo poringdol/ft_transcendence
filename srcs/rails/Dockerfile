@@ -34,7 +34,7 @@ RUN bundle update mimemagic && \
 	yarn add jquery \
 			 backbone \
 			 underscore \
-			 bootstrap@next \
+			 bootstrap@v5.0.0 \
 			 @popperjs/core
 
 COPY ./sanitized_file.rb ../usr/local/bundle/gems/carrierwave-2.2.0/lib/carrierwave/sanitized_file.rb
